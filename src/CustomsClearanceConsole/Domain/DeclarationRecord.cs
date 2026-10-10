@@ -32,8 +32,6 @@ public sealed class DeclarationRecord
     public string DisplayStatus => string.Join(Environment.NewLine,
         new[] { IsDuplicate ? "重复单号" : "", NeedsAttention ? Status == "识别失败" ? "识别失败" : "需关注" : "", !IsDuplicate && !NeedsAttention ? "识别完成" : "" }.Where(x => x.Length > 0));
     [JsonIgnore]
-    public string PrimaryStatus => Status == "识别失败" ? "识别失败" : IsDuplicate ? "重复" : NeedsAttention ? "需关注" : "正常";
-    [JsonIgnore]
     public string AllWarnings => string.Join("；", new[] { Warning, DuplicateWarning }.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct());
 
     [JsonIgnore]

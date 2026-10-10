@@ -1,12 +1,9 @@
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace CustomsClearanceConsole;
 
 internal sealed partial class MainForm : Form
 {
-
     // ---- filtering / paging ----
 
     private IEnumerable<DeclarationRecord> FilteredRecords()
@@ -14,7 +11,7 @@ internal sealed partial class MainForm : Form
         var query = _state.Records.AsEnumerable();
         var search = _search.Text.Trim();
         if (search.Length > 0)
-            query = query.Where(x => new[] { x.DeclarationNo, x.SourceName, x.Consignee, x.ContractNo }
+            query = query.Where(x => new[] { x.DeclarationNo, x.Consignee, x.ContractNo }
                 .Any(value => value.Contains(search, StringComparison.CurrentCultureIgnoreCase)));
         query = _filterIndex switch
         {
@@ -36,27 +33,38 @@ internal sealed partial class MainForm : Form
 
     // ---- refresh ----
 
+    /// <summary>Last applied look of the scan button; images are only reloaded when it changes.</summary>
+    private string _scanVisualKey = "";
+
     private void RefreshAll()
     {
+        using var redraw = Redraw.Suspend(_body);
         var state = CurrentState;
         var processing = state == BatchState.Processing;
-        _body.RowStyles[2].Height = processing ? DpiLayout.Scale(_layout.CompactHeight ? 92 : 104, _layoutDpi) : 0;
-        _body.RowStyles[3].Height = processing ? DpiLayout.Scale(_layout.CompactHeight ? 34 : 38, _layoutDpi) : 0;
-        _exportButton.Enabled = _state.Records.Count > 0 && !processing;
-        _exportButton.Image?.Dispose();
-        _exportButton.Image = UiV2Icons.Load(_exportButton.Enabled ? Ui2.Export : Ui2.ExportDisabled, 16, _layoutDpi);
+        SetRowHeight(_body.RowStyles[2], processing ? DpiLayout.Scale(_layout.CompactHeight ? 92 : 104, _layoutDpi) : 0);
+        SetRowHeight(_body.RowStyles[3], processing ? DpiLayout.Scale(_layout.CompactHeight ? 34 : 38, _layoutDpi) : 0);
+        var exportEnabled = _state.Records.Count > 0 && !processing;
+        var scanEnabled = processing || state is BatchState.Ready or BatchState.Complete || _state.Records.Count > 0;
         _settings.Enabled = !processing;
         _cleanupButton.Enabled = !processing;
         _filterSegmented.Enabled = _state.Records.Count > 0 && !processing;
         _searchHost.Enabled = _state.Records.Count > 0 && !processing;
+        _exportButton.Enabled = exportEnabled;
+        _scan.Enabled = scanEnabled;
+
+        // Swapping a button image repaints the button; the scan button used to dispose and
+        // reload both images on every refresh, so it flickered with every scanned file.
+        var visualKey = $"{(processing ? "stop" : state == BatchState.Empty ? "empty" : "start")}|{exportEnabled}|{_layoutDpi}";
+        if (visualKey == _scanVisualKey) { RefreshGrid(); return; }
+        _scanVisualKey = visualKey;
+        ReplaceImage(_exportButton, exportEnabled ? Ui2.Export : Ui2.ExportDisabled);
         if (processing)
         {
             _scan.Text = "取消识别";
-            _scan.Image?.Dispose();
-            _scan.Image = UiV2Icons.Load(Ui2.Stop, 16, _layoutDpi);
+            _scan.AccessibleName = "取消识别";
+            ReplaceImage(_scan, Ui2.Stop);
             _scan.BackColor = Color.White;
             _scan.ForeColor = Theme.Danger;
-            _scan.AccessibleName = "取消识别";
             if (_scan is RoundedButton cancelRounded)
             {
                 cancelRounded.BorderColor = ColorTranslator.FromHtml("#E4A6A0");
@@ -66,14 +74,12 @@ internal sealed partial class MainForm : Form
         }
         else
         {
-            _scan.Text = "开始识别";
-            _scan.Image?.Dispose();
-            _scan.Image = UiV2Icons.Load(Ui2.Play, 16, _layoutDpi);
             var primaryFill = state == BatchState.Empty ? UiTokens.Colors.DisabledPrimaryFill : Theme.Primary;
+            _scan.Text = "开始识别";
+            _scan.AccessibleName = "开始识别";
+            ReplaceImage(_scan, Ui2.Play);
             _scan.BackColor = primaryFill;
             _scan.ForeColor = Color.White;
-            _scan.Enabled = state is BatchState.Ready or BatchState.Complete || _state.Records.Count > 0;
-            _scan.AccessibleName = "开始识别";
             if (_scan is RoundedButton startRounded)
             {
                 startRounded.BorderColor = primaryFill;
@@ -84,56 +90,108 @@ internal sealed partial class MainForm : Form
         RefreshGrid();
     }
 
-    private void RefreshGrid()
+    private void ReplaceImage(Button button, string stem)
+    {
+        var previous = button.Image;
+        button.Image = UiV2Icons.Load(stem, 16, _layoutDpi);
+        previous?.Dispose();
+    }
+
+    private static void SetRowHeight(RowStyle style, float height)
+    {
+        if (Math.Abs(style.Height - height) > 0.1F) style.Height = height;
+    }
+
+    /// <summary>
+    /// Rebuilds the visible page. Rows are updated in place instead of clearing and re-adding
+    /// the whole grid: the old Rows.Clear() emptied the table (hiding its scroll bar, which
+    /// re-fitted every column) and then refilled it row by row, which showed up as a flash on
+    /// every scanned file, filter change and screenshot back-fill. <paramref name="resetScroll"/>
+    /// returns to the first row when the user changed the page, filter or search.
+    /// </summary>
+    private void RefreshGrid(bool resetScroll = false)
     {
         // A leaked debounce timer from a disposed snapshot window can fire during a later
         // DoEvents(); never let it touch a torn-down grid ("No row can be added ... does not
         // have columns"). Dispose stops the timer, this guard covers an already-queued tick.
         if (IsDisposed || Disposing || _grid is null || _grid.IsDisposed || _grid.Columns.Count == 0) return;
+        using var redraw = Redraw.Suspend(_body);
         _visible = FilteredRecords().ToList();
         _page = Math.Clamp(_page, 1, PageCount());
         var size = CurrentPageSize();
-        var items = _visible.Skip((_page - 1) * size).Take(size).ToList();
-        _grid.Rows.Clear();
+        var offset = (_page - 1) * size;
+        var items = _visible.Skip(offset).Take(size).ToList();
+        SyncGridRows(items, offset);
+        if (resetScroll && _grid.Rows.Count > 0)
+        {
+            try { _grid.FirstDisplayedScrollingRowIndex = 0; }
+            catch (InvalidOperationException) { }
+        }
+        UpdateSummary(items.Count);
+    }
+
+    private void SyncGridRows(IReadOnlyList<DeclarationRecord> items, int offset)
+    {
+        var rows = _grid.Rows;
+        if (items.Count == 0) rows.Clear();
+        else if (rows.Count > items.Count)
+            for (var i = rows.Count - 1; i >= items.Count; i--) rows.RemoveAt(i);
+        else if (rows.Count < items.Count)
+            rows.Add(items.Count - rows.Count);
+
         var rowHeight = DpiLayout.Scale(_layout.TableRow, _layoutDpi);
+        var c = GridColumns.Of(_grid);
         for (var i = 0; i < items.Count; i++)
         {
             var record = items[i];
-            var index = _grid.Rows.Add();
-            var row = _grid.Rows[index];
-            row.Height = rowHeight;
+            var row = rows[i];
+            if (row.Height != rowHeight) row.Height = rowHeight;
             row.Tag = record;
-            row.Cells["Index"].Value = ((_page - 1) * size + i + 1).ToString("D2");
-            row.Cells["Status"].Value = StatusLabel(record);
-            row.Cells["No"].Value = CopyNumberText(record);
-            row.Cells["Consignee"].Value = Dash(record.Consignee);
-            row.Cells["Contract"].Value = Dash(record.ContractNo);
-            row.Cells["Port"].Value = Dash(record.ExitCustoms);
-            row.Cells["Dest"].Value = Dash(record.DestinationCountry);
-            row.Cells["PortDest"].Value = Dash(record.ExitCustoms) + "\n" + Dash(record.DestinationCountry);
-            row.Cells["Amount"].Value = CopyAmountText(record);
-            row.Cells["Detail"].Value = "明细";
-            row.Cells["Verify"].Value = record.HasScreenshot ? "已留存" : record.HasValidDeclarationNo ? "校验" : "不可核验";
+            var cells = row.Cells;
+            var status = StatusLabel(record);
+            var number = CopyNumberText(record);
+            var amount = CopyAmountText(record);
+            var port = Dash(record.ExitCustoms);
+            var dest = Dash(record.DestinationCountry);
+            SetCell(cells[c.Index], (offset + i + 1).ToString("D2"), "行号（本页内序号）");
+            SetCell(cells[c.Status], status, status + (record.AllWarnings.Length > 0 ? "\n" + record.AllWarnings : ""));
+            SetCell(cells[c.No], number, number);
+            SetCell(cells[c.Consignee], Dash(record.Consignee), Dash(record.Consignee));
+            SetCell(cells[c.Contract], Dash(record.ContractNo), Dash(record.ContractNo));
+            SetCell(cells[c.Port], port, port);
+            SetCell(cells[c.Dest], dest, dest);
+            SetCell(cells[c.PortDest], port + "\n" + dest, port + "\n" + dest);
+            SetCell(cells[c.Amount], amount, amount);
+            SetCell(cells[c.Detail], "明细", "打开只读关单明细");
+            SetCell(cells[c.Verify],
+                record.HasScreenshot ? "已留存" : record.HasValidDeclarationNo ? "校验" : "不可核验",
+                !record.HasValidDeclarationNo ? "未识别出有效报关单号，无法在线核验"
+                : record.HasScreenshot ? "已留存；点击可重新核验并保存新截图"
+                : "打开单一窗口核验页面；在网页悬浮按钮上手动长截图后回填");
             // One shared style per row state instead of a private style object on every cell:
             // the row style outranks the alternating/column styles, so rendering is unchanged.
-            row.DefaultCellStyle = record.IsDuplicate ? DuplicateRowStyle : record.NeedsAttention ? AttentionRowStyle : NormalRowStyle;
-            foreach (DataGridViewCell cell in row.Cells)
-                cell.ToolTipText = Convert.ToString(cell.FormattedValue) ?? "";
-            row.Cells["Index"].ToolTipText = "行号（本页内序号）";
-            row.Cells["Status"].ToolTipText = StatusLabel(record) + (record.AllWarnings.Length > 0 ? "\n" + record.AllWarnings : "");
-            row.Cells["No"].ToolTipText = CopyNumberText(record);
-            row.Cells["Amount"].ToolTipText = CopyAmountText(record);
-            row.Cells["Consignee"].ToolTipText = Dash(record.Consignee);
-            row.Cells["Contract"].ToolTipText = Dash(record.ContractNo);
-            row.Cells["Port"].ToolTipText = Dash(record.ExitCustoms);
-            row.Cells["Dest"].ToolTipText = Dash(record.DestinationCountry);
-            row.Cells["PortDest"].ToolTipText = Dash(record.ExitCustoms) + "\n" + Dash(record.DestinationCountry);
-            row.Cells["Detail"].ToolTipText = "打开只读关单明细";
-            row.Cells["Verify"].ToolTipText = !record.HasValidDeclarationNo ? "未识别出有效报关单号，无法在线核验"
-                : record.HasScreenshot ? "已留存；点击可重新核验并保存新截图"
-                : "打开单一窗口核验页面；在网页悬浮按钮上手动长截图后回填";
+            var style = record.IsDuplicate ? DuplicateRowStyle : record.NeedsAttention ? AttentionRowStyle : NormalRowStyle;
+            if (!ReferenceEquals(row.DefaultCellStyle, style)) row.DefaultCellStyle = style;
         }
-        UpdateSummary(items.Count);
+        // The grid selects its first cell whenever rows appear; an unrequested blue cell in
+        // the first row read as a highlighted record.
+        if (_grid.SelectedCells.Count == 1 && !_grid.Focused) _grid.ClearSelection();
+    }
+
+    private static void SetCell(DataGridViewCell cell, string value, string toolTip)
+    {
+        if (!Equals(cell.Value, value)) cell.Value = value;
+        if (cell.ToolTipText != toolTip) cell.ToolTipText = toolTip;
+    }
+
+    /// <summary>Column indices resolved once per grid instead of a name lookup per cell.</summary>
+    private sealed record GridColumns(int Index, int Status, int No, int Consignee, int Contract, int Port, int Dest, int PortDest, int Amount, int Detail, int Verify)
+    {
+        public static GridColumns Of(DataGridView grid)
+        {
+            int I(string name) => grid.Columns[name]!.Index;
+            return new(I("Index"), I("Status"), I("No"), I("Consignee"), I("Contract"), I("Port"), I("Dest"), I("PortDest"), I("Amount"), I("Detail"), I("Verify"));
+        }
     }
 
     // Per form, not static: a cell style remembers every grid that uses it, so a static one would
@@ -275,18 +333,16 @@ internal sealed partial class MainForm : Form
         // whole Totals map is empty. Amounts stay grouped by currency and are never summed
         // across currencies under a single label.
         var unconfirmedRows = records
-            .SelectMany(record => record.LineTotals.Where(line => !line.IsReliable)
-                .GroupBy(line => string.IsNullOrWhiteSpace(line.Currency) ? "—" : line.Currency, StringComparer.OrdinalIgnoreCase)
-                .Select(group => (Record: record, Currency: group.Key, Amount: group.Sum(line => line.Amount), Count: group.Count())))
-            .GroupBy(x => x.Currency, StringComparer.OrdinalIgnoreCase)
+            .SelectMany(record => record.LineTotals.Where(line => !line.IsReliable))
+            .GroupBy(line => string.IsNullOrWhiteSpace(line.Currency) ? "—" : line.Currency, StringComparer.OrdinalIgnoreCase)
             .OrderBy(group => group.Key, StringComparer.Ordinal)
-            .Select(group => new UnconfirmedRow(group.Key, group.Sum(x => x.Amount), group.Sum(x => x.Count), group.First().Record.SourceName))
+            .Select(group => new UnconfirmedRow(group.Key, group.Sum(line => line.Amount), group.Count()))
             .ToList();
         _moneySummary.Set(new MoneySummarySnapshot(rows, unconfirmedRows));
         // The stats row must fit both the KPI 2x2 grid and the currency summary. Deriving it
         // from the currency count alone shrank the empty/ready/processing KPI to 126px and
         // overlapped label/value/note (R4-3).
-        _body.RowStyles[1].Height = StatsRowHeight();
+        SetRowHeight(_body.RowStyles[1], StatsRowHeight());
 
         var counts = new[] { records.Count, records.Count(x => !x.IsDuplicate && !x.NeedsAttention), records.Count(x => x.IsDuplicate), attention };
         _filterSegmented.Set(

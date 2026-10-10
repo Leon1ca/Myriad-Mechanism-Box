@@ -89,19 +89,28 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
 
         var url = string.IsNullOrWhiteSpace(_urlOverride) ? PrimaryUrl : _urlOverride;
         _debugPort = GetFreePort();
-        var profileRoot = Path.Combine(AppLog.Folder, "BrowserProfiles");
-        // Every session uses a throw-away profile; sweep the ones earlier runs could not delete
-        // (a crash or a browser that outlived the app) so they do not accumulate on disk.
+        var profileRoot = BrowserProfileStore.TemporaryRoot;
+        // Throw-away profiles that earlier runs could not delete (a crash or a browser that
+        // outlived the app) are swept so they do not accumulate on disk.
         _ = Task.Run(() => PurgeStaleProfiles(profileRoot, TimeSpan.FromHours(12)));
-        var profile = Path.Combine(profileRoot, SessionId);
+        // The interactive window reuses a persistent dedicated profile (see BrowserProfileStore);
+        // automated tests and overflow sessions keep an isolated throw-away profile.
+        var interactive = _urlOverride is null && !_headless && _extraBrowserArgs is null && _browserPathOverride is null;
+        var profile = interactive ? BrowserProfileStore.TryAcquirePersistent(choice.Path) : null;
+        _persistentProfile = profile is not null;
+        profile ??= Path.Combine(profileRoot, SessionId);
         _profileFolder = profile;
         Directory.CreateDirectory(profile);
         var start = new ProcessStartInfo { FileName = choice.Path, UseShellExecute = false };
+        // The debugging endpoint only listens on 127.0.0.1. No --remote-allow-origins: the app's
+        // own WebSocket sends no Origin header, so web pages cannot attach to the endpoint.
         start.ArgumentList.Add($"--remote-debugging-port={_debugPort}");
-        start.ArgumentList.Add("--remote-allow-origins=*");
         start.ArgumentList.Add($"--user-data-dir={profile}");
         start.ArgumentList.Add("--no-first-run");
         start.ArgumentList.Add("--no-default-browser-check");
+        // A window closed through the app (or the app exiting) ends the browser process; never
+        // greet the next session with a "restore pages" bubble.
+        start.ArgumentList.Add("--hide-crash-restore-bubble");
         start.ArgumentList.Add("--disable-features=Translate");
         // The capture drives the page through timers, animation frames and screenshots. A
         // window that is partly covered by the console, or loses focus while the user switches
@@ -398,6 +407,13 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
             _process.Exited -= OnBrowserExited;
             try
             {
+                // Give Browser.close a moment to finish so the persistent profile is written
+                // back cleanly; only a browser that does not exit is terminated.
+                if (!_process.HasExited)
+                {
+                    try { await _process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(3)); }
+                    catch (TimeoutException) { }
+                }
                 if (!_process.HasExited) _process.Kill(entireProcessTree: true);
                 await _process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
             }
@@ -405,7 +421,9 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
             _process.Dispose();
         }
         _lifetime.Dispose();
-        if (_profileFolder is not null) await DeleteProfileAsync(_profileFolder);
+        if (_profileFolder is null) return;
+        if (_persistentProfile) BrowserProfileStore.Release(_profileFolder);
+        else await DeleteProfileAsync(_profileFolder);
     }
 
     /// <summary>Best-effort removal of a session profile; browser helpers can hold files briefly after exit.</summary>

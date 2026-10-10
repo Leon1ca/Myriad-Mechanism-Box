@@ -23,11 +23,6 @@ public sealed partial class DeclarationLineTotal
     public bool AmountOnlyFromSecondary { get; set; }
 
     [JsonIgnore]
-    public string DisplayVerification => VerificationAmount is null
-        ? "—"
-        : $"{Currency} {VerificationAmount.Value:N2}";
-
-    [JsonIgnore]
     public bool HasSecondaryDifference =>
         !string.IsNullOrWhiteSpace(VerificationProductName) && !string.Equals(VerificationProductName, ProductName, StringComparison.Ordinal) ||
         VerificationQuantity is not null && VerificationQuantity != Quantity ||

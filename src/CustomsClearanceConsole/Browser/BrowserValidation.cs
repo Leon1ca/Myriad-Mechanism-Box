@@ -18,7 +18,6 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
 
     public string SessionId { get; } = Guid.NewGuid().ToString("N");
     public string DeclarationNo { get; }
-    public bool IsRunning => _cdp is { IsClosed: false };
 
     public event EventHandler<BrowserCaptureResult>? CaptureCompleted;
     public event EventHandler<string>? StatusChanged;
@@ -63,6 +62,7 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
     private (int Width, int Height, double Scale)? _captureBaselineViewport;
     private string? _shellScriptIdentifier;
     private string? _profileFolder;
+    private bool _persistentProfile;
     private int _endedRaised;
     private string _mainFrameId = "";
     private string _currentUrl = "";

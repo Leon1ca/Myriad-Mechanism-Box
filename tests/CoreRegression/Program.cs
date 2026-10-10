@@ -180,7 +180,7 @@ Check(corruptLoaded.Records.Count == 0 && Directory.EnumerateFiles(workspace.Pat
 Check(legacy.Records[0].LineTotals[0].ProductName == "" && legacy.Records[0].LineTotals[0].Quantity is null && legacy.Records[0].LineTotals[0].UnitPrice is null, "旧历史缺少新字段时照常加载为空值");
 
 var scanPlan = ScanPlan.FromFiles(new[] { path, FileAt("two.pdf") });
-using var scanSession = new ScanSession(scanPlan);
+using var scanSession = new ScanSession();
 var calls = 0;
 var scanner = new BatchScanner((_, token) => { calls++; token.ThrowIfCancellationRequested(); return Task.FromResult(new DocumentText()); });
 try

@@ -1,6 +1,6 @@
 # 架构设计
 
-更新：2026-10-10，v0.1.0 整体代码审核后。
+更新：2026-10-10，v0.2.0。
 
 ## 处理流程
 
@@ -24,13 +24,13 @@ flowchart LR
 
 | 目录 | 职责与主要入口 |
 | --- | --- |
-| Domain | 关单、商品明细、文字坐标和历史状态；格式及币种名称。旧复核属性集中在 `DeclarationLineTotal.Legacy.cs`。 |
+| Domain | 关单、商品明细、文字坐标和历史状态；数字格式及币种名称。旧复核属性集中在 `DeclarationLineTotal.Legacy.cs`。 |
 | Application | `ScanPlan` 预检和不可变文件清单；`BatchScanner` 调度、取消、重复分组与合计。 |
 | Recognition | `DocumentExtractor` 选择 PDF 文字层或 OCR；`DeclarationParser` 按表头、商品行、几何定位和规则拆分；`RapidOcrEngine` 管理模型；`PdfiumNative` 管理原生 PDF。 |
 | Infrastructure | 路径、日志、历史迁移、原子保存和文件清理。`StateMigration` 专管历史兼容，`AtomicFile` 统一完整文件发布。 |
-| Browser | 会话生命周期、页面/框架、截图、卡片和测试支持按文件拆分；`CdpClient` 独立负责通信；URL 与回填策略单独维护。 |
+| Browser | 会话生命周期、页面/框架、截图、卡片和测试支持按文件拆分；`CdpClient` 独立负责通信；`BrowserProfileStore` 管理核验窗口的专用浏览器配置；URL 与回填策略单独维护。 |
 | Export | Excel、Markdown 导出及导出数据校验。 |
-| Presentation | 主窗体按布局、绘制、记录、批次、核验、文件操作与窗口生命周期拆分；包含控件和弹窗。 |
+| Presentation | 主窗体按布局、绘制、记录、批次、核验、文件操作与窗口生命周期拆分；包含控件和弹窗。`PaintCache` 提供共享绘制资源和批量重绘。 |
 | Diagnostics | 命令行注册与参数校验、OCR/资源/浏览器自检及导出样本。 |
 | BrowserScripts | 实际浏览器页面脚本，嵌入资源名称保持兼容；回归复用相同脚本。 |
 | RapidOcrSource | 保留第三方 OCR 实现及许可证；本次仅调整资源管理、异常传播及调试输出。 |
@@ -53,8 +53,25 @@ flowchart LR
 
 根目录启动器调用包内 `runtime/dotnet.exe app/关单核验台.dll`。运行时、模型、PDFium 和字体随完整便携包提供。
 
+## 界面刷新与绘制
+
+- 记录表原地更新行（数量变化时只增删末尾行），不再整表清空重建；分页、筛选和搜索变化时回到首行，识别过程中保持当前滚动位置。
+- 刷新统计、表格和筛选时用 `Redraw.Suspend`（WM_SETREDRAW）暂停整个工作区的绘制，全部数据就绪后统一重绘一次；统计、金额、筛选、标题和状态面板只在内容变化时重绘。
+- 按钮图标只在状态或 DPI 变化时替换；窗口尺寸未变时跳过响应式布局；拖动窗口边缘时整窗合成绘制。
+- 单元格与面板绘制使用 `PaintCache` 缓存的字体、画笔、画刷和图标，不在每次重绘时创建 GDI 对象。表格每格重置 SmoothingMode / PixelOffsetMode，避免圆角绘制状态产生灰色接缝。
+
+## 核验浏览器
+
+核验窗口启动系统默认（或已安装）的 Edge / Chrome，经本机调试端口自动填号和截图。Chromium 136 起禁止在日常个人配置上开启调试端口，因此核验窗口使用专用配置：交互会话复用 `数据目录\BrowserProfile\<浏览器>[-n]` 中的固定配置（保留缩放、站点权限和 Cookie），并发窗口按槽位分配，均被占用时与自动化测试一样使用 `BrowserProfiles` 下的一次性配置（12 小时后清理）。调试端口只监听 127.0.0.1，不开放 `--remote-allow-origins`。关闭会话时先请求浏览器正常退出，超时才结束进程。
+
+## 维护要点
+
+- DPI 按 96 DPI 逻辑尺寸搭建，交给 `DpiLayout` / `DpiDialog` 缩放；不要在构造期间重复缩放。
+- 弹窗边框统一用 `PopupFrame`，外框保留 1px 内边距，停靠的子区域不会遮住边框。
+- CDP 的 URL 片段来自 urlFragment，页内路由切换需要监听 navigatedWithinDocument。官网查询框架异步加载，卡片只安装在顶层。
+- 浏览器截图含 60 秒整体上限、卡片看门狗和逐步日志。受控仿真测试不能替代真实单一窗口网站验收。
+- 历史记录需要重新识别才能应用新规则；旧双引擎复核字段只保留读写兼容。
+
 ## 验证入口
 
-核心规则、迁移与保存：`tests/CoreRegression`；CDP 真实 WebSocket 连接：`tests/TransportRegression`；实际 OCR 与原生资源：`--ocr-self-test`、`--resource-self-test`；完整浏览器路径：`--browser-e2e`；界面：`--ui-contract-self-test` 与 `--ui-state-snapshot`。全部命令与参数以 `--help` 为准。
-
-本次验证证据和剩余限制见[整体代码审核报告](code-review-v0.1.0.md)。
+核心规则、迁移与保存：`tests/CoreRegression`；CDP 真实 WebSocket 连接：`tests/TransportRegression`；实际 OCR 与原生资源：`--ocr-self-test`、`--resource-self-test`；完整浏览器路径：`--browser-e2e`；界面：`--ui-contract-self-test` 与 `--ui-state-snapshot`。全部命令与参数以 `--help` 为准。Windows CI（`.github/workflows/windows-ui-v2.yml`）在每次推送和合并请求时执行全部门禁。

@@ -390,12 +390,6 @@ internal sealed class ModernDropDown : RoundedPanel
         _options.OptionChosen += (_, _) => { _popup.Close(ToolStripDropDownCloseReason.ItemClicked); Focus(); };
     }
 
-    private void HidePopup()
-    {
-        if (_popup is { IsDisposed: false, Visible: true }) _popup.Close();
-        SetClosedState();
-    }
-
     private void SetClosedState()
     {
         if (!_open) return;
@@ -533,5 +527,28 @@ internal sealed class PageBadge : Label
             e.Graphics.FillPath(fill, path);
         TextRenderer.DrawText(e.Graphics, Text, Font, badge, Enabled ? Color.White : Theme.DisabledText,
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+    }
+}
+
+/// <summary>
+/// Table layout section that draws a 1px hairline along one edge (toolbar / footer of the
+/// records panel), so the bands read as separate from the table without extra controls.
+/// </summary>
+internal sealed class SectionPanel : TableLayoutPanel
+{
+    public SectionPanel(DockStyle dividerEdge)
+    {
+        DividerEdge = dividerEdge;
+        SetStyle(ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+    }
+
+    public DockStyle DividerEdge { get; }
+    public Color DividerColor { get; set; } = Theme.Divider;
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        base.OnPaint(e);
+        var y = DividerEdge switch { DockStyle.Top => 0, DockStyle.Bottom => Height - 1, _ => -1 };
+        if (y >= 0) e.Graphics.DrawLine(PaintCache.Pen(DividerColor), 0, y, Width, y);
     }
 }

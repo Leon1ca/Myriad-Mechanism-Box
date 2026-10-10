@@ -26,10 +26,9 @@ internal sealed class ScanPlan
     }
 }
 
-internal sealed class ScanSession(ScanPlan plan) : IDisposable
+internal sealed class ScanSession : IDisposable
 {
     private readonly CancellationTokenSource _cancellation = new();
-    public ScanPlan Plan { get; } = plan;
     public List<DeclarationRecord> Completed { get; } = [];
     public CancellationToken Token => _cancellation.Token;
     public void Cancel() => _cancellation.Cancel();

@@ -10,25 +10,18 @@ internal static class Ui2
     public const string ExportDisabled = "export-disabled";
     public const string FileExcel = "file-excel-green";
     public const string FileMarkdownInk = "file-markdown-ink";
-    public const string FileMarkdownBlue = "file-markdown-blue";
     public const string Camera = "camera-white";
     public const string CameraBlue = "camera-blue";
     public const string External = "external-navy";
-    public const string CopyNavy = "copy-navy";
-    public const string CopyInk = "copy-ink";
     public const string TrashInk = "trash-ink";
     public const string TrashRed = "trash-red";
-    public const string TrashDisabled = "trash-disabled";
     public const string Folder = "folder-white";
-    public const string FolderBlue = "folder-blue";
     public const string FolderUpload = "folder-upload-blue";
     public const string LockInk = "lock-ink";
-    public const string LockDisabled = "lock-disabled";
     public const string Search = "search-muted";
     public const string Alert = "alert-amber";
     public const string CheckBlue = "check-blue";
     public const string CheckGreen = "check-green";
-    public const string CheckWhite = "check-white";
     public const string Error = "error-red";
     public const string Info = "info-ink";
     public const string Close = "close-ink";
@@ -38,9 +31,6 @@ internal static class Ui2
     public const string SettingsWhite = "settings-white";
     public const string Stop = "stop-red";
     public const string ChevronDownNavy = "chevron-down-navy";
-    public const string ChevronDownMuted = "chevron-down-muted";
-    public const string ChevronUpMuted = "chevron-up-muted";
-    public const string ChevronDownDisabled = "chevron-down-disabled";
 }
 
 /// <summary>Loads the design package PNG icons, choosing the render size for the current DPI.</summary>
@@ -108,7 +98,6 @@ internal static class UiV2Icons
 internal static class Theme
 {
     public static readonly Color HeaderBg = UiTokens.Colors.HeaderBg;
-    public static readonly Color Navy = UiTokens.Colors.HeaderBg;
     public static readonly Color Primary = UiTokens.Colors.Primary;
     public static readonly Color Blue = UiTokens.Colors.Primary;
     public static readonly Color BlueHover = UiTokens.Colors.HeaderBg;
@@ -128,12 +117,9 @@ internal static class Theme
     public static readonly Color PanelSubtle = UiTokens.Colors.PanelSubtle;
     public static readonly Color SegmentBg = UiTokens.Colors.SegmentBg;
     public static readonly Color Danger = UiTokens.Colors.Danger;
-    public static readonly Color DangerSoft = ColorTranslator.FromHtml("#FDECEA");
     public static readonly Color Success = UiTokens.Colors.Success;
     public static readonly Color Warning = UiTokens.Colors.WarningFg;
     public static readonly Color HeaderSoft = UiTokens.Colors.HeaderSoft;
-    public static readonly Color CommandBar = UiTokens.Colors.PanelSubtle;
-    public static readonly Color StrongValue = UiTokens.Colors.Ink;
     public static readonly Color FieldText = UiTokens.Colors.Ink;
     public static readonly Color DialogFooter = UiTokens.Colors.DialogFooter;
     public static readonly Color DetailButtonBg = UiTokens.Colors.DetailButtonBg;
@@ -148,10 +134,6 @@ internal static class Theme
     public static Button SecondaryButton(string text) => Style(text, Color.White, UiTokens.Colors.Primary, UiTokens.Colors.BorderControl, ColorTranslator.FromHtml("#F4F8FD"), UiTokens.Colors.DisabledFill);
     public static Button QuietButton(string text) => Style(text, Color.White, UiTokens.Colors.Ink2, UiTokens.Colors.BorderControl, UiTokens.Colors.SegmentBg, UiTokens.Colors.DisabledFill);
     public static Button DangerOutlineButton(string text) => Style(text, Color.White, UiTokens.Colors.Danger, ColorTranslator.FromHtml("#E4A6A0"), ColorTranslator.FromHtml("#FDECEA"), UiTokens.Colors.DisabledFill);
-    public static Button DangerSolidButton(string text) => Style(text, UiTokens.Colors.Danger, Color.White, UiTokens.Colors.Danger, ColorTranslator.FromHtml("#9A1D14"), ColorTranslator.FromHtml("#D9A5A1"));
-    public static Button DetailButton(string text) => Style(text, UiTokens.Colors.DetailButtonBg, UiTokens.Colors.Primary, UiTokens.Colors.DetailButtonBg, ColorTranslator.FromHtml("#E3E8EF"), UiTokens.Colors.DisabledFill);
-    public static Button DangerButton(string text) => DangerOutlineButton(text);
-    public static Button TonalButton(string text) => Style(text, UiTokens.Colors.AccentSoft, UiTokens.Colors.Accent, UiTokens.Colors.AccentSoft, ColorTranslator.FromHtml("#DCE8F8"), UiTokens.Colors.DisabledFill);
 
     public static Button IconButton(string text, Button baseButton, string? iconStem = null, int iconSize = 16, float dpi = 96F)
     {

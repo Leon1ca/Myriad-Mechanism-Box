@@ -45,9 +45,6 @@ public sealed partial class DeclarationLineTotal
     public string ExactQuantity => Quantity is null ? "—" : NumberFormats.Exact(Quantity.Value);
 
     [JsonIgnore]
-    public string DisplayUnit => string.IsNullOrWhiteSpace(Unit) ? "—" : Unit;
-
-    [JsonIgnore]
     public string DisplayQuantityUnit => Quantity is null
         ? "—"
         : string.IsNullOrWhiteSpace(Unit) ? DisplayQuantity : $"{DisplayQuantity} {Unit}";

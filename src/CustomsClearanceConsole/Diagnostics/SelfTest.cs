@@ -142,11 +142,15 @@ internal static class SelfTest
             throw new InvalidOperationException("明细未按币种分列合计：" + summary);
         if (summary.Contains("115.00") || summary.Contains("109.00"))
             throw new InvalidOperationException("明细把不同币种相加了：" + summary);
-        var columns = DetailForm.Columns(600, 96, 0, 34, "总价");
-        if (columns.Count != 6 || columns[4].Text != "币种" || columns[5].Text != "总价")
-            throw new InvalidOperationException("明细列未包含独立币种/总价列。");
-        if (columns[0].Rect.Right > columns[5].Rect.Right)
-            throw new InvalidOperationException("明细列矩形未实体化或越界。");
+        var width = DetailForm.DialogSize.Width;
+        var columns = DetailForm.Columns(width, 96, 0, 36);
+        if (columns.Count != 4 || columns.Select(x => x.Text).SequenceEqual(new[] { "商品名称", "数量", "单价", "总价" }) is false)
+            throw new InvalidOperationException("明细列应只保留商品名称、数量、单价、总价：" + string.Join("/", columns.Select(x => x.Text)));
+        for (var i = 1; i < columns.Count; i++)
+            if (columns[i].Rect.X <= columns[i - 1].Rect.Right)
+                throw new InvalidOperationException("明细列矩形重叠。");
+        if (columns[^1].Rect.Right > width || columns[0].Rect.Width < 120)
+            throw new InvalidOperationException("明细列矩形越界或商品名称列过窄。");
     }
 
     /// <summary>R3-2/R3-4: multi-currency text is complete, per-currency and never cross-summed.</summary>
@@ -175,8 +179,8 @@ internal static class SelfTest
         if (copy.Contains("150.00") || copy.Contains("130.00") || copy.Contains("180.00"))
             throw new InvalidOperationException("金额复制文本把不同币种相加了：" + copy);
         var number = MainForm.CopyNumberText(record);
-        if (!number.Contains(record.DeclarationNo) || !number.Contains("multi.pdf"))
-            throw new InvalidOperationException("单号复制文本缺少单号或源文件：" + number);
+        if (number != record.DeclarationNo)
+            throw new InvalidOperationException("单号列只应显示和复制报关单号：" + number);
         if (MainForm.StatusLabel(record).Length == 0)
             throw new InvalidOperationException("状态复制文本为空。");
     }
@@ -267,8 +271,10 @@ internal static class SelfTest
             var (count, text) = form.ExtractCopySelection();
             if (count != copyColumns.Length * Math.Min(3, grid.Rows.Count))
                 throw new InvalidOperationException($"复制选择单元格数量异常：{count}");
-            if (!text.Contains(records[0].DeclarationNo) || !text.Contains(records[0].SourceName))
-                throw new InvalidOperationException("复制文本缺少单号或源文件。");
+            if (!text.Contains(records[0].DeclarationNo))
+                throw new InvalidOperationException("复制文本缺少单号。");
+            if (records[0].SourceName.Length > 0 && text.Contains(records[0].SourceName))
+                throw new InvalidOperationException("列表已移除来源文件，复制文本不应再包含文件名。");
             if (!text.Contains("USD") && !text.Contains("CNY") && !text.Contains("EUR"))
                 throw new InvalidOperationException("复制文本缺少币种金额。");
             if (!text.Contains("重复") && !text.Contains("正常") && !text.Contains("需关注") && !text.Contains("识别失败"))

@@ -1,7 +1,3 @@
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
 namespace CustomsClearanceConsole;
 
 internal sealed partial class MainForm : Form
@@ -42,7 +38,6 @@ internal sealed partial class MainForm : Form
     /// window's real DPI once the handle exists (see DpiLayout).
     /// </summary>
     private int _layoutDpi = DpiLayout.LogicalDpi;
-    internal int LayoutDpiForTest => _layoutDpi;
     private TableLayoutPanel _statsRow = null!;
     private TableLayoutPanel _toolbar = null!;
     private TableLayoutPanel _footerPanel = null!;
@@ -83,17 +78,11 @@ internal sealed partial class MainForm : Form
     // ---- snapshot/self-test accessors (same assembly only) ----
     internal TitleBlock TitleBlockForTest => _titleBlock;
     internal KpiPanel KpiForTest => _kpi;
-    internal MoneySummaryPanel MoneySummaryForTest => _moneySummary;
     internal TableLayoutPanel ToolbarForTest => _toolbar;
     internal TableLayoutPanel FooterPanelForTest => _footerPanel;
-    internal SearchField SearchHostForTest => _searchHost;
     internal Button CleanupButtonForTest => _cleanupButton;
     internal Button PreviousForTest => _previous;
     internal Button NextForTest => _next;
-    internal Button SettingsForTest => _settings;
-    internal Button ScanForTest => _scan;
-    internal Button ExportForTest => _exportButton;
-    internal TableLayoutPanel BodyForTest => _body;
     internal Panel GridHostForTest => _gridHost;
     internal DataGridView GridForTest => _grid;
     internal RecordStatePanel RecordStateForTest => _recordState;
@@ -146,7 +135,7 @@ internal sealed partial class MainForm : Form
         _pageSize.SelectedItem = $"{_state.PageSize} 条";
         if (_pageSize.SelectedIndex < 0) _pageSize.SelectedItem = "50 条";
         _search.TextChanged += (_, _) => { _searchTimer.Stop(); _searchTimer.Start(); };
-        _searchTimer.Tick += (_, _) => { _searchTimer.Stop(); _page = 1; RefreshGrid(); };
+        _searchTimer.Tick += (_, _) => { _searchTimer.Stop(); _page = 1; RefreshGrid(resetScroll: true); };
         FormClosing += OnFormClosing;
         ApplyResponsiveLayout();
         RefreshAll();

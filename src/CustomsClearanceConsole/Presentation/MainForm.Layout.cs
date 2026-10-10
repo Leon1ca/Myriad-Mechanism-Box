@@ -199,7 +199,7 @@ internal sealed partial class MainForm
         content.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         content.RowStyles.Add(new RowStyle(SizeType.Absolute, 44));
 
-        var toolbar = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
+        var toolbar = new SectionPanel(DockStyle.Bottom) { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
         // A single explicit Percent row keeps the nested toolbar inside its fixed 56/50 slot.
         // Without it the implicit AutoSize row inflates to the tallest child's preferred size
         // (a bare Panel defaults to 100px), pushing the cleanup anchor and the search/filter
@@ -211,10 +211,10 @@ internal sealed partial class MainForm
         toolbar.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 112));
         _toolbar = toolbar;
         _filterSegmented = new FilterSegmented { Dock = DockStyle.Fill, Margin = new Padding(0, 11, 0, 11) };
-        _filterSegmented.SegmentSelected += (_, index) => { _filterIndex = index; _page = 1; RefreshGrid(); };
+        _filterSegmented.SegmentSelected += (_, index) => { _filterIndex = index; _page = 1; RefreshGrid(resetScroll: true); };
         _filterSegmented.Disposed += (_, _) => { };
         toolbar.Controls.Add(_filterSegmented, 0, 0);
-        _search = new TextBox { PlaceholderText = "搜索单号、文件名、收货人、合同号", BorderStyle = BorderStyle.None, Font = Theme.UiFont(13F), AccessibleName = "搜索关单记录", BackColor = Color.White };
+        _search = new TextBox { PlaceholderText = "搜索单号、收货人、合同号", BorderStyle = BorderStyle.None, Font = Theme.UiFont(13F), AccessibleName = "搜索关单记录", BackColor = Color.White };
         _searchHost = new SearchField(_search) { Dock = DockStyle.Fill, Margin = new Padding(0, 11, 0, 11) };
         toolbar.Controls.Add(_searchHost, 1, 0);
         _cleanupButton = Theme.IconButton("清理", Theme.QuietButton(""), Ui2.TrashInk, 16, DeviceDpi);
@@ -249,7 +249,7 @@ internal sealed partial class MainForm
 
     private Control BuildFooter()
     {
-        var footer = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 6, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
+        var footer = new SectionPanel(DockStyle.Top) { Dock = DockStyle.Fill, ColumnCount = 6, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
         // Same explicit row as the toolbar: paging buttons and the page-size dropdown must
         // stay inside the fixed 44px footer instead of expanding it (R4-2).
         footer.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
@@ -264,16 +264,16 @@ internal sealed partial class MainForm
         _previous = Theme.QuietButton("上一页");
         _previous.Dock = DockStyle.Fill;
         _previous.Margin = new Padding(0, 8, 6, 8);
-        _previous.Click += (_, _) => { if (_page > 1) { _page--; RefreshGrid(); } };
+        _previous.Click += (_, _) => { if (_page > 1) { _page--; RefreshGrid(resetScroll: true); } };
         _pageLabel = new PageBadge { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, ForeColor = Color.White, Font = Theme.MonoFont(12.5F, true) };
         _next = Theme.QuietButton("下一页");
         _next.Dock = DockStyle.Fill;
         _next.Margin = new Padding(6, 8, 0, 8);
-        _next.Click += (_, _) => { if (_page < PageCount()) { _page++; RefreshGrid(); } };
+        _next.Click += (_, _) => { if (_page < PageCount()) { _page++; RefreshGrid(resetScroll: true); } };
         var perPage = new Label { Text = "每页", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleRight, ForeColor = Theme.Muted, Font = Theme.UiFont(12.5F) };
         _pageSize = new ModernDropDown { Dock = DockStyle.Fill, Margin = new Padding(8, 8, 0, 8), ItemHeight = 30, OpenUpward = true, UseMonoValue = true, AccessibleName = "每页显示条数" };
         _pageSize.Items.AddRange(["50 条", "100 条", "200 条"]);
-        _pageSize.SelectedIndexChanged += (_, _) => { _page = 1; RefreshGrid(); };
+        _pageSize.SelectedIndexChanged += (_, _) => { _page = 1; RefreshGrid(resetScroll: true); };
         footer.Controls.Add(_footer, 0, 0);
         footer.Controls.Add(_previous, 1, 0);
         footer.Controls.Add(_pageLabel, 2, 0);
@@ -345,7 +345,7 @@ internal sealed partial class MainForm
         grid.GridColor = Theme.Divider;
         AddColumn(grid, "Index", "#", DataGridViewContentAlignment.MiddleCenter);
         AddColumn(grid, "Status", "状态", DataGridViewContentAlignment.MiddleCenter);
-        AddColumn(grid, "No", "报关单号 / 来源文件", DataGridViewContentAlignment.MiddleLeft);
+        AddColumn(grid, "No", "报关单号", DataGridViewContentAlignment.MiddleLeft);
         AddColumn(grid, "Consignee", "境外收货人", DataGridViewContentAlignment.MiddleLeft);
         AddColumn(grid, "Contract", "合同协议号", DataGridViewContentAlignment.MiddleLeft);
         AddColumn(grid, "Port", "出境关别", DataGridViewContentAlignment.MiddleLeft);
@@ -395,9 +395,20 @@ internal sealed partial class MainForm
             DefaultCellStyle = new DataGridViewCellStyle { Alignment = alignment, NullValue = "—", Padding = new Padding(8, 0, 8, 0) }
         });
 
+    /// <summary>Client size and DPI the responsive layout was last applied for.</summary>
+    private (Size Client, int Dpi) _appliedLayoutKey;
+
     private void ApplyResponsiveLayout()
     {
         if (IsDisposed || _body is null || _grid is null || _recordsContent is null) return;
+        // OnResize and ClientSizeChanged both arrive for one size change; the second pass
+        // changed nothing but still re-laid out and repainted every panel.
+        var key = (ClientSize, _layoutDpi);
+        if (key == _appliedLayoutKey) return;
+        _appliedLayoutKey = key;
+        // Maximize / restore re-sizes every row and column at once: paint the result once.
+        // A live edge drag is already composed off-screen (see WndProc), so it is left alone.
+        using var redraw = _composedResize ? default : Redraw.Suspend(_root);
         SuspendLayout();
         _body.SuspendLayout();
         // Everything is expressed in the DPI the children are laid out at (see DpiLayout), and
@@ -429,8 +440,8 @@ internal sealed partial class MainForm
         _grid.ColumnHeadersHeight = S(38);
         _grid.RowTemplate.Height = S(_layout.TableRow);
         ApplyGridColumns();
-        ResumeLayout(true);
         _body.ResumeLayout(true);
+        ResumeLayout(true);
     }
 
     /// <summary>Columns that absorb width changes; the others hold fixed-size content.</summary>
