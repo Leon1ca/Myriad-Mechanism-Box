@@ -442,13 +442,13 @@ jobs:
           # GitHub strips non-ASCII characters from asset names, so publish under an ASCII
           # name and list that same name in SHA256SUMS.txt.
           mkdir -p out
-          asset="Qianjixia-Windows-x64-v$version.zip"
+          asset="MyriadMechanismBox-Windows-x64-v$version.zip"
           cp "$zip" "out/$asset"
           (cd out && sha256sum "$asset" > SHA256SUMS.txt && cat SHA256SUMS.txt)
           flags=()
           [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
           gh release create "$TAG" "out/$asset" out/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" --title "千机匣 $TAG" --notes-file "docs/release-notes-v$version.md" "${flags[@]}"
+            --target "$GITHUB_SHA" --title "千机匣 · Myriad Mechanism Box $TAG" --notes-file "docs/release-notes-v$version.md" "${flags[@]}"
 
   # Development aid: the evidence artifact lives in blob storage that some reviewing
   # environments cannot reach, so on request the same files are also pushed to a hidden,

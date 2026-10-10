@@ -1,8 +1,8 @@
-# 千机匣
+# 千机匣 · Myriad Mechanism Box
 
 千机匣提供 Windows 10 / 11 x64 本地关单识别与核验工具，当前桌面模块为“关单核验台”。当前正式初始版本为 **v0.1.0**，发布日期 **2026-10-10**。以经确认的 1.5.3 源码为基础，统一版本编号并优化常见工作关单的识别规则。
 
-[下载便携版](https://github.com/Leon1ca/qianjixia/releases/tag/v0.1.0) · [正式版本说明](docs/release-notes-v0.1.0.md) · [样本验证结果](docs/recognition-validation.md)
+[下载便携版](https://github.com/Leon1ca/Myriad-Mechanism-Box/releases/tag/v0.1.0) · [正式版本说明](docs/release-notes-v0.1.0.md) · [样本验证结果](docs/recognition-validation.md)
 
 ![关单核验台主界面](docs/images/main-ui.png)
 
@@ -31,7 +31,7 @@
 要求 Windows x64 和 .NET 8 SDK。从便携包准备本地依赖：
 
 ```powershell
-.\scripts\bootstrap-from-release.ps1 -PackageRoot 'D:\Downloads\Qianjixia-Windows-x64-v0.1.0'
+.\scripts\bootstrap-from-release.ps1 -PackageRoot 'D:\Downloads\MyriadMechanismBox-Windows-x64-v0.1.0'
 dotnet build .\src\CustomsClearanceConsole\CustomsClearanceConsole.csproj -c Release
 dotnet run --project .\tests\CoreRegression -c Release
 dotnet run --project .\tests\TransportRegression -c Release
