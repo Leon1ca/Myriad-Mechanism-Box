@@ -1,0 +1,42 @@
+name: Publish validated initial release
+on: workflow_dispatch
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: d0cb8ea4e4817673bce57dab74f57828f50e7217
+      - name: Verify and publish the exact validated package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_SHA: d0cb8ea4e4817673bce57dab74f57828f50e7217
+          SOURCE_RUN: '38018121460'
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = 'Leon1ca/Myriad-Mechanism-Box'
+          gh run view "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --json conclusion,headSha > run.json
+          test "$(jq -r .conclusion run.json)" = success
+          test "$(jq -r .headSha run.json)" = "$SOURCE_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v0.1.0" --jq .object.sha)" = "$SOURCE_SHA"
+          test "$(gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" --json isPrerelease --jq .isPrerelease)" = true
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name ui-v2-portable-package --dir verified
+          zip=$(find verified -name '*.zip' | head -n1)
+          sums=$(find verified -name SHA256SUMS.txt | head -n1)
+          test -n "$zip" && test -n "$sums"
+          expected=$(awk 'NF{print $1; exit}' "$sums")
+          actual=$(sha256sum "$zip" | awk '{print $1}')
+          test "$expected" = "$actual"
+          mkdir published
+          asset='MyriadMechanismBox-Windows-x64-v0.1.0.zip'
+          cp "$zip" "published/$asset"
+          (cd published && sha256sum "$asset" > SHA256SUMS.txt)
+          gh release upload v0.1.0 "published/$asset" published/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
+          gh release edit v0.1.0 --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title '千机匣 · Myriad Mechanism Box v0.1.0' --notes-file docs/release-notes-v0.1.0.md --prerelease=false --latest
+          echo "Published SHA256: $actual" >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated run: $SOURCE_RUN; source: $SOURCE_SHA" >> "$GITHUB_STEP_SUMMARY"
