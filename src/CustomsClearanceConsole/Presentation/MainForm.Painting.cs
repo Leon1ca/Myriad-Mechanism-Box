@@ -48,14 +48,14 @@ internal sealed partial class MainForm : Form
         switch (name)
         {
             case "Index":
-                TextRenderer.DrawText(graphics, Convert.ToString(e.Value) ?? "", PaintCache.Mono(12F), bounds, Theme.Placeholder,
+                TextRenderer.DrawText(graphics, Convert.ToString(e.Value) ?? "", PaintCache.Mono(12F), Baseline(bounds, PaintCache.Mono(12F), dpi), Theme.Placeholder,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                 break;
             case "Status":
                 DrawStatusTag(graphics, bounds, record, S);
                 break;
             case "No":
-                DrawNumberCell(graphics, bounds, record, S);
+                DrawNumberCell(graphics, bounds, record, dpi, S);
                 break;
             case "PortDest":
                 TextRenderer.DrawText(graphics, Dash(record.ExitCustoms), PaintCache.Ui(13.5F), new Rectangle(bounds.X + S(8), bounds.Y + S(6), bounds.Width - S(16), S(20)), Theme.Text,
@@ -64,7 +64,7 @@ internal sealed partial class MainForm : Form
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis);
                 break;
             case "Amount":
-                DrawAmountCell(graphics, bounds, record, S);
+                DrawAmountCell(graphics, bounds, record, dpi, S);
                 break;
             case "Detail":
                 DrawActionButton(graphics, bounds, "明细", S);
@@ -78,6 +78,10 @@ internal sealed partial class MainForm : Form
         }
         e.Handled = true;
     }
+
+    /// <summary>Row text baseline: the 13.5px body font every plain text column uses.</summary>
+    private static Rectangle Baseline(Rectangle box, Font font, int dpi) =>
+        box with { Y = box.Y + PaintCache.BaselineShift(font, PaintCache.Ui(13.5F), dpi) };
 
     private static void DrawRowDivider(Graphics graphics, Rectangle bounds) =>
         graphics.DrawLine(PaintCache.Pen(Theme.Divider), bounds.Left, bounds.Bottom - 1, bounds.Right, bounds.Bottom - 1);
@@ -169,7 +173,7 @@ internal sealed partial class MainForm : Form
     /// Declaration number, vertically centred. A duplicate also gets its small "合计代表 /
     /// 不计入" tag on a second line, which explains which copy the deduplicated sum counts.
     /// </summary>
-    private static void DrawNumberCell(Graphics graphics, Rectangle bounds, DeclarationRecord record, Func<int, int> S)
+    private static void DrawNumberCell(Graphics graphics, Rectangle bounds, DeclarationRecord record, int dpi, Func<int, int> S)
     {
         var number = CopyNumberText(record);
         var numberFont = PaintCache.Mono(13F, true);
@@ -178,7 +182,7 @@ internal sealed partial class MainForm : Form
         const TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine;
         if (!record.IsDuplicate)
         {
-            TextRenderer.DrawText(graphics, number, numberFont, textBox, numberColor, flags);
+            TextRenderer.DrawText(graphics, number, numberFont, Baseline(textBox, numberFont, dpi), numberColor, flags);
             return;
         }
         var lineHeight = S(20);
@@ -196,7 +200,7 @@ internal sealed partial class MainForm : Form
             TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
     }
 
-    private static void DrawAmountCell(Graphics graphics, Rectangle bounds, DeclarationRecord record, Func<int, int> S)
+    private static void DrawAmountCell(Graphics graphics, Rectangle bounds, DeclarationRecord record, int dpi, Func<int, int> S)
     {
         var lines = AmountLines(record);
         if (lines.Count == 0)
@@ -225,16 +229,17 @@ internal sealed partial class MainForm : Form
             var amountLeft = bounds.Right - S(10) - amountWidth;
             if (currencyWidth + S(6) + amountWidth <= available)
             {
-                TextRenderer.DrawText(graphics, text, amountFont, new Rectangle(amountLeft, lineY, amountWidth, lineHeight),
+                // Currency code and digits share the row baseline.
+                TextRenderer.DrawText(graphics, text, amountFont, Baseline(new Rectangle(amountLeft, lineY, amountWidth, lineHeight), amountFont, dpi),
                     reliable ? Theme.Text : Theme.Warning, TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-                TextRenderer.DrawText(graphics, currency, currencyFont, new Rectangle(amountLeft - S(6) - currencyWidth, lineY, currencyWidth, lineHeight), Theme.Muted,
+                TextRenderer.DrawText(graphics, currency, currencyFont, Baseline(new Rectangle(amountLeft - S(6) - currencyWidth, lineY, currencyWidth, lineHeight), currencyFont, dpi), Theme.Muted,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
             }
             else
             {
                 // Too narrow for both parts: one string cut with an ellipsis like every other
                 // column, instead of the currency being drawn over the digits.
-                var box = new Rectangle(bounds.X + S(8), lineY, Math.Max(0, available), lineHeight);
+                var box = Baseline(new Rectangle(bounds.X + S(8), lineY, Math.Max(0, available), lineHeight), amountFont, dpi);
                 TextRenderer.DrawText(graphics, $"{currency} {text}", amountFont, box, reliable ? Theme.Text : Theme.Warning,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
                 amountLeft = box.X;

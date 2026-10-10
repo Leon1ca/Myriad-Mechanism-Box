@@ -199,7 +199,7 @@ internal sealed partial class MainForm
         content.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         content.RowStyles.Add(new RowStyle(SizeType.Absolute, 44));
 
-        var toolbar = new SectionPanel(DockStyle.Bottom) { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
+        var toolbar = new SectionPanel(DockStyle.Bottom) { Dock = DockStyle.Fill, ColumnCount = 4, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 1), BackColor = Theme.Surface };
         // A single explicit Percent row keeps the nested toolbar inside its fixed 56/50 slot.
         // Without it the implicit AutoSize row inflates to the tallest child's preferred size
         // (a bare Panel defaults to 100px), pushing the cleanup anchor and the search/filter
@@ -249,7 +249,8 @@ internal sealed partial class MainForm
 
     private Control BuildFooter()
     {
-        var footer = new SectionPanel(DockStyle.Top) { Dock = DockStyle.Fill, ColumnCount = 6, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 0, 16, 0), BackColor = Theme.Surface };
+        // The 1px top padding keeps the docked footer controls off the divider line.
+        var footer = new SectionPanel(DockStyle.Top) { Dock = DockStyle.Fill, ColumnCount = 6, RowCount = 1, Margin = Padding.Empty, Padding = new Padding(16, 1, 16, 0), BackColor = Theme.Surface };
         // Same explicit row as the toolbar: paging buttons and the page-size dropdown must
         // stay inside the fixed 44px footer instead of expanding it (R4-2).
         footer.RowStyles.Add(new RowStyle(SizeType.Percent, 100));

@@ -187,6 +187,10 @@ internal sealed class DetailForm : DpiDialog
         return result;
     }
 
+    /// <summary>Shifts a vertically centred text box so its baseline matches the 13.5px body text.</summary>
+    private static Rectangle Baseline(Rectangle box, Font font, int dpi) =>
+        box with { Y = box.Y + PaintCache.BaselineShift(font, PaintCache.Ui(13.5F), dpi) };
+
     /// <summary>Width the item rows are laid out in (narrower than the dialog while a scroll bar shows).</summary>
     private static int ContentWidth(Control source, Control fallback) => source.Width > 0 ? Math.Min(source.Width, fallback.Width) : fallback.Width;
 
@@ -313,34 +317,34 @@ internal sealed class DetailForm : DpiDialog
                 TextRenderer.DrawText(graphics, line.DisplayProduct, nameFont,
                     new Rectangle(nameRect.X, y + (rowHeight - nameHeight) / 2, nameRect.Width, nameHeight), Theme.Text, nameFlags);
 
-                DrawQuantity(graphics, columns[1].Rect, line, numberFont, unitFont, S);
-                TextRenderer.DrawText(graphics, line.DisplayUnitPrice, numberFont, columns[2].Rect, line.UnitPrice is null ? Theme.Muted : Theme.Ink2,
+                DrawQuantity(graphics, columns[1].Rect, line, numberFont, unitFont, dpi, S);
+                TextRenderer.DrawText(graphics, line.DisplayUnitPrice, numberFont, Baseline(columns[2].Rect, numberFont, dpi), line.UnitPrice is null ? Theme.Muted : Theme.Ink2,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
-                DrawAmount(graphics, columns[3].Rect, line, amountFont, currencyFont, S);
+                DrawAmount(graphics, columns[3].Rect, line, amountFont, currencyFont, dpi, S);
             }
         }
 
         /// <summary>Quantity in the mono face with its unit as a lighter suffix, right aligned.</summary>
-        private static void DrawQuantity(Graphics graphics, Rectangle rect, DeclarationLineTotal line, Font numberFont, Font unitFont, Func<int, int> S)
+        private static void DrawQuantity(Graphics graphics, Rectangle rect, DeclarationLineTotal line, Font numberFont, Font unitFont, int dpi, Func<int, int> S)
         {
             const TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.SingleLine;
             if (line.Quantity is null)
             {
-                TextRenderer.DrawText(graphics, "—", numberFont, rect, Theme.Muted, flags);
+                TextRenderer.DrawText(graphics, "—", numberFont, Baseline(rect, numberFont, dpi), Theme.Muted, flags);
                 return;
             }
             var unit = string.IsNullOrWhiteSpace(line.Unit) ? "" : line.Unit;
             var unitWidth = unit.Length == 0 ? 0 : TextRenderer.MeasureText(graphics, unit, unitFont, new Size(int.MaxValue, rect.Height), TextFormatFlags.NoPadding).Width;
             unitWidth = Math.Min(unitWidth, rect.Width / 2);
             if (unitWidth > 0)
-                TextRenderer.DrawText(graphics, unit, unitFont, new Rectangle(rect.Right - unitWidth, rect.Y, unitWidth, rect.Height), Theme.Muted, flags | TextFormatFlags.EndEllipsis);
+                TextRenderer.DrawText(graphics, unit, unitFont, Baseline(new Rectangle(rect.Right - unitWidth, rect.Y, unitWidth, rect.Height), unitFont, dpi), Theme.Muted, flags | TextFormatFlags.EndEllipsis);
             var numberRight = rect.Right - (unitWidth > 0 ? unitWidth + S(4) : 0);
-            TextRenderer.DrawText(graphics, line.DisplayQuantity, numberFont, new Rectangle(rect.X, rect.Y, Math.Max(0, numberRight - rect.X), rect.Height), Theme.Ink2,
+            TextRenderer.DrawText(graphics, line.DisplayQuantity, numberFont, Baseline(new Rectangle(rect.X, rect.Y, Math.Max(0, numberRight - rect.X), rect.Height), numberFont, dpi), Theme.Ink2,
                 flags | TextFormatFlags.EndEllipsis);
         }
 
         /// <summary>Total with its own currency code; an unconfirmed amount is amber and underlined.</summary>
-        private static void DrawAmount(Graphics graphics, Rectangle rect, DeclarationLineTotal line, Font amountFont, Font currencyFont, Func<int, int> S)
+        private static void DrawAmount(Graphics graphics, Rectangle rect, DeclarationLineTotal line, Font amountFont, Font currencyFont, int dpi, Func<int, int> S)
         {
             const TextFormatFlags flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.SingleLine;
             var text = line.Amount.ToString("N2");
@@ -349,9 +353,9 @@ internal sealed class DetailForm : DpiDialog
             var currencyWidth = TextRenderer.MeasureText(graphics, currency, currencyFont, new Size(int.MaxValue, rect.Height), TextFormatFlags.NoPadding).Width;
             var color = line.IsReliable ? Theme.Text : Theme.Warning;
             var amountLeft = rect.Right - amountWidth;
-            TextRenderer.DrawText(graphics, text, amountFont, new Rectangle(amountLeft, rect.Y, amountWidth, rect.Height), color, flags);
+            TextRenderer.DrawText(graphics, text, amountFont, Baseline(new Rectangle(amountLeft, rect.Y, amountWidth, rect.Height), amountFont, dpi), color, flags);
             if (amountLeft - S(6) - currencyWidth >= rect.X)
-                TextRenderer.DrawText(graphics, currency, currencyFont, new Rectangle(amountLeft - S(6) - currencyWidth, rect.Y, currencyWidth, rect.Height), Theme.Muted, flags);
+                TextRenderer.DrawText(graphics, currency, currencyFont, Baseline(new Rectangle(amountLeft - S(6) - currencyWidth, rect.Y, currencyWidth, rect.Height), currencyFont, dpi), Theme.Muted, flags);
             if (!line.IsReliable)
             {
                 var underlineY = rect.Y + rect.Height / 2 + S(10);
@@ -403,11 +407,11 @@ internal sealed class DetailForm : DpiDialog
             var padX = columns[0].Rect.X;
 
             TextRenderer.DrawText(graphics, $"共 {_record.LineTotals.Count} 项", PaintCache.Ui(13F, UiWeight.Medium),
-                new Rectangle(padX, S(PadTop), S(120), S(TotalRow)), Theme.Ink2,
+                Baseline(new Rectangle(padX, S(PadTop), S(120), S(TotalRow)), PaintCache.Ui(13F, UiWeight.Medium), dpi), Theme.Ink2,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
             var labelRight = amountColumn.X - S(16);
             TextRenderer.DrawText(graphics, "合计（按币种，不换算）", PaintCache.Ui(12.5F),
-                new Rectangle(padX + S(120), S(PadTop), Math.Max(0, labelRight - padX - S(120)), S(TotalRow)), Theme.Muted,
+                Baseline(new Rectangle(padX + S(120), S(PadTop), Math.Max(0, labelRight - padX - S(120)), S(TotalRow)), PaintCache.Ui(12.5F), dpi), Theme.Muted,
                 TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis);
             var y = S(PadTop);
             var amountFont = PaintCache.Mono(15F, true);
@@ -420,9 +424,9 @@ internal sealed class DetailForm : DpiDialog
                 var text = amount.ToString("N2");
                 var amountWidth = TextRenderer.MeasureText(graphics, text, amountFont, new Size(int.MaxValue, S(TotalRow)), TextFormatFlags.NoPadding).Width;
                 var amountLeft = amountColumn.Right - amountWidth;
-                TextRenderer.DrawText(graphics, text, amountFont, new Rectangle(amountLeft, y, amountWidth, S(TotalRow)), consistent ? Theme.Text : Theme.Warning,
+                TextRenderer.DrawText(graphics, text, amountFont, Baseline(new Rectangle(amountLeft, y, amountWidth, S(TotalRow)), amountFont, dpi), consistent ? Theme.Text : Theme.Warning,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-                TextRenderer.DrawText(graphics, currency, currencyFont, new Rectangle(amountLeft - S(70), y, S(64), S(TotalRow)), Theme.Muted,
+                TextRenderer.DrawText(graphics, currency, currencyFont, Baseline(new Rectangle(amountLeft - S(70), y, S(64), S(TotalRow)), currencyFont, dpi), Theme.Muted,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                 y += S(TotalRow);
             }

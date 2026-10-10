@@ -46,6 +46,29 @@ internal static class PaintCache
         return pen;
     }
 
+    private static readonly Dictionary<(Font Font, int Dpi), float> HalfInk = [];
+
+    /// <summary>
+    /// Vertical offset that puts <paramref name="font"/>'s baseline on <paramref name="reference"/>'s
+    /// baseline when both are drawn vertically centred in the same rectangle. JetBrains Mono has a
+    /// much smaller ascent/descent box than Noto Sans SC, so centred numbers sat 1–2px higher
+    /// than the Chinese text and currency codes next to them.
+    /// </summary>
+    public static int BaselineShift(Font font, Font reference, int dpi) =>
+        (int)Math.Round(Half(reference, dpi) - Half(font, dpi), MidpointRounding.AwayFromZero);
+
+    /// <summary>Distance from the centre of the font's cell box to its baseline, in device pixels.</summary>
+    private static float Half(Font font, int dpi)
+    {
+        if (HalfInk.TryGetValue((font, dpi), out var half)) return half;
+        var family = font.FontFamily;
+        var em = Math.Max(1, family.GetEmHeight(font.Style));
+        var ascent = family.GetCellAscent(font.Style);
+        var descent = family.GetCellDescent(font.Style);
+        half = (ascent - descent) / (float)em * font.SizeInPoints * dpi / 72F / 2F;
+        return HalfInk[(font, dpi)] = half;
+    }
+
     /// <summary>Cached icon for the DPI; unlike <see cref="UiV2Icons.Load(string, int, float)"/> it must not be disposed.</summary>
     public static Bitmap? Icon(string stem, int logicalSize, int dpi)
     {
