@@ -1,12 +1,7 @@
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
 namespace CustomsClearanceConsole;
 
 internal sealed partial class MainForm : Form
 {
-
     // ---- browser verification ----
 
     private async Task StartVerificationAsync(DeclarationRecord record)

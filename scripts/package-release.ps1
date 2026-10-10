@@ -11,7 +11,7 @@ if (-not $SourceRoot.StartsWith($artifacts, [StringComparison]::OrdinalIgnoreCas
 $project = [xml](Get-Content -LiteralPath (Join-Path $repoRoot 'src\CustomsClearanceConsole\CustomsClearanceConsole.csproj') -Raw)
 $version = [string]($project.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1)
 if ($version -notmatch '^\d+\.\d+\.\d+$') { throw '项目版本无效。' }
-foreach ($relative in @('关单核验台.exe', 'app\关单核验台.dll')) {
+foreach ($relative in @('千机匣.exe', 'app\千机匣.dll')) {
     $file = Get-Item -LiteralPath (Join-Path $SourceRoot $relative)
     if ($file.VersionInfo.FileVersion -ne "$version.0") { throw "版本不一致：$relative" }
 }
@@ -29,7 +29,7 @@ if (Test-Path -LiteralPath (Join-Path $SourceRoot 'app\fonts\NotoSansSC-Variable
 
 $outputRoot = Join-Path $repoRoot "artifacts\releases\v$version"
 New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
-$zipPath = Join-Path $outputRoot "关单核验台-Windows-x64-v$version.zip"
+$zipPath = Join-Path $outputRoot "MyriadMechanismBox-Windows-x64-v$version.zip"
 if (Test-Path -LiteralPath $zipPath) { throw "已有发布包，不覆盖：$zipPath" }
 $temporary = Join-Path $outputRoot ([Guid]::NewGuid().ToString('N') + '.tmp')
 Add-Type -AssemblyName System.IO.Compression

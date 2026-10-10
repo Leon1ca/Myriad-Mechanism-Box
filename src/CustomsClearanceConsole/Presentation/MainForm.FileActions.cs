@@ -1,12 +1,9 @@
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace CustomsClearanceConsole;
 
 internal sealed partial class MainForm : Form
 {
-
     // ---- export ----
 
     private void ShowExportMenu()

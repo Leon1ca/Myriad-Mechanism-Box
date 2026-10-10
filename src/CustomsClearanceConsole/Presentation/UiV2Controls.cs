@@ -27,7 +27,9 @@ internal sealed class KpiPanel : RoundedPanel
 
     public void Set(IReadOnlyList<KpiCell> cells)
     {
-        if (cells.Count == 4) _cells = cells.ToArray();
+        // Refreshed after every scanned file; repaint only when a value really changed.
+        if (cells.Count != 4 || cells.SequenceEqual(_cells)) return;
+        _cells = cells.ToArray();
         Invalidate();
     }
 
@@ -135,7 +137,7 @@ internal sealed class KpiPanel : RoundedPanel
 internal sealed record MoneySummaryRow(string Currency, int BeforeCount, int AfterCount, decimal Gross, decimal Net);
 
 /// <summary>Unconfirmed total for one currency. Amounts are never summed across currencies.</summary>
-internal sealed record UnconfirmedRow(string Currency, decimal Amount, int Count, string File);
+internal sealed record UnconfirmedRow(string Currency, decimal Amount, int Count);
 
 internal sealed record MoneySummarySnapshot(
     IReadOnlyList<MoneySummaryRow> Rows,
@@ -161,6 +163,7 @@ internal sealed class MoneySummaryPanel : RoundedPanel
 
     public void Set(MoneySummarySnapshot snapshot)
     {
+        if (snapshot.Rows.SequenceEqual(_snapshot.Rows) && snapshot.Unconfirmed.SequenceEqual(_snapshot.Unconfirmed)) return;
         _snapshot = snapshot;
         UpdateScrollExtent();
         Invalidate();
@@ -229,6 +232,7 @@ internal sealed class MoneySummaryPanel : RoundedPanel
             // transform. Text, background strips and icons therefore scroll together all
             // the way down to the last currency.
             var y = bodyTop + AutoScrollPosition.Y;
+            graphics.SmoothingMode = SmoothingMode.None;
             using (var rowFont = Theme.MonoFont(13.5F, true))
             {
                 foreach (var row in _snapshot.Rows)
@@ -244,6 +248,8 @@ internal sealed class MoneySummaryPanel : RoundedPanel
                     else
                         TextRenderer.DrawText(graphics, deduction.ToString("N2"), rowFont, rowColumns[4], Theme.Danger, TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                     y += rowHeight;
+                    // Hairline between currency rows, inset to the text columns like the record table.
+                    graphics.DrawLine(PaintCache.Pen(Theme.Divider), padX, y - 1, Width - padX, y - 1);
                 }
             }
             if (_snapshot.Unconfirmed.Count > 0)
@@ -264,8 +270,7 @@ internal sealed class MoneySummaryPanel : RoundedPanel
                 using var noteFont = Theme.UiFont(12F);
                 foreach (var item in _snapshot.Unconfirmed)
                 {
-                    var text = $"{item.Currency} {item.Amount:N2} · {item.Count} 项未确认" +
-                               (string.IsNullOrWhiteSpace(item.File) ? "" : $" · {item.File}");
+                    var text = $"{item.Currency} {item.Amount:N2} · {item.Count} 项未确认";
                     TextRenderer.DrawText(graphics, text, noteFont, new Rectangle(padX + S(22), y, Width - padX * 2 - S(22), S(24)), Theme.Warning,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.EndEllipsis);
                     y += S(26);
@@ -293,6 +298,10 @@ internal sealed class MoneySummaryPanel : RoundedPanel
         var columns = ColumnRects(S(80), S(110), headerHeight, columnHeaderHeight);
         using (var background = new SolidBrush(Theme.PanelSubtle))
             graphics.FillRectangle(background, 1, headerHeight, Width - 2, columnHeaderHeight);
+        // Same header treatment as the record table: a border line above and below the band.
+        graphics.SmoothingMode = SmoothingMode.None;
+        graphics.DrawLine(PaintCache.Pen(Theme.Divider), 1, headerHeight, Width - 2, headerHeight);
+        graphics.DrawLine(PaintCache.Pen(Theme.Border), 1, bodyTop - 1, Width - 2, bodyTop - 1);
         using (var headerFont = Theme.UiFont(12.5F, FontStyle.Bold))
         {
             DrawHeader(graphics, headerFont, columns[0], "币种", ContentAlignment.MiddleLeft);
@@ -386,6 +395,7 @@ internal sealed class FilterSegmented : Control
 
     public void Set(IReadOnlyList<FilterSegment> segments)
     {
+        if (segments.SequenceEqual(_segments)) return;
         _segments = segments;
         Invalidate();
     }
@@ -507,6 +517,7 @@ internal sealed class RecordStatePanel : Control
 
     public void Set(StateMessage message, bool dropZone)
     {
+        if (message == _message && dropZone == _dropZone) return;
         _message = message;
         _dropZone = dropZone;
         Invalidate();
@@ -674,6 +685,7 @@ internal sealed class TitleBlock : Control
 
     public void Set(string title, string status, UiTokens.StatusPalette? palette, string subline, bool sublineMono)
     {
+        if (title == _title && status == _status && Nullable.Equals(palette, _palette) && subline == _subline && sublineMono == _sublineMono) return;
         _title = title;
         _status = status;
         _palette = palette;

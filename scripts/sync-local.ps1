@@ -20,9 +20,9 @@ $assetsFile = Join-Path $repoRoot "src\CustomsClearanceConsole\obj\project.asset
 $buildOutput = Join-Path $repoRoot "src\CustomsClearanceConsole\bin\$Configuration\net8.0-windows"
 $localApp = Join-Path $localRoot "app"
 $runtime = Join-Path $localRoot "runtime\dotnet.exe"
-$appDll = Join-Path $localApp "关单核验台.dll"
+$appDll = Join-Path $localApp "千机匣.dll"
 $launcherBuildScript = Join-Path $repoRoot "scripts\build-launcher.ps1"
-$launcherOutput = Join-Path $repoRoot "artifacts\launcher\关单核验台.exe"
+$launcherOutput = Join-Path $repoRoot "artifacts\launcher\千机匣.exe"
 $usageGuide = Join-Path $repoRoot "src\CustomsClearanceConsole\使用说明.txt"
 $projectXml = [xml](Get-Content -LiteralPath $project -Raw)
 $version = [string]($projectXml.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1)
@@ -73,7 +73,7 @@ try {
         Copy-Item -Path (Join-Path $buildOutput "*") -Destination $localApp -Recurse -Force
     }
     catch [System.UnauthorizedAccessException] {
-        throw "本地程序文件正在使用。请先关闭关单核验台，再重新运行同步。"
+        throw "本地程序文件正在使用。请先关闭千机匣，再重新运行同步。"
     }
 
     & $runtime $appDll --ui-contract-self-test
@@ -83,7 +83,7 @@ try {
     if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $launcherOutput)) {
         throw "启动器构建失败，退出代码：$LASTEXITCODE"
     }
-    Copy-Item -LiteralPath $launcherOutput -Destination (Join-Path $localRoot "关单核验台.exe") -Force
+    Copy-Item -LiteralPath $launcherOutput -Destination (Join-Path $localRoot "千机匣.exe") -Force
     Copy-Item -LiteralPath $usageGuide -Destination (Join-Path $localRoot "使用说明.txt") -Force
     Copy-Item -LiteralPath $releaseNotes -Destination (Join-Path $localRoot $notesName) -Force
     Get-ChildItem -LiteralPath $localRoot -Filter "更新说明-v*.md" -File |

@@ -101,7 +101,7 @@ internal sealed class CleanupDialog : DpiDialog
         ShowInTaskbar = false;
         BackColor = Color.White;
 
-        var frame = new RoundedPanel { Dock = DockStyle.Fill, WindowFrame = true, Radius = 10, BorderColor = Theme.Border, BackColor = Color.White };
+        var frame = new RoundedPanel { Dock = DockStyle.Fill, WindowFrame = true, Radius = 10, BorderColor = Theme.Border, BackColor = Color.White, Padding = new Padding(1) };
         _step = new Label
         {
             Text = string.Empty,

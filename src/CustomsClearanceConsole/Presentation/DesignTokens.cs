@@ -3,8 +3,7 @@ using System.Drawing;
 namespace CustomsClearanceConsole;
 
 /// <summary>
-/// UI v2 design tokens (96 DPI logical pixels), mirroring
-/// designs/2026-09-23-enterprise-ui-v2/tokens/design-tokens.json.
+/// UI design tokens (96 DPI logical pixels).
 /// Use <see cref="UiScale.Px"/> to convert a logical pixel value to the current DPI.
 /// </summary>
 internal static class UiTokens
@@ -38,15 +37,12 @@ internal static class UiTokens
         public static readonly Color BorderAccentSoft = Hex("#A9BEDA");
         public static readonly Color Divider = Hex("#EBEEF2");
 
-        public static readonly Color Overlay = Color.FromArgb(115, 0x0F, 0x1B, 0x2D);
         public static readonly Color Danger = Hex("#B42318");
         public static readonly Color ToastBg = Hex("#0F1B2D");
 
-        public static readonly Color EmptyStripe = Hex("#F3F5F8");
         public static readonly Color DropZoneBorder = Hex("#BCC6D3");
         public static readonly Color DropZoneBg = Hex("#FAFBFC");
         public static readonly Color KpiPlaceholder = Hex("#AEB9C8");
-        public static readonly Color FocusRing = Hex("#D6E4F7");
         public static readonly Color HeaderSoft = Hex("#F1F3F6");
         public static readonly Color Success = Hex("#17714F");
         public static readonly Color WarningFg = Hex("#8A5300");
@@ -72,15 +68,8 @@ internal static class UiTokens
         public static readonly Size MinWindow = new(1200, 720);
         public static readonly Size DesignWindow = new(1440, 900);
         public const int Header = 48;
-        public const int ButtonLarge = 40;
-        public const int ButtonDialog = 36;
-        public const int ButtonSmall = 28;
         public const int Input = 34;
-        public const int TagHeight = 22;
         public const int TableColumnGap = 12;
-        public const int TablePaddingX = 16;
-        public static readonly Size DetailDialog = new(600, 480);
-        public static readonly Size SettingsDialog = new(520, 400);
         public static readonly Size CleanupDialog = new(440, 260);
     }
 }
@@ -127,7 +116,7 @@ internal static class Responsive
         var inner = width - 48 - 2 - 32;
         const int gap = UiTokens.Metrics.TableColumnGap;
 
-        int number = 200, contract = 150, port = 110, dest = 76, amount = 160, portDest = 120;
+        int number = 176, contract = 150, port = 110, dest = 76, amount = 160, portDest = 120;
         const int index = 28, status = 76, detail = 72, verify = 92;
         var merged = false;
 
@@ -138,7 +127,7 @@ internal static class Responsive
         var consignee = Consignee();
         if (consignee < ConsigneeMin)
         {
-            number = 192; contract = 124; port = 96; dest = 64; amount = 150;
+            number = 168; contract = 124; port = 96; dest = 64; amount = 150;
             consignee = Consignee();
         }
         if (consignee < ConsigneeMin)

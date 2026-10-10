@@ -7,10 +7,12 @@
     <StartupObject>CustomsClearanceConsole.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>关单核验台</AssemblyName>
-    <Version>0.1.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <AssemblyName>千机匣</AssemblyName>
+    <Product>千机匣 Myriad Mechanism Box</Product>
+    <Description>千机匣 · 关单识别、去重合计与在线核验</Description>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0.0</FileVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <RootNamespace>CustomsClearanceConsole</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
@@ -31,9 +33,7 @@
     <None Include="ocr-models\**\*" CopyToOutputDirectory="PreserveNewest" />
     <None Include="tools\**\*" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Assets\app.ico" CopyToOutputDirectory="PreserveNewest" TargetPath="app.ico" />
-    <None Update="Assets\app-icon-40.png" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\app-icon-40.png" />
-    <None Update="Assets\button-icons\*.svg" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\button-icons\%(Filename)%(Extension)" />
-    <None Update="Assets\button-icons\*.png" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\button-icons\%(Filename)%(Extension)" />
+    <None Include="Assets\brand\*.png" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\brand\%(Filename)%(Extension)" />
     <None Include="Assets\ui-v2\**\*" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\ui-v2\%(RecursiveDir)%(Filename)%(Extension)" />
     <None Include="fonts\**\*" CopyToOutputDirectory="PreserveNewest" TargetPath="fonts\%(RecursiveDir)%(Filename)%(Extension)" />
     <None Update="dual-ocr-bin\*.dll" CopyToOutputDirectory="PreserveNewest" TargetPath="%(Filename)%(Extension)" />

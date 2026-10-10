@@ -19,7 +19,7 @@ internal sealed class DirectorySettingsForm : DpiDialog
         BackColor = Color.White;
         StartPosition = FormStartPosition.CenterParent;
 
-        var frame = new RoundedPanel { Dock = DockStyle.Fill, WindowFrame = true, Radius = 10, BorderColor = Theme.Border, BackColor = Color.White };
+        var frame = new RoundedPanel { Dock = DockStyle.Fill, WindowFrame = true, Radius = 10, BorderColor = Theme.Border, BackColor = Color.White, Padding = new Padding(1) };
         var header = new Panel { Location = new Point(1, 1), Size = new Size(518, 56), BackColor = Color.White };
         header.Paint += (_, e) =>
         {

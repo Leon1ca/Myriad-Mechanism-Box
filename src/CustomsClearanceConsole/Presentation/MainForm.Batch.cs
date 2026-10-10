@@ -1,12 +1,7 @@
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
 namespace CustomsClearanceConsole;
 
 internal sealed partial class MainForm : Form
 {
-
     private BatchState CurrentState => _session is not null || _previewProcessing ? BatchState.Processing
         : _state.Records.Count > 0 ? BatchState.Complete
         : _batchFolder.Length > 0 ? BatchState.Ready
@@ -31,13 +26,6 @@ internal sealed partial class MainForm : Form
     internal void ApplyPreviewSearch(string text)
     {
         _search.Text = text;
-        _page = 1;
-        RefreshGrid();
-    }
-
-    internal void ApplyPreviewFilter(int index)
-    {
-        _filterIndex = index;
         _page = 1;
         RefreshGrid();
     }
@@ -103,7 +91,7 @@ internal sealed partial class MainForm : Form
         try { plan = prepare(); }
         catch (Exception ex) { MessageBox.Show(ex.Message, "批次未开始", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
         InvalidateBrowserSessions();
-        using var session = new ScanSession(plan);
+        using var session = new ScanSession();
         _session = session;
         _scanStartedAt = DateTime.Now;
         _scanCompletedAt = null;

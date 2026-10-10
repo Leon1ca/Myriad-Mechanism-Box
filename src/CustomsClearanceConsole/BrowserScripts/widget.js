@@ -65,11 +65,11 @@
     widget.className = 'ccc-widget';
     widget.dataset.state = 'idle';
     widget.setAttribute('role', 'dialog');
-    widget.setAttribute('aria-label', '关单核验台截图');
+    widget.setAttribute('aria-label', '千机匣截图');
     widget.innerHTML = `
       <div class="ccc-head">
         <span class="ccc-mark"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="m6 9.2 1.6 1.6L10.5 7.8"/></svg></span>
-        <span class="ccc-title">关单核验台</span>
+        <span class="ccc-title">千机匣</span>
         <button class="ccc-icon-btn" type="button" aria-label="收起" data-role="collapse"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#5B6778" stroke-width="1.6" stroke-linecap="round"><path d="M4 8h8"/></svg></button>
       </div>
       <div class="ccc-number"></div>
@@ -286,7 +286,7 @@
       watchdog = setTimeout(() => {
         watchdog = 0;
         if (!api.isCapturing) return;
-        api.setState('error', { message: '截图无响应，未保存', detail: '关单核验台长时间没有返回结果。请确认程序仍在运行后重试；如反复出现，请提供 app.log。' });
+        api.setState('error', { message: '截图无响应，未保存', detail: '千机匣长时间没有返回结果。请确认程序仍在运行后重试；如反复出现，请提供 app.log。' });
       }, api.watchdogMs || 90000);
     }
 
@@ -301,7 +301,7 @@
           bindingCallCount += 1;
           window.cccRequestCapture('');
         } else {
-          api.setState('error', { message: '截图服务未连接，未保存', detail: '请回到关单核验台重新打开核验。' });
+          api.setState('error', { message: '截图服务未连接，未保存', detail: '请回到千机匣重新打开核验。' });
         }
       }
       catch (error) { api.setState('error', { message: '无法请求截图', detail: String(error) }); }

@@ -76,9 +76,6 @@ internal class DpiDialog : Form
         set { _logicalClientSize = value; ClientSize = DpiLayout.Scale(value, _layoutDpi); }
     }
 
-    /// <summary>The DPI the dialog's child bounds are currently expressed in.</summary>
-    internal int LayoutDpi => _layoutDpi;
-
     public DpiDialog()
     {
         AutoScaleMode = AutoScaleMode.None;
