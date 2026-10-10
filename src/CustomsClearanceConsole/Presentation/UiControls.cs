@@ -594,14 +594,34 @@ internal sealed class AppLogo : Control
             var path = PathFor(pixels);
             try
             {
-                if (path is not null) { using var source = new Bitmap(path); _image = new Bitmap(source); }
+                if (path is not null) { using var source = new Bitmap(path); _image = new Bitmap(source); _ink = InkBounds(_image); }
             }
             catch (Exception ex) { AppLog.Write($"应用图标加载失败：{path} · {ex.Message}"); }
         }
         if (_image is null) return;
         e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
         e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-        e.Graphics.DrawImage(_image, new Rectangle((Width - pixels) / 2, (Height - pixels) / 2, pixels, pixels));
+        // The larger PNGs keep a slightly uneven transparent margin; centre the visible tile,
+        // not the bitmap, so the logo lines up with the title text at every scale.
+        var scale = pixels / (float)_image.Width;
+        var dx = (_image.Width - _ink.Right - _ink.Left) / 2F * scale;
+        var dy = (_image.Height - _ink.Bottom - _ink.Top) / 2F * scale;
+        e.Graphics.DrawImage(_image, new RectangleF((Width - pixels) / 2F + dx, (Height - pixels) / 2F + dy, pixels, pixels));
+    }
+
+    private Rectangle _ink;
+
+    private static Rectangle InkBounds(Bitmap image)
+    {
+        int left = image.Width, top = image.Height, right = 0, bottom = 0;
+        for (var y = 0; y < image.Height; y++)
+            for (var x = 0; x < image.Width; x++)
+            {
+                if (image.GetPixel(x, y).A < 32) continue;
+                left = Math.Min(left, x); top = Math.Min(top, y);
+                right = Math.Max(right, x + 1); bottom = Math.Max(bottom, y + 1);
+            }
+        return right > left ? Rectangle.FromLTRB(left, top, right, bottom) : new Rectangle(0, 0, image.Width, image.Height);
     }
 
     protected override void Dispose(bool disposing)

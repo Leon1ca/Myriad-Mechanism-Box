@@ -62,7 +62,6 @@ internal sealed partial class BrowserValidation : IAsyncDisposable
     private (int Width, int Height, double Scale)? _captureBaselineViewport;
     private string? _shellScriptIdentifier;
     private string? _profileFolder;
-    private bool _persistentProfile;
     private int _endedRaised;
     private string _mainFrameId = "";
     private string _currentUrl = "";

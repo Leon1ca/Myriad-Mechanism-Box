@@ -28,7 +28,7 @@ flowchart LR
 | Application | `ScanPlan` 预检和不可变文件清单；`BatchScanner` 调度、取消、重复分组与合计。 |
 | Recognition | `DocumentExtractor` 选择 PDF 文字层或 OCR；`DeclarationParser` 按表头、商品行、几何定位和规则拆分；`RapidOcrEngine` 管理模型；`PdfiumNative` 管理原生 PDF。 |
 | Infrastructure | 路径、日志、历史迁移、原子保存和文件清理。`StateMigration` 专管历史兼容，`AtomicFile` 统一完整文件发布。 |
-| Browser | 会话生命周期、页面/框架、截图、卡片和测试支持按文件拆分；`CdpClient` 独立负责通信；`BrowserProfileStore` 管理核验窗口的专用浏览器配置；URL 与回填策略单独维护。 |
+| Browser | 会话生命周期、页面/框架、截图、卡片和测试支持按文件拆分；`CdpClient` 独立负责通信；URL 与回填策略单独维护。 |
 | Export | Excel、Markdown 导出及导出数据校验。 |
 | Presentation | 主窗体按布局、绘制、记录、批次、核验、文件操作与窗口生命周期拆分；包含控件和弹窗。`PaintCache` 提供共享绘制资源和批量重绘。 |
 | Diagnostics | 命令行注册与参数校验、OCR/资源/浏览器自检及导出样本。 |
@@ -62,7 +62,7 @@ flowchart LR
 
 ## 核验浏览器
 
-核验窗口启动系统默认（或已安装）的 Edge / Chrome，经本机调试端口自动填号和截图。Chromium 136 起禁止在日常个人配置上开启调试端口，因此核验窗口使用专用配置：交互会话复用 `数据目录\BrowserProfile\<浏览器>[-n]` 中的固定配置（保留缩放、站点权限和 Cookie），并发窗口按槽位分配，均被占用时与自动化测试一样使用 `BrowserProfiles` 下的一次性配置（12 小时后清理）。调试端口只监听 127.0.0.1，不开放 `--remote-allow-origins`。关闭会话时先请求浏览器正常退出，超时才结束进程。
+核验窗口启动系统默认（或已安装）的 Edge / Chrome，经本机调试端口自动填号和截图。Chromium 136 起禁止在日常个人配置上开启调试端口，因此每个会话使用 `数据目录\BrowserProfiles\<会话>` 下的一次性配置，会话结束后删除，残留的 12 小时后清理。v0.2.0 开发期间试过复用固定配置，实机上出现不自动填号、不显示截图卡片的问题，已恢复为一次性配置。关闭会话时先请求浏览器正常退出，超时才结束进程。
 
 ## 维护要点
 

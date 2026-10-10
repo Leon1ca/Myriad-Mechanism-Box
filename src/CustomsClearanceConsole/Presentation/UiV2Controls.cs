@@ -237,9 +237,9 @@ internal sealed class MoneySummaryPanel : RoundedPanel
             {
                 foreach (var row in _snapshot.Rows)
                 {
-                    var rowColumns = ColumnRects(S(80), S(110), y, rowHeight);
+                    var rowColumns = ColumnRects(S(80), S(124), y, rowHeight);
                     TextRenderer.DrawText(graphics, row.Currency, rowFont, rowColumns[0], Theme.Text, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-                    TextRenderer.DrawText(graphics, $"{row.BeforeCount} → {row.AfterCount}", rowFont, rowColumns[1], Theme.Ink2, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+                    TextRenderer.DrawText(graphics, $"{row.BeforeCount}（{row.AfterCount}）", rowFont, rowColumns[1], Theme.Ink2, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                     TextRenderer.DrawText(graphics, row.Gross.ToString("N2"), rowFont, rowColumns[2], Theme.Text, TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                     TextRenderer.DrawText(graphics, row.Net.ToString("N2"), rowFont, rowColumns[3], Theme.Text, TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
                     var deduction = row.Net - row.Gross;
@@ -283,19 +283,16 @@ internal sealed class MoneySummaryPanel : RoundedPanel
             DrawEmptyState(graphics, S, bodyTop);
         }
 
-        // Fixed header (title, unit, column headers) is never scrolled away.
+        // Fixed header (title, note, column headers) is never scrolled away.
         using (var background = new SolidBrush(Theme.Surface))
             graphics.FillRectangle(background, 1, 0, Width - 2, bodyTop);
         using (var titleFont = Theme.UiFont(14F, FontStyle.Bold))
             TextRenderer.DrawText(graphics, "金额汇总", titleFont, new Rectangle(padX, 0, S(90), headerHeight), Theme.Text,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         using (var noteFont = Theme.UiFont(12F))
-            TextRenderer.DrawText(graphics, "按币种分别合计，不做汇率换算", noteFont, new Rectangle(padX + S(86), 0, S(260), headerHeight), Theme.Muted,
+            TextRenderer.DrawText(graphics, "按币种分别合计", noteFont, new Rectangle(padX + S(86), 0, S(260), headerHeight), Theme.Muted,
                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-        using (var unitFont = Theme.UiFont(12F))
-            TextRenderer.DrawText(graphics, "单位：原币", unitFont, new Rectangle(Width - S(100), 0, S(100) - padX, headerHeight), Theme.Muted,
-                TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-        var columns = ColumnRects(S(80), S(110), headerHeight, columnHeaderHeight);
+        var columns = ColumnRects(S(80), S(124), headerHeight, columnHeaderHeight);
         using (var background = new SolidBrush(Theme.PanelSubtle))
             graphics.FillRectangle(background, 1, headerHeight, Width - 2, columnHeaderHeight);
         // Same header treatment as the record table: a border line above and below the band.
@@ -305,7 +302,7 @@ internal sealed class MoneySummaryPanel : RoundedPanel
         using (var headerFont = Theme.UiFont(12.5F, FontStyle.Bold))
         {
             DrawHeader(graphics, headerFont, columns[0], "币种", ContentAlignment.MiddleLeft);
-            DrawHeader(graphics, headerFont, columns[1], "份数 前→后", ContentAlignment.MiddleLeft);
+            DrawHeader(graphics, headerFont, columns[1], "份数（去重前后）", ContentAlignment.MiddleLeft);
             DrawHeader(graphics, headerFont, columns[2], "去重前", ContentAlignment.MiddleRight);
             DrawHeader(graphics, headerFont, columns[3], "去重后（计入）", ContentAlignment.MiddleRight);
             DrawHeader(graphics, headerFont, columns[4], "重复扣减", ContentAlignment.MiddleRight);

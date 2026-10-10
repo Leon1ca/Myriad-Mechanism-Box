@@ -93,6 +93,11 @@ internal sealed partial class MainForm
         };
         header.Controls.Add(version);
         _headerVersion = version;
+        // Icon, name and version share one horizontal centre line. Centring the text boxes is
+        // not enough: Noto Sans SC and JetBrains Mono place their glyphs differently inside the
+        // line box, so each label is shifted by the measured offset of its visible ink.
+        title.Top = InkCentreOffset(title.Text, title.Font, title.Width, UiTokens.Metrics.Header);
+        version.Top = InkCentreOffset(version.Text, version.Font, version.Width, UiTokens.Metrics.Header);
 
         // Settings, then the minimize / maximize / close caption buttons flush with the top-right
         // corner at full title-bar height, as in every Windows 11 window.
@@ -132,6 +137,46 @@ internal sealed partial class MainForm
         foreach (var control in new Control[] { header, title, version, logoBack })
             control.DoubleClick += (_, _) => ToggleMaximize();
         return header;
+    }
+
+    /// <summary>
+    /// Logical-pixel offset that moves the visible glyphs of a vertically centred label onto the
+    /// centre of its box. The text is rendered once at system DPI and the inked rows are found.
+    /// </summary>
+    private static int InkCentreOffset(string text, Font font, int logicalWidth, int logicalHeight)
+    {
+        try
+        {
+            var scale = DpiLayout.SystemDpi / DpiLayout.LogicalDpi;
+            var width = Math.Max(1, (int)Math.Ceiling(logicalWidth * scale) + 8);
+            var height = Math.Max(1, (int)Math.Round(logicalHeight * scale));
+            using var bitmap = new Bitmap(width, height);
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.Clear(Color.White);
+                TextRenderer.DrawText(graphics, text, font, new Rectangle(0, 0, width, height), Color.Black,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+            }
+            int top = -1, bottom = -1;
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    if (bitmap.GetPixel(x, y).R >= 128) continue;
+                    if (top < 0) top = y;
+                    bottom = y;
+                    break;
+                }
+            }
+            if (top < 0) return 0;
+            var inkCentre = (top + bottom + 1) / 2.0;
+            return (int)Math.Round((height / 2.0 - inkCentre) / scale, MidpointRounding.AwayFromZero);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write($"标题文字对齐测量失败：{ex.Message}");
+            return 0;
+        }
     }
 
     private Control BuildTitleRow()
