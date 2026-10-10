@@ -1,0 +1,94 @@
+name: Correct initial release UI documentation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clean-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 59c349a976e0786e9614b59cfa6acf7a3b1e4a95
+      - name: Repackage documentation and preserve every program file
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: Leon1ca/Myriad-Mechanism-Box
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/$GH_REPO/git/ref/tags/v0.1.0 --jq .object.sha)" = "59c349a976e0786e9614b59cfa6acf7a3b1e4a95"
+          test "$(gh release view v0.1.0 --json isDraft,isPrerelease --jq '[.isDraft,.isPrerelease] | all(. == false)')" = "true"
+          gh release download v0.1.0 --pattern MyriadMechanismBox-Windows-x64-v0.1.0.zip --dir original
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import re
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          name='MyriadMechanismBox-Windows-x64-v0.1.0.zip'
+          old_sha='32313a54155b3cb78c52c431637906043c2f840332a28c76e56da7ecf854443c'
+          source=Path('original')/name
+          target=Path('published')/name
+          target.parent.mkdir(exist_ok=True)
+          digest=lambda data:hashlib.sha256(data).hexdigest()
+          assert digest(source.read_bytes())==old_sha,'Original package changed unexpectedly'
+          notes=Path('docs/release-notes-v0.1.0.md').read_bytes()
+          guide=Path('src/CustomsClearanceConsole/使用说明.txt').read_bytes()
+          replacements={'更新说明-v0.1.0.md':notes,'使用说明.txt':guide,'app/使用说明.txt':guide}
+          assert '两个引擎分别解析' not in guide.decode('utf-8-sig')
+          assert '不会在查询后自动截图' in guide.decode('utf-8-sig')
+          original_hashes={}
+          changed=[]
+          with ZipFile(source) as src,ZipFile(target,'w') as dst:
+              assert src.testzip() is None
+              for info in src.infolist():
+                  assert info.filename not in original_hashes
+                  data=src.read(info)
+                  original_hashes[info.filename]=digest(data)
+                  key=info.filename.replace('\\','/')
+                  if key in replacements:
+                      assert data!=replacements[key],key
+                      data=replacements[key]
+                      changed.append(key)
+                  dst.writestr(info,data)
+          assert set(changed)==set(replacements),changed
+          with ZipFile(target) as result:
+              assert result.testzip() is None
+              assert set(result.namelist())==set(original_hashes)
+              for info in result.infolist():
+                  data=result.read(info)
+                  key=info.filename.replace('\\','/')
+                  if key in replacements:
+                      assert data==replacements[key]
+                  else:
+                      assert digest(data)==original_hashes[info.filename],info.filename
+                  if Path(info.filename).suffix.lower() in ('.md','.txt'):
+                      try:text=data.decode('utf-8-sig')
+                      except UnicodeDecodeError:continue
+                      assert not re.search(r'样本验证|本版样本结果|recognition-validation|220/220|787/787|221 个工作文件|220 份有效关单',text),info.filename
+          new_sha=digest(target.read_bytes())
+          (target.parent/'SHA256SUMS.txt').write_text(f'{new_sha}  {name}\n',encoding='utf-8')
+          proof=dict(originalSha256=old_sha,assetSha256=new_sha,assetBytes=target.stat().st_size,
+                     entryCount=len(original_hashes),changedEntries=changed,unchangedEntries=len(original_hashes)-len(changed),
+                     allNonDocumentationFilesUnchanged=True,allProgramBinariesUnchanged=True,sampleValidationInformationRemoved=True,
+                     screenshotSourceRun='38018121460',screenshotSha256='4efa1fc514d063c0c29ef42637de9dc79a340dfa04a6986dee43b59fa9a644bf')
+          (target.parent/'documentation-cleanup-verification.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(proof,ensure_ascii=False))
+          PY
+          gh release upload v0.1.0 published/MyriadMechanismBox-Windows-x64-v0.1.0.zip published/SHA256SUMS.txt --clobber
+          gh release edit v0.1.0 --notes-file docs/release-notes-v0.1.0.md --target 59c349a976e0786e9614b59cfa6acf7a3b1e4a95
+          expected=$(cut -d ' ' -f 1 published/SHA256SUMS.txt)
+          actual=$(gh release view v0.1.0 --json assets --jq '.assets[] | select(.name == "MyriadMechanismBox-Windows-x64-v0.1.0.zip") | .digest')
+          test "$actual" = "sha256:$expected"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-documentation-verification
+          path: |
+            published/documentation-cleanup-verification.json
+            published/SHA256SUMS.txt
