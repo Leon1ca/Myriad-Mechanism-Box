@@ -1,0 +1,26 @@
+[
+  {
+    "name": "control",
+    "requested": "310120260908250703",
+    "displayed": "310120260908250703",
+    "trigger": "pointerdown + click",
+    "actual": "ready|105:720:44bfcf6:1",
+    "expected": "ready"
+  },
+  {
+    "name": "wrong-number",
+    "requested": "310120260908250703",
+    "displayed": "310120260908999999",
+    "trigger": "pointerdown + click",
+    "actual": "ready|105:720:7a5e36fb:1",
+    "expected": "reject mismatched declaration"
+  },
+  {
+    "name": "keyboard",
+    "requested": "310120260908250703",
+    "displayed": "310120260908250703",
+    "trigger": "click only (keyboard equivalent for type=button)",
+    "actual": "waiting|not-started",
+    "expected": "ready"
+  }
+]

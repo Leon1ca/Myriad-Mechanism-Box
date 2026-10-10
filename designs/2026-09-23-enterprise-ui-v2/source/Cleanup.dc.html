@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>清理确认</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 440px; height: 260px; box-sizing: border-box; background: #FFFFFF; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; border: 1px solid #DDE2E9; border-radius: 10px; overflow: hidden;">
+
+<div style="flex-grow: 1; padding: 22px 22px 0; display: flex; gap: 14px;">
+<div style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; background: {{iconBg}}; display: flex; align-items: center; justify-content: center;">
+<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="{{iconFg}}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5"/></svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+<sc-if value="{{showStep}}" hint-placeholder-val="{{ true }}">
+<div style="font-size: 12px; font-weight: 500; color: {{iconFg}};">{{stepLabel}}</div>
+</sc-if>
+<h2 style="margin: 0; font-size: 16px; font-weight: 700;">{{title}}</h2>
+<div style="font-size: 13px; color: #3D4A5C; line-height: 1.65;">{{body}}</div>
+<sc-if value="{{showDir}}" hint-placeholder-val="{{ true }}">
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{dir}}</div>
+</sc-if>
+</div>
+</div>
+
+<div style="height: 64px; flex-shrink: 0; padding: 0 20px; display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
+<button onClick="{{back}}" style="height: 36px; padding: 0 16px; border: 1px solid #C9D1DC; border-radius: 6px; background: #FFFFFF; color: #0F1B2D; font-size: 13.5px; cursor: pointer;">{{backLabel}}</button>
+<button onClick="{{next}}" style="height: 36px; padding: 0 18px; border: {{okBorder}}; border-radius: 6px; background: {{okBg}}; color: {{okFg}}; font-size: 13.5px; font-weight: 500; cursor: pointer;">{{okLabel}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["docs","shots","list"],"default":"docs"},"onClose":{"editor":null},"$preview":{"width":440,"height":260}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const kind = this.props.kind || 'docs';
+    const step = this.state.step || 1;
+    const close = () => { this.setState({ step: 1 }); if (this.props.onClose) this.props.onClose(); };
+    if (kind === 'list') {
+      return {
+        showStep: false, stepLabel: '', showDir: false, dir: '',
+        title: '清空当前列表？',
+        body: '只清除本批 10 条识别记录，不删除任何关单或截图文件。',
+        iconBg: '#EEF1F5', iconFg: '#3D4A5C',
+        backLabel: '取消', back: close,
+        okLabel: '清空列表', next: close,
+        okBg: '#13355E', okFg: '#FFFFFF', okBorder: '0'
+      };
+    }
+    const docs = kind === 'docs';
+    const what = docs ? '10 个关单文件' : '3 张核验截图';
+    const dir = docs ? 'D:\\关单\\2026-09\\第3批（仅当前层）' : 'D:\\关单\\核验截图（仅当前层）';
+    if (step === 1) {
+      return {
+        showStep: true, stepLabel: '确认 1 / 2', showDir: true, dir: dir,
+        title: docs ? '清理关单文件' : '清理核验截图',
+        body: '将 ' + what + '移入 Windows 回收站。',
+        iconBg: '#FDECEA', iconFg: '#B42318',
+        backLabel: '取消', back: close,
+        okLabel: '继续', next: () => this.setState({ step: 2 }),
+        okBg: '#FFFFFF', okFg: '#B42318', okBorder: '1px solid #B42318'
+      };
+    }
+    return {
+      showStep: true, stepLabel: '确认 2 / 2', showDir: false, dir: '',
+      title: '再次确认',
+      body: '确定将 ' + what + '移入回收站吗？之后可从回收站恢复。',
+      iconBg: '#FDECEA', iconFg: '#B42318',
+      backLabel: '返回', back: () => this.setState({ step: 1 }),
+      okLabel: '移入回收站', next: close,
+      okBg: '#B42318', okFg: '#FFFFFF', okBorder: '0'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>关单核验台 v1.7 · 流程与视觉评审</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="review-shell">
+    <header class="review-header">
+      <div>
+        <p class="eyebrow">V1.7 DESIGN REVIEW</p>
+        <h1>关单核验台 · 流程与视觉评审</h1>
+        <p>沿用 v1.6 视觉规范；本页是 v1.7 已确认并实现的设计基线。</p>
+      </div>
+      <div class="review-badge"><span></span>待确认后开发</div>
+    </header>
+
+    <nav class="review-tabs" aria-label="评审页面">
+      <button class="tab is-active" data-view="menu">右键复制菜单</button>
+      <button class="tab" data-view="flow">精简校验流程</button>
+      <button class="tab" data-view="icons">PNG 图标规范</button>
+      <button class="tab" data-view="ocr">下划线识别修正</button>
+    </nav>
+
+    <section class="view is-active" data-panel="menu">
+      <div class="section-intro">
+        <div><span class="step-number">01</span><h2>右键菜单融入现有 UI</h2></div>
+        <p>自绘弹层替换 Windows 原生菜单；只保留当前操作和快捷键，减少视觉干扰。</p>
+      </div>
+      <div class="desktop-app menu-demo">
+        <div class="app-bar">
+          <div class="brand"><div class="brand-mark"><img src="assets/app-icon-40.png" alt=""></div><span>关单核验台</span></div>
+          <div class="window-actions" aria-hidden="true"><i class="min"></i><i class="max"></i><i class="close"></i></div>
+        </div>
+        <div class="command-bar">
+          <strong>关单概览</strong>
+          <div class="command-actions">
+            <button class="ui-btn tonal"><img src="assets/button-icons/directory-settings-24.png" alt="">目录设置</button>
+            <span class="divider"></span>
+            <button class="ui-btn danger"><img src="assets/button-icons/declaration-clean-24.png" alt="">关单清理</button>
+            <span class="divider"></span>
+            <button class="ui-btn danger"><img src="assets/button-icons/screenshot-clean-24.png" alt="">截图清理</button>
+          </div>
+        </div>
+        <div class="app-canvas">
+          <div class="summary-row">
+            <article><span class="metric-icon blue">▤</span><div><b>本批关单</b><strong>1 <small>份</small></strong></div></article>
+            <article><span class="metric-icon red">▣</span><div><b>重复单号</b><strong>0 <small>组</small></strong></div></article>
+            <article><span class="metric-icon purple">¥</span><div><b>去重前总价</b><strong class="money">CNY 346,940.00</strong></div></article>
+            <article><span class="metric-icon green">✓</span><div><b>去重后总价</b><strong class="money">CNY 346,940.00</strong></div></article>
+          </div>
+          <div class="records-card">
+            <div class="records-head">
+              <div><h3>关单记录</h3><span>共 1 条记录</span></div>
+              <div class="record-actions"><button class="ui-btn primary"><img src="assets/button-icons/start-recognition-white-24.png" alt="">开始识别</button><button class="ui-btn danger"><img src="assets/button-icons/list-clean-24.png" alt="">列表清理</button></div>
+            </div>
+            <div class="filters">
+              <label><b>单号搜索</b><span class="field">输入报关单编号搜索</span></label>
+              <label><b>记录筛选</b><span class="field select">全部记录</span></label>
+              <label><b>每页显示</b><span class="field select">50 条</span></label>
+            </div>
+            <div class="grid-wrap" id="copy-grid">
+              <table>
+                <thead><tr><th>序号</th><th>报关单编号</th><th>境外收货人</th><th>合同协议号</th><th>出境关别</th><th>目的国</th><th>关单总货值</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody><tr><td>1</td><td>310120250515257063</td><td class="selected-cell" tabindex="0">HNB_TX_US</td><td>KM001MCSRFS0152504186</td><td>海曙/梅山港区</td><td>美国</td><td>CNY 346,940.00</td><td><span class="status ok">识别完成</span></td><td><a>校验</a> · <a>详情</a></td></tr></tbody>
+              </table>
+              <div class="context-menu" id="context-menu" role="menu" aria-label="单元格操作">
+                <button role="menuitem"><span>复制选中的内容</span><kbd>Ctrl+C</kbd></button>
+              </div>
+              <div class="toast mini-toast" id="copy-toast"><span>✓</span>已复制：HNB_TX_US</div>
+            </div>
+            <div class="table-foot"><span>共 1 条</span><span>第 1 / 1 页</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes-row">
+        <article><b>一致的弹层骨架</b><p>8px 圆角、1px 描边、菜单阴影与自定义下拉、确认弹窗共用。</p></article>
+        <article><b>只保留一个操作</b><p>菜单仅显示“复制选中的内容”和 Ctrl+C，不再解释选择范围。</p></article>
+        <article><b>无阻塞反馈</b><p>成功后显示 1.5 秒轻提示，不再弹系统消息框。</p></article>
+      </div>
+    </section>
+
+    <section class="view" data-panel="flow">
+      <div class="section-intro">
+        <div><span class="step-number">02</span><h2>校验精简为“一次点击 + 一次人工验证码”</h2></div>
+        <p>程序等待网页结果并自动长截图；无需返回软件点击“已填写”。</p>
+      </div>
+      <div class="flow-layout">
+        <article class="flow-card">
+          <div class="flow-title"><div><span class="recommended">推荐方案</span><h3>自动检测结果后截图</h3></div><button class="demo-start" id="flow-play">演示流程</button></div>
+          <ol class="flow-steps" id="flow-steps">
+            <li class="done"><span>1</span><div><b>点击“校验”</b><small>打开 pi4 页面并填写报关单号</small></div></li>
+            <li class="active"><span>2</span><div><b>输入验证码并查询</b><small>唯一必须由用户完成的步骤</small></div></li>
+            <li><span>3</span><div><b>自动检测查询结果</b><small>结果区域稳定 1.2 秒后继续</small></div></li>
+            <li><span>4</span><div><b>自动长截图并回写状态</b><small>保存成功后显示“已截图”</small></div></li>
+          </ol>
+          <div class="before-after"><div><b>原流程</b><span>校验 → 验证码 → 返回软件 → 已填写 → 截图</span></div><div><b>新流程</b><span>校验 → 验证码 → 自动截图</span></div></div>
+        </article>
+        <div class="browser-scene">
+          <div class="browser-frame">
+            <div class="browser-chrome"><span class="browser-dot"></span><div class="address">singlewindow.cn/#/publicInquiryDetail?id=pi4</div><span>⋯</span></div>
+            <div class="site-bar">中国国际贸易单一窗口 <span>公共查询</span></div>
+            <div class="site-content">
+              <div class="site-heading">报关单状态</div>
+              <div class="site-tip">查询出口报关单通关状态</div>
+              <div class="site-form"><label>报关单号<input value="310120250515257063" readonly></label><label>验证码<input placeholder="请人工输入"></label><div class="captcha">Y8a</div><button>查询</button></div>
+              <div class="result-skeleton"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+          <aside class="monitor-card" id="monitor-card">
+            <div class="monitor-icon"><span></span></div>
+            <div><b id="monitor-title">等待人工验证码</b><p id="monitor-detail">完成验证码并点击网页中的“查询”即可</p></div>
+            <button class="monitor-more" aria-label="更多">⋯</button>
+            <div class="monitor-progress"><i id="monitor-progress"></i></div>
+            <button class="manual-capture">立即截图</button>
+          </aside>
+          <div class="success-toast" id="success-toast"><span>✓</span><div><b>长截图已保存</b><small>310120250515257063.png</small></div><button>打开截图</button></div>
+        </div>
+      </div>
+      <div class="boundary-strip">
+        <b>边界处理</b><span>90 秒超时显示“立即截图”</span><span>网页改版按结果特征降级检测</span><span>连接中断保留已打开网页</span><span>验证码永远由用户完成</span>
+      </div>
+    </section>
+
+    <section class="view" data-panel="icons">
+      <div class="section-intro">
+        <div><span class="step-number">03</span><h2>五枚按钮改用逐尺寸 PNG</h2></div>
+        <p>完整图形在导出时完成抗锯齿和像素对齐，程序只选择尺寸，不再用 GDI+ 重画或拉伸。</p>
+      </div>
+      <div class="icon-board">
+        <div class="icon-grid">
+          <article><div class="icon-stage blue-stage"><img src="assets/button-icons/directory-settings-48.png" alt="目录设置图标"></div><h3>目录设置</h3><p>文件夹 + 设置徽标</p><code>rounded · 24/32/48</code></article>
+          <article><div class="icon-stage red-stage"><img src="assets/button-icons/declaration-clean-48.png" alt="关单清理图标"></div><h3>关单清理</h3><p>关单文件 + 清除徽标</p><code>rounded · 24/32/48</code></article>
+          <article><div class="icon-stage red-stage"><img src="assets/button-icons/screenshot-clean-48.png" alt="截图清理图标"></div><h3>截图清理</h3><p>图片 + 清除徽标</p><code>rounded · 24/32/48</code></article>
+          <article><div class="icon-stage blue-stage"><img src="assets/button-icons/start-recognition-blue-48.png" alt="开始识别图标"></div><h3>开始识别</h3><p>扫描角 + 关单文档</p><code>rounded · 24/32/48</code></article>
+          <article><div class="icon-stage red-stage"><img src="assets/button-icons/list-clean-48.png" alt="列表清理图标"></div><h3>列表清理</h3><p>记录列表 + 清除徽标</p><code>rounded · 24/32/48</code></article>
+        </div>
+        <div class="pixel-spec">
+          <div><span class="measure">24</span><img src="assets/button-icons/directory-settings-24.png" alt=""><p>100% / 常规按钮</p></div>
+          <div><span class="measure">32</span><img src="assets/button-icons/directory-settings-32.png" alt=""><p>125–150% DPI</p></div>
+          <div><span class="measure">48</span><img src="assets/button-icons/directory-settings-48.png" alt=""><p>175–200% DPI</p></div>
+          <aside><b>实现约束</b><p>按 DPI 选择最近尺寸；保持 1:1 显示；透明背景；外轮廓至少内缩 3px；水平线中心使用整数像素。</p></aside>
+        </div>
+        <div class="button-samples"><button class="ui-btn tonal"><img src="assets/button-icons/directory-settings-24.png" alt="">目录设置</button><button class="ui-btn danger"><img src="assets/button-icons/declaration-clean-24.png" alt="">关单清理</button><button class="ui-btn danger"><img src="assets/button-icons/screenshot-clean-24.png" alt="">截图清理</button><button class="ui-btn primary"><img src="assets/button-icons/start-recognition-white-24.png" alt="">开始识别</button><button class="ui-btn danger"><img src="assets/button-icons/list-clean-24.png" alt="">列表清理</button></div>
+      </div>
+    </section>
+
+    <section class="view" data-panel="ocr">
+      <div class="section-intro">
+        <div><span class="step-number">04</span><h2>下划线不是识别错误，而是版面重组错误</h2></div>
+        <p>PDF 文本层字符正确；两枚下划线基线更低，当前行聚类把它们拆到了第二行。</p>
+      </div>
+      <div class="ocr-layout">
+        <article class="document-crop">
+          <div class="crop-label">样本字段 · 境外收货人</div>
+          <div class="crop-box"><span>境外收货人</span><strong>HNB_TX_US</strong><div class="baseline"></div><i class="underscore one">_</i><i class="underscore two">_</i></div>
+          <p>PDF 文本层：<code>HNB</code>、<code>TX</code>、<code>US</code> 与两枚低位 <code>_</code> 均为 100% 置信度。</p>
+        </article>
+        <div class="ocr-comparison">
+          <article class="bad"><span>当前输出</span><strong>HNB TX US _ _</strong><p>按 Y 轴分行后再以空格连接，破坏了标识符结构。</p></article>
+          <div class="arrow">→</div>
+          <article class="good"><span>修正输出</span><strong>HNB_TX_US</strong><p>低位连接符按 X 位置回接到两侧 ASCII 片段。</p></article>
+        </div>
+        <div class="rule-card">
+          <h3>拟加入的规则与回归</h3>
+          <ul><li>仅对结构化标识字段启用连接符回接。</li><li>支持 <code>_</code>、<code>-</code>、<code>.</code>、<code>/</code>。</li><li>要求连接符位于两个 ASCII 片段之间且水平间距合理。</li><li>固定样本断言：收货人 <code>HNB_TX_US</code>；总值 <code>CNY 346,940.00</code>。</li></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

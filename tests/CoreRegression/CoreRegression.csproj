@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <None Include="Fixtures/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../../src/CustomsClearanceConsole/Domain/*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Browser/TargetUrlPolicy.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Browser/BrowserCapturePolicy.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Recognition/DeclarationParser*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Recognition/CountryNames.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Application/BatchScanner.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Application/ScanPlan.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Export/*.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Diagnostics/ExportValidation.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/AtomicFile.cs" Link="Production/AtomicFile.cs" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/StateMigration.cs" Link="Production/StateMigration.cs" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/StateStore.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/AppPaths.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/AppLog.cs" Link="Production/%(Filename)%(Extension)" />
+    <Compile Include="../../src/CustomsClearanceConsole/Infrastructure/ExtractionResources.cs" Link="Production/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

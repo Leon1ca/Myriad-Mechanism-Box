@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>拖放预检反馈</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 400px; height: 400px; box-sizing: border-box; padding: 24px; background: #F2F4F7; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; gap: 12px;">
+<div style="font-size: 13px; font-weight: 500; color: #3D4A5C;">拖入文件时，投放区替换为以下反馈</div>
+<div style="padding: 16px; border-radius: 8px; border: 1.5px solid #17714F; background: #F3FAF6; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #17714F;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#17714F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg>松开即可载入为新批次</div>
+<div style="font-size: 12.5px; color: #3D4A5C;">24 个文件 · PDF 20 · PNG 4</div>
+</div>
+<div style="padding: 16px; border-radius: 8px; border: 1.5px solid #B42318; background: #FFF6F5; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #B42318;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#B42318" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>超过单批上限，已整批停止</div>
+<div style="font-size: 12.5px; color: #3D4A5C;">213 个文件 &gt; 200 · 当前批次保持不变</div>
+</div>
+<div style="padding: 16px; border-radius: 8px; border: 1.5px solid #D9A441; background: #FFFBF2; display: flex; flex-direction: column; gap: 6px;">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: #8A5300;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8A5300" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2z"/><path d="M8 6.5v3M8 11.2v.1"/></svg>未找到可识别的文件</div>
+<div style="font-size: 12.5px; color: #3D4A5C;">所选内容中没有 PDF / 图片 · 当前批次保持不变</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":400,"height":400}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

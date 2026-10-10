@@ -1,0 +1,400 @@
+{
+  "$schema": "关单核验台 UI v2 设计令牌。尺寸单位均为 96 DPI 下的逻辑像素（px），实装时按 DeviceDpi / 96 缩放。",
+  "version": "2.1.0",
+  "color": {
+    "headerBg": "#0E2747",
+    "primary": "#13355E",
+    "accent": "#1F5FAE",
+    "accentSoft": "#EAF1FB",
+    "ink": "#0F1B2D",
+    "ink2": "#3D4A5C",
+    "muted": "#5B6778",
+    "placeholder": "#6B7686",
+    "disabledText": "#8A94A3",
+    "disabledFill": "#F7F8FA",
+    "disabledPrimaryFill": "#C3CCD8",
+    "canvas": "#F2F4F7",
+    "panel": "#FFFFFF",
+    "panelSubtle": "#F7F8FA",
+    "dialogFooter": "#FAFBFC",
+    "segmentBg": "#EEF1F5",
+    "detailButtonBg": "#F0F3F7",
+    "border": "#DDE2E9",
+    "borderControl": "#C9D1DC",
+    "borderAccentSoft": "#A9BEDA",
+    "divider": "#EBEEF2",
+    "overlay": "rgba(15,27,45,0.45)",
+    "danger": "#B42318",
+    "toastBg": "#0F1B2D",
+    "emptyStripe": "#F3F5F8",
+    "dropZoneBorder": "#BCC6D3",
+    "dropZoneBg": "#FAFBFC",
+    "kpiPlaceholder": "#AEB9C8",
+    "focusRing": "#D6E4F7"
+  },
+  "status": {
+    "ok": {
+      "label": "正常",
+      "fg": "#17714F",
+      "bg": "#E6F4EE",
+      "row": "#FFFFFF"
+    },
+    "dup": {
+      "label": "重复",
+      "fg": "#B42318",
+      "bg": "#FDECEA",
+      "row": "#FFF6F5"
+    },
+    "warn": {
+      "label": "需关注",
+      "fg": "#8A5300",
+      "bg": "#FDF1DC",
+      "row": "#FFFCF4",
+      "underline": "#D9A441",
+      "notice": "#FFFBF2"
+    },
+    "kept": {
+      "label": "已留存",
+      "fg": "#1F5FAE",
+      "bg": "#EAF1FB"
+    },
+    "failed": {
+      "label": "识别失败",
+      "fg": "#4A5566",
+      "bg": "#EEF1F5"
+    },
+    "rowHover": "#F5F8FC",
+    "cellSelected": "#DCE8F8",
+    "cellActiveBorder": "#1F5FAE"
+  },
+  "font": {
+    "ui": {
+      "family": "Noto Sans SC",
+      "license": "SIL OFL 1.1",
+      "files": [
+        "NotoSansSC-Regular.ttf",
+        "NotoSansSC-Medium.ttf",
+        "NotoSansSC-Bold.ttf"
+      ]
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "license": "SIL OFL 1.1",
+      "files": [
+        "JetBrainsMono-Regular.ttf",
+        "JetBrainsMono-Medium.ttf"
+      ]
+    }
+  },
+  "type": {
+    "pageTitle": {
+      "font": "ui",
+      "px": 22,
+      "weight": 700
+    },
+    "kpiValue": {
+      "font": "ui",
+      "px": 26,
+      "weight": 700
+    },
+    "dialogTitle": {
+      "font": "ui",
+      "px": 16,
+      "weight": 700
+    },
+    "sectionTitle": {
+      "font": "ui",
+      "px": 14,
+      "weight": 700
+    },
+    "button": {
+      "font": "ui",
+      "px": 14,
+      "weight": 500
+    },
+    "body": {
+      "font": "ui",
+      "px": 13.5,
+      "weight": 400
+    },
+    "label": {
+      "font": "ui",
+      "px": 13,
+      "weight": 400
+    },
+    "tableHeader": {
+      "font": "ui",
+      "px": 12.5,
+      "weight": 500
+    },
+    "caption": {
+      "font": "ui",
+      "px": 12,
+      "weight": 400
+    },
+    "tag": {
+      "font": "ui",
+      "px": 12,
+      "weight": 500
+    },
+    "microTag": {
+      "font": "ui",
+      "px": 11,
+      "weight": 400
+    },
+    "number": {
+      "font": "mono",
+      "px": 13,
+      "weight": 500
+    },
+    "amount": {
+      "font": "mono",
+      "px": 13.5,
+      "weight": 500
+    },
+    "currency": {
+      "font": "mono",
+      "px": 11.5,
+      "weight": 400
+    },
+    "path": {
+      "font": "mono",
+      "px": 12.5,
+      "weight": 400
+    }
+  },
+  "space": {
+    "xs": 4,
+    "s": 8,
+    "m": 12,
+    "l": 16,
+    "xl": 20,
+    "xxl": 24
+  },
+  "radius": {
+    "tag": 4,
+    "control": 6,
+    "panel": 8,
+    "dialog": 10
+  },
+  "size": {
+    "minWindow": [
+      1200,
+      720
+    ],
+    "designWindow": [
+      1440,
+      900
+    ],
+    "header": 48,
+    "contentPadding": [
+      20,
+      24
+    ],
+    "buttonLarge": 40,
+    "buttonDialog": 36,
+    "buttonSmall": 28,
+    "input": 34,
+    "toolbar": 56,
+    "tableHeader": 38,
+    "tableRow": 54,
+    "tableFooter": 44,
+    "tag": 22,
+    "kpiPanelWidth": 480,
+    "searchWidth": 340,
+    "dialogs": {
+      "detail": [
+        600,
+        480
+      ],
+      "settings": [
+        520,
+        400
+      ],
+      "cleanup": [
+        440,
+        260
+      ]
+    },
+    "webCaptureWidgetWidth": 300,
+    "menus": {
+      "export": {
+        "width": 248,
+        "itemHeight": 40,
+        "offsetY": 46,
+        "align": "right"
+      },
+      "clean": {
+        "width": 248,
+        "offsetY": 40,
+        "align": "right"
+      },
+      "pageSize": {
+        "width": 120,
+        "itemHeight": 30,
+        "opensUpward": true,
+        "options": [
+          50,
+          100,
+          200
+        ],
+        "default": 50
+      }
+    }
+  },
+  "shadow": {
+    "menu": "0 8px 24px rgba(15,27,45,0.16)",
+    "dialog": "0 16px 48px rgba(15,27,45,0.28)",
+    "widget": "0 12px 32px rgba(15,27,45,0.22)"
+  },
+  "table": {
+    "columnGap": 12,
+    "paddingX": 16,
+    "columns": [
+      {
+        "key": "index",
+        "title": "#",
+        "width": 28
+      },
+      {
+        "key": "status",
+        "title": "状态",
+        "width": 76
+      },
+      {
+        "key": "number",
+        "title": "报关单号 / 来源文件",
+        "width": 200
+      },
+      {
+        "key": "consignee",
+        "title": "境外收货人",
+        "width": "fill",
+        "minWidth": 160
+      },
+      {
+        "key": "contract",
+        "title": "合同协议号",
+        "width": 150
+      },
+      {
+        "key": "port",
+        "title": "出境关别",
+        "width": 110
+      },
+      {
+        "key": "dest",
+        "title": "目的国",
+        "width": 76
+      },
+      {
+        "key": "amount",
+        "title": "关单总货值",
+        "width": 160,
+        "align": "right"
+      },
+      {
+        "key": "detail",
+        "title": "查看",
+        "width": 72,
+        "align": "center"
+      },
+      {
+        "key": "verify",
+        "title": "网页核验",
+        "width": 92,
+        "align": "center"
+      }
+    ]
+  },
+  "responsive": {
+    "minWindow": [
+      1200,
+      720
+    ],
+    "width": {
+      "compact": {
+        "below": 1320,
+        "kpiPanelWidth": 420,
+        "searchWidth": 340
+      },
+      "standard": {
+        "from": 1320,
+        "below": 1680,
+        "kpiPanelWidth": 480,
+        "searchWidth": 340
+      },
+      "wide": {
+        "from": 1680,
+        "kpiPanelWidth": 560,
+        "searchWidth": 420
+      }
+    },
+    "height": {
+      "compact": {
+        "below": 820,
+        "contentPadding": [
+          16,
+          24
+        ],
+        "sectionGap": 12,
+        "kpiPadding": [
+          10,
+          16
+        ],
+        "kpiValuePx": 22,
+        "amountHeader": 36,
+        "amountColumnHeader": 28,
+        "amountRow": 28,
+        "toolbar": 50,
+        "tableRow": 48
+      },
+      "standard": {
+        "from": 820,
+        "contentPadding": [
+          20,
+          24
+        ],
+        "sectionGap": 16,
+        "kpiPadding": [
+          14,
+          18
+        ],
+        "kpiValuePx": 26,
+        "amountHeader": 40,
+        "amountColumnHeader": 30,
+        "amountRow": 32,
+        "toolbar": 56,
+        "tableRow": 54
+      }
+    },
+    "tableColumns": {
+      "rule": "按收货人列实际宽度判定：< 180 先压缩；仍 < 180 合并“出境关别/目的国”；> 420 时收货人封顶 420，余量均分给合同号、关别、目的国",
+      "consigneeMin": 180,
+      "consigneeMax": 420,
+      "standard": {
+        "index": 28,
+        "status": 76,
+        "number": 200,
+        "contract": 150,
+        "port": 110,
+        "dest": 76,
+        "amount": 160,
+        "detail": 72,
+        "verify": 92
+      },
+      "compressed": {
+        "number": 192,
+        "contract": 124,
+        "port": 96,
+        "dest": 64,
+        "amount": 150
+      },
+      "merged": {
+        "portDest": 120,
+        "note": "两行：关别 13.5px / 目的国 12px muted"
+      },
+      "manualWidths": "用户手动拖过的列保持原宽，差值由收货人列吸收；双击列分隔线恢复规则宽度"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>右键复制状态</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 1040px; height: 340px; box-sizing: border-box; padding: 24px; background: #F2F4F7; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif;">
+
+<div style="background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; overflow: hidden;">
+<div style="display: grid; grid-template-columns: 44px 88px 200px minmax(0, 1fr) 160px 170px; height: 38px; align-items: center; background: #F7F8FA; border-bottom: 1px solid #DDE2E9; font-size: 12.5px; font-weight: 500; color: #5B6778;">
+<div style="padding: 0 12px;">#</div><div style="padding: 0 12px;">状态</div><div style="padding: 0 12px;">报关单号</div><div style="padding: 0 12px;">境外收货人</div><div style="padding: 0 12px;">合同协议号</div><div style="padding: 0 12px; text-align: right;">关单总货值</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 88px 200px minmax(0, 1fr) 160px 170px; height: 44px; align-items: stretch; border-bottom: 1px solid #EBEEF2; font-size: 13.5px;">
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7686;">04</div>
+<div style="display: flex; align-items: center; padding: 0 12px;"><span style="height: 22px; line-height: 22px; padding: 0 8px; border-radius: 4px; background: #E6F4EE; color: #17714F; font-size: 12px; font-weight: 500;">正常</span></div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500;">090120261000091377</div>
+<div style="display: flex; align-items: center; padding: 0 12px;">KANTO INDUSTRIAL CO., LTD.</div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">KI-HT-26-0877</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; font-family: 'JetBrains Mono', monospace;"><span style="font-size: 11.5px; color: #5B6778; margin-right: 6px;">CNY</span>371,520.00</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 88px 200px minmax(0, 1fr) 160px 170px; height: 44px; align-items: stretch; border-bottom: 1px solid #EBEEF2; font-size: 13.5px;">
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7686;">05</div>
+<div style="display: flex; align-items: center; padding: 0 12px;"><span style="height: 22px; line-height: 22px; padding: 0 8px; border-radius: 4px; background: #E6F4EE; color: #17714F; font-size: 12px; font-weight: 500;">正常</span></div>
+<div style="display: flex; align-items: center; padding: 0 12px; background: #DCE8F8; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500;">220120261000184102</div>
+<div style="display: flex; align-items: center; padding: 0 12px; background: #DCE8F8;">GULF STAR GENERAL TRADING LLC</div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">GS/2026/115</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; font-family: 'JetBrains Mono', monospace;"><span style="font-size: 11.5px; color: #5B6778; margin-right: 6px;">USD</span>48,960.00</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 88px 200px minmax(0, 1fr) 160px 170px; height: 44px; align-items: stretch; border-bottom: 1px solid #EBEEF2; font-size: 13.5px;">
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7686;">06</div>
+<div style="display: flex; align-items: center; padding: 0 12px;"><span style="height: 22px; line-height: 22px; padding: 0 8px; border-radius: 4px; background: #E6F4EE; color: #17714F; font-size: 12px; font-weight: 500;">正常</span></div>
+<div style="display: flex; align-items: center; padding: 0 12px; background: #DCE8F8; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500;">090120261000092216</div>
+<div style="display: flex; align-items: center; padding: 0 12px; background: #DCE8F8; box-shadow: inset 0 0 0 2px #1F5FAE;">EURO PARTS GMBH</div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">EP-26-00319</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; font-family: 'JetBrains Mono', monospace;"><span style="font-size: 11.5px; color: #5B6778; margin-right: 6px;">EUR</span>22,150.00</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 88px 200px minmax(0, 1fr) 160px 170px; height: 44px; align-items: stretch; font-size: 13.5px;">
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7686;">07</div>
+<div style="display: flex; align-items: center; padding: 0 12px;"><span style="height: 22px; line-height: 22px; padding: 0 8px; border-radius: 4px; background: #E6F4EE; color: #17714F; font-size: 12px; font-weight: 500;">正常</span></div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500;">420120261000330915</div>
+<div style="display: flex; align-items: center; padding: 0 12px;">SEOUL HANBIT FOOD CO., LTD.</div>
+<div style="display: flex; align-items: center; padding: 0 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">HB20260907</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; padding: 0 12px; font-family: 'JetBrains Mono', monospace;"><span style="font-size: 11.5px; color: #5B6778; margin-right: 6px;">USD</span>9,875.50</div>
+</div>
+
+<div style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-top: 1px solid #DDE2E9; font-size: 12px; color: #5B6778;">
+<span>已选 2 行 × 2 列，共 4 个单元格</span>
+<span>Shift / Ctrl + 点击扩展选区</span>
+</div>
+</div>
+
+<div style="position: absolute; left: 520px; top: 172px; z-index: 5; width: 232px; padding: 4px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 6px; box-shadow: 0 8px 24px rgba(15,27,45,0.18);">
+<button style="width: 100%; display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; border: 0; border-radius: 4px; background: #EAF1FB; color: #0F1B2D; font-size: 13px; font-family: inherit; cursor: pointer;">
+<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#13355E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1.5"/><path d="M3 10.5V4a1 1 0 0 1 1-1h6.5"/></svg>
+<span style="flex-grow: 1; text-align: left;">复制选中的内容</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">Ctrl+C</span>
+</button>
+</div>
+
+<div style="position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 17px; background: #0F1B2D; color: #FFFFFF; font-size: 12.5px; white-space: nowrap;">
+<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8FD1B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg>
+已复制 4 个单元格 · 制表符分隔，可直接粘贴到 Excel
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1040,"height":340}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

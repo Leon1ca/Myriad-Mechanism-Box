@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>设置弹窗</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 520px; height: 400px; box-sizing: border-box; background: #FFFFFF; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; border: 1px solid #DDE2E9; border-radius: 10px; overflow: hidden;">
+
+<div style="height: 56px; flex-shrink: 0; padding: 0 12px 0 20px; border-bottom: 1px solid #EBEEF2; display: flex; align-items: center; justify-content: space-between;">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700;">设置</h2>
+<button onClick="{{close}}" aria-label="关闭设置" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: transparent; cursor: pointer;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3D4A5C" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+</button>
+</div>
+
+<div style="flex-grow: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<label for="set-docs" style="font-size: 13px; font-weight: 500;">关单目录</label>
+<div style="display: flex; gap: 8px;">
+<input id="set-docs" value="D:\关单\2026-09\第3批" style="flex-grow: 1; min-width: 0; height: 36px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9D1DC; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #0F1B2D;">
+<button style="height: 36px; padding: 0 14px; border: 1px solid #C9D1DC; border-radius: 6px; background: #FFFFFF; color: #13355E; font-size: 13px; cursor: pointer;">浏览…</button>
+</div>
+<div style="font-size: 12px; color: #5B6778;">只读取当前层；更换后作为新批次载入，识别中不可修改</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<label for="set-shots" style="font-size: 13px; font-weight: 500;">截图目录</label>
+<div style="display: flex; gap: 8px;">
+<input id="set-shots" value="D:\关单\核验截图" style="flex-grow: 1; min-width: 0; height: 36px; box-sizing: border-box; padding: 0 12px; border: 1px solid #C9D1DC; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #0F1B2D;">
+<button style="height: 36px; padding: 0 14px; border: 1px solid #C9D1DC; border-radius: 6px; background: #FFFFFF; color: #13355E; font-size: 13px; cursor: pointer;">浏览…</button>
+</div>
+<div style="font-size: 12px; color: #5B6778;">网页长截图以 18 位报关单号命名保存到此处</div>
+</div>
+</div>
+
+<div style="height: 64px; flex-shrink: 0; padding: 0 20px; border-top: 1px solid #EBEEF2; display: flex; align-items: center; justify-content: flex-end; gap: 10px; background: #FAFBFC;">
+<button onClick="{{close}}" style="height: 36px; padding: 0 16px; border: 1px solid #C9D1DC; border-radius: 6px; background: #FFFFFF; color: #0F1B2D; font-size: 13.5px; cursor: pointer;">取消</button>
+<button onClick="{{close}}" style="height: 36px; padding: 0 18px; border: 0; border-radius: 6px; background: #13355E; color: #FFFFFF; font-size: 13.5px; font-weight: 500; cursor: pointer;">保存</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"onClose":{"editor":null},"$preview":{"width":520,"height":400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { close: () => { if (this.props.onClose) this.props.onClose(); } };
+  }
+}
+</script>
+</body>
+</html>

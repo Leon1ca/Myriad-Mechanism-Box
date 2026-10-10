@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>窗口缩放规则</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; padding: 40px 48px; background: #FFFFFF; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; gap: 28px;">
+
+<div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #DDE2E9; padding-bottom: 16px;">
+<h1 style="margin: 0; font-size: 24px; font-weight: 700;">窗口缩放规则</h1>
+<div style="font-size: 13px; color: #5B6778;">最小 1200 × 720 · 拖动时实时重排，不做缩放动画</div>
+</div>
+
+<div style="display: flex; gap: 48px; min-height: 0;">
+
+<div style="width: 560px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">区域分配</h2>
+<div style="position: relative; height: 420px; border: 1px solid #C9D1DC; border-radius: 8px; background: #F2F4F7; overflow: hidden; font-size: 12px;">
+<div style="height: 30px; background: #0E2747; color: #FFFFFF; display: flex; align-items: center; justify-content: space-between; padding: 0 12px;"><span>顶栏 · 固定高 48</span><span style="opacity: 0.8;">设置 右对齐</span></div>
+<div style="padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; height: 390px; box-sizing: border-box;">
+<div style="height: 30px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #13355E; border-radius: 4px; padding: 0 10px; background: #FFFFFF;"><span>标题行 · 固定高</span><span style="color: #5B6778;">导出 / 开始识别 贴右缘</span></div>
+<div style="height: 76px; display: flex; gap: 10px;">
+<div style="width: 170px; border: 1px solid #13355E; border-radius: 4px; background: #FFFFFF; padding: 8px 10px; box-sizing: border-box;">统计面板<div style="color: #5B6778; margin-top: 4px;">分档宽 420 / 480 / 560</div></div>
+<div style="flex-grow: 1; border: 1.5px dashed #1F5FAE; border-radius: 4px; background: #EAF1FB; padding: 8px 10px; box-sizing: border-box;">金额汇总 · 填充剩余宽度<div style="color: #3D4A5C; margin-top: 4px;">三列金额等分，右对齐</div></div>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; border: 1px solid #13355E; border-radius: 4px; background: #FFFFFF; overflow: hidden;">
+<div style="height: 30px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border-bottom: 1px solid #DDE2E9;"><span style="padding: 0 6px; border: 1px solid #13355E; border-radius: 3px;">筛选</span><span style="padding: 0 6px; border: 1px solid #13355E; border-radius: 3px;">搜索 340 / 420</span><span style="flex-grow: 1;"></span><span style="padding: 0 6px; border: 1px solid #13355E; border-radius: 3px;">清理</span></div>
+<div style="flex-grow: 1; border: 1.5px dashed #1F5FAE; margin: 6px; border-radius: 4px; background: #EAF1FB; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;"><span style="font-weight: 500;">表格行区域 · 唯一随高度伸缩的区域</span><span style="color: #3D4A5C;">收货人为填充列；多出的高度全部用于显示更多行</span></div>
+<div style="height: 26px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-top: 1px solid #DDE2E9;"><span>底栏 · 固定高</span><span style="color: #5B6778;">分页贴右缘</span></div>
+</div>
+</div>
+</div>
+<div style="display: flex; gap: 20px; font-size: 12px; color: #3D4A5C;">
+<span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 10px; border: 1px solid #13355E; border-radius: 2px;"></span>固定尺寸</span>
+<span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 10px; border: 1.5px dashed #1F5FAE; background: #EAF1FB; border-radius: 2px;"></span>随窗口伸缩</span>
+</div>
+</div>
+
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px;">
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">宽度分档</h2>
+<div style="border: 1px solid #DDE2E9; border-radius: 8px; overflow: hidden; font-size: 12.5px;">
+<div style="display: grid; grid-template-columns: 96px repeat(3, minmax(0, 1fr)); background: #F7F8FA; font-weight: 500; color: #5B6778; border-bottom: 1px solid #DDE2E9;">
+<div style="padding: 9px 12px;"></div><div style="padding: 9px 12px;">紧凑 &lt; 1320</div><div style="padding: 9px 12px;">标准 1320–1679</div><div style="padding: 9px 12px;">宽屏 ≥ 1680</div>
+</div>
+<div style="display: grid; grid-template-columns: 96px repeat(3, minmax(0, 1fr)); border-bottom: 1px solid #EBEEF2;">
+<div style="padding: 9px 12px; color: #5B6778;">统计面板</div><div style="padding: 9px 12px;">420</div><div style="padding: 9px 12px;">480</div><div style="padding: 9px 12px;">560</div>
+</div>
+<div style="display: grid; grid-template-columns: 96px repeat(3, minmax(0, 1fr)); border-bottom: 1px solid #EBEEF2;">
+<div style="padding: 9px 12px; color: #5B6778;">搜索框</div><div style="padding: 9px 12px;">340</div><div style="padding: 9px 12px;">340</div><div style="padding: 9px 12px;">420</div>
+</div>
+<div style="display: grid; grid-template-columns: 96px repeat(3, minmax(0, 1fr));">
+<div style="padding: 9px 12px; color: #5B6778;">表格列</div>
+<div style="padding: 9px 12px; line-height: 1.6;">压缩列宽；仍不足时“出境关别 / 目的国”合并为两行一列</div>
+<div style="padding: 9px 12px; line-height: 1.6;">标准列宽，收货人填充</div>
+<div style="padding: 9px 12px; line-height: 1.6;">收货人最多 420，余量均分给合同号、关别、目的国</div>
+</div>
+</div>
+<div style="font-size: 12px; color: #5B6778; line-height: 1.6;">表格列按规则判定而非按窗口宽度：收货人列 &lt; 180 时先压缩（单号 192 · 合同 124 · 关别 96 · 目的国 64 · 货值 150），仍 &lt; 180 再合并。</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">高度密度</h2>
+<div style="border: 1px solid #DDE2E9; border-radius: 8px; overflow: hidden; font-size: 12.5px;">
+<div style="display: grid; grid-template-columns: 120px repeat(2, minmax(0, 1fr)); background: #F7F8FA; font-weight: 500; color: #5B6778; border-bottom: 1px solid #DDE2E9;">
+<div style="padding: 9px 12px;"></div><div style="padding: 9px 12px;">紧凑 &lt; 820</div><div style="padding: 9px 12px;">标准 ≥ 820</div>
+</div>
+<div style="display: grid; grid-template-columns: 120px repeat(2, minmax(0, 1fr)); border-bottom: 1px solid #EBEEF2;"><div style="padding: 9px 12px; color: #5B6778;">外边距 / 区间距</div><div style="padding: 9px 12px;">16 · 12</div><div style="padding: 9px 12px;">20 · 16</div></div>
+<div style="display: grid; grid-template-columns: 120px repeat(2, minmax(0, 1fr)); border-bottom: 1px solid #EBEEF2;"><div style="padding: 9px 12px; color: #5B6778;">统计数值</div><div style="padding: 9px 12px;">22px，单元格内边距 10 16</div><div style="padding: 9px 12px;">26px，单元格内边距 14 18</div></div>
+<div style="display: grid; grid-template-columns: 120px repeat(2, minmax(0, 1fr)); border-bottom: 1px solid #EBEEF2;"><div style="padding: 9px 12px; color: #5B6778;">金额汇总</div><div style="padding: 9px 12px;">标题 36 · 表头 28 · 行 28</div><div style="padding: 9px 12px;">标题 40 · 表头 30 · 行 32</div></div>
+<div style="display: grid; grid-template-columns: 120px repeat(2, minmax(0, 1fr));"><div style="padding: 9px 12px; color: #5B6778;">记录列表</div><div style="padding: 9px 12px;">工具栏 50 · 行高 48</div><div style="padding: 9px 12px;">工具栏 56 · 行高 54</div></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">拖动与对齐</h2>
+<div style="font-size: 12.5px; color: #3D4A5C; line-height: 1.75;">
+左右 24 为统一对齐线：统计区、记录面板、标题行按钮的外缘始终落在这条线上。<br>
+用户手动拖过的列宽保持不变，差值由收货人列吸收；双击列分隔线恢复规则宽度。<br>
+弹窗保持固定尺寸并居中；拖动窗口时自动收起已打开的下拉菜单。<br>
+WinForms：主体用 Dock / TableLayoutPanel；ClientSizeChanged 时用 SuspendLayout / ResumeLayout 包住一次列宽重算，表格开启 DoubleBuffered，避免拖动时闪烁。
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

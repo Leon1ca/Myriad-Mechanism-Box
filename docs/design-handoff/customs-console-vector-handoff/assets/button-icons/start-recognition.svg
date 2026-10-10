@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" color="#245A92" role="img" aria-labelledby="title">
+  <title id="title">开始识别</title>
+  <path d="M8 4H5.75A1.75 1.75 0 0 0 4 5.75V8M16 4h2.25A1.75 1.75 0 0 1 20 5.75V8M20 16v2.25A1.75 1.75 0 0 1 18.25 20H16M8 20H5.75A1.75 1.75 0 0 1 4 18.25V16M9 7h4.75L17 10.25V17H9V7ZM13.75 7v3.25H17M7 13.25h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

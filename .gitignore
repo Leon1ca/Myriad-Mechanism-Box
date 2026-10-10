@@ -1,0 +1,28 @@
+bin/
+obj/
+.vs/
+.idea/
+.devtools/
+.nuget/
+*.user
+*.suo
+
+# 由 scripts/bootstrap-from-release.ps1 从便携发布包准备
+src/CustomsClearanceConsole/dual-ocr-bin/
+src/CustomsClearanceConsole/ocr-models/
+src/CustomsClearanceConsole/tools/
+
+# 由 scripts/prepare-fonts.ps1 在云端从官方源生成的静态字体（原许可 OFL 文本随仓库保留）
+src/CustomsClearanceConsole/fonts/*.ttf
+src/CustomsClearanceConsole/fonts/MANIFEST.json
+
+# 发布物与本地业务数据
+artifacts/
+dist/
+*.zip
+!docs/design-sources/**/*.zip
+关单核验台数据/
+Screenshots/
+!designs/**/screenshots/
+!designs/**/screenshots/**
+*.log

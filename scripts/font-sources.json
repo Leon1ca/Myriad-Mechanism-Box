@@ -1,0 +1,26 @@
+{
+  "notoSansScVariable": {
+    "family": "Noto Sans SC",
+    "commit": "2894aab31764f10f29c421bdfd2340d3b382d384",
+    "url": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+    "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "licenseUrl": "https://raw.githubusercontent.com/google/fonts/2894aab31764f10f29c421bdfd2340d3b382d384/ofl/notosanssc/OFL.txt",
+    "licenseSha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "licenseFile": "NotoSansSC-OFL.txt",
+    "reservedFontName": "Source"
+  },
+  "jetBrainsMono": {
+    "family": "JetBrains Mono",
+    "version": "2.304",
+    "url": "https://github.com/JetBrains/JetBrainsMono/releases/download/v2.304/JetBrainsMono-2.304.zip",
+    "sha256": "6f6376c6ed2960ea8a963cd7387ec9d76e3f629125bc33d1fdcd7eb7012f7bbf",
+    "licenseFile": "JetBrainsMono-OFL.txt",
+    "members": [
+      "fonts/ttf/JetBrainsMono-Regular.ttf",
+      "fonts/ttf/JetBrainsMono-Medium.ttf",
+      "fonts/ttf/JetBrainsMono-Bold.ttf",
+      "OFL.txt"
+    ],
+    "reservedFontName": null
+  }
+}

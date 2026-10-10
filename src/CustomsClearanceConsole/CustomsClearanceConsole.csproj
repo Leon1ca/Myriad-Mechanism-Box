@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseSystemDrawing>true</UseSystemDrawing>
+    <StartupObject>CustomsClearanceConsole.Program</StartupObject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>关单核验台</AssemblyName>
+    <Version>0.1.0</Version>
+    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <RootNamespace>CustomsClearanceConsole</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <UseAppHost>false</UseAppHost>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BrowserScripts/*.js" />
+    <EmbeddedResource Include="..\..\tests\CoreRegression\Fixtures\declaration-5166-rapidocr.json" LogicalName="ocr-selftest-layout.json" />
+    <Reference Include="Clipper2Lib"><HintPath>dual-ocr-bin\Clipper2Lib.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Emgu.CV"><HintPath>dual-ocr-bin\Emgu.CV.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.ML.OnnxRuntime"><HintPath>dual-ocr-bin\Microsoft.ML.OnnxRuntime.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="System.Numerics.Tensors"><HintPath>dual-ocr-bin\System.Numerics.Tensors.dll</HintPath><Private>true</Private></Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="使用说明.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="AboutAndLicenses.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="ocr-models\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="tools\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\app.ico" CopyToOutputDirectory="PreserveNewest" TargetPath="app.ico" />
+    <None Update="Assets\app-icon-40.png" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\app-icon-40.png" />
+    <None Update="Assets\button-icons\*.svg" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\button-icons\%(Filename)%(Extension)" />
+    <None Update="Assets\button-icons\*.png" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\button-icons\%(Filename)%(Extension)" />
+    <None Include="Assets\ui-v2\**\*" CopyToOutputDirectory="PreserveNewest" TargetPath="assets\ui-v2\%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="fonts\**\*" CopyToOutputDirectory="PreserveNewest" TargetPath="fonts\%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Update="dual-ocr-bin\*.dll" CopyToOutputDirectory="PreserveNewest" TargetPath="%(Filename)%(Extension)" />
+    <None Update="dual-ocr-bin\RapidOCRLib.dll" CopyToOutputDirectory="Never" />
+    <None Update="dual-ocr-bin\Emgu.CV.Bitmap.dll" CopyToOutputDirectory="Never" />
+  </ItemGroup>
+</Project>

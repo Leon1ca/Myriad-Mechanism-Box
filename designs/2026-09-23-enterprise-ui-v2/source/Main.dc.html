@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>关单核验台 · 主工作台</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button,input{font-family:inherit}
+input::placeholder{color:#6B7686}
+button:disabled{cursor:default}
+</style>
+</helmet>
+<div style="position: relative; width: {{w}}px; height: {{h}}px; display: flex; flex-direction: column; background: #F2F4F7; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; overflow: hidden;">
+
+<header style="height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: #0E2747; color: #FFFFFF;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<div style="width: 28px; height: 28px; border-radius: 6px; background: #1F5FAE; display: flex; align-items: center; justify-content: center;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="m6 9.2 1.6 1.6L10.5 7.8"/></svg>
+</div>
+<div style="font-size: 15px; font-weight: 700; letter-spacing: 0.02em;">关单核验台</div>
+<div style="height: 18px; width: 1px; background: rgba(255,255,255,0.22);"></div>
+<div style="font-size: 12px; color: #C9D6E8; font-family: 'JetBrains Mono', monospace;">v1.5.0</div>
+</div>
+<button onClick="{{openSettings}}" style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 1px solid rgba(255,255,255,0.32); border-radius: 6px; background: rgba(255,255,255,0.08); color: #FFFFFF; font-size: 13px; cursor: pointer;">
+<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5h6.5M12 4.5h1.5M2.5 11.5h1.5M7 11.5h6.5"/><circle cx="10.5" cy="4.5" r="1.5"/><circle cx="5.5" cy="11.5" r="1.5"/></svg>设置
+</button>
+</header>
+
+<main style="flex-grow: 1; min-height: 0; box-sizing: border-box; padding: {{mainPad}}; display: flex; flex-direction: column; gap: {{mainGap}}px;">
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700;">本批关单</h1>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 4px; background: {{tagBg}}; color: {{tagFg}}; font-size: 12px; font-weight: 500;">
+<sc-if value="{{isLoaded}}" hint-placeholder-val="{{ true }}"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#17714F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg></sc-if>
+<sc-if value="{{notLoaded}}" hint-placeholder-val="{{ false }}"><span style="width: 6px; height: 6px; border-radius: 3px; background: {{tagFg}};"></span></sc-if>
+{{tagLabel}}</span>
+</div>
+<sc-if value="{{isLoaded}}" hint-placeholder-val="{{ true }}">
+<div style="font-size: 13px; color: #5B6778;">14:34 完成 · 用时 2 分 14 秒 · <span style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">D:\关单\2026-09\第3批</span></div>
+</sc-if>
+<sc-if value="{{isReady}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: 13px; color: #5B6778;"><span style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C;">D:\关单\2026-09\第3批</span> · 10 个文件（PDF 7 · JPG 3）</div>
+</sc-if>
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: 13px; color: #5B6778;">尚未选择关单目录</div>
+</sc-if>
+</div>
+<div style="display: flex; gap: 10px;">
+<div style="position: relative;">
+<button onClick="{{toggleExport}}" disabled="{{exportDisabled}}" aria-haspopup="menu" aria-expanded="{{exportOpen}}" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px 0 16px; border: 1px solid {{expBorder}}; border-radius: 6px; background: {{expBg}}; color: {{expFg}}; font-size: 14px; font-weight: 500; cursor: pointer;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="{{expFg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13h10"/></svg>导出列表
+<span style="width: 1px; height: 18px; background: {{expDivider}}; margin-left: 4px;"></span>
+<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="{{expFg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5"/></svg>
+</button>
+<sc-if value="{{exportOpen}}" hint-placeholder-val="{{ false }}">
+<div role="menu" style="position: absolute; top: 46px; right: 0; z-index: 10; width: 248px; padding: 6px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; box-shadow: 0 8px 24px rgba(15,27,45,0.16); display: flex; flex-direction: column; gap: 2px;">
+<button role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; border: 0; border-radius: 5px; background: #FFFFFF; cursor: pointer; text-align: left;">
+<span style="width: 26px; height: 26px; flex-shrink: 0; border-radius: 5px; background: #E6F4EE; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#17714F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/><path d="M2.5 6.5h11M2.5 10h11M6.5 6.5v7"/></svg></span>
+<span style="flex-grow: 1; font-size: 13.5px; color: #0F1B2D;">导出为 Excel</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">.xlsx</span>
+</button>
+<button role="menuitem" onClick="{{closeMenus}}" style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 10px; border: 0; border-radius: 5px; background: #FFFFFF; cursor: pointer; text-align: left;">
+<span style="width: 26px; height: 26px; flex-shrink: 0; border-radius: 5px; background: #EEF1F5; display: flex; align-items: center; justify-content: center;"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#3D4A5C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M6 8.5h4M6 11h4"/></svg></span>
+<span style="flex-grow: 1; font-size: 13.5px; color: #0F1B2D;">导出为 Markdown</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">.md</span>
+</button>
+</div>
+</sc-if>
+</div>
+<button disabled="{{startDisabled}}" style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; border: 0; border-radius: 6px; background: {{startBg}}; color: #FFFFFF; font-size: 14px; font-weight: 500; cursor: pointer;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="#FFFFFF" stroke="none" aria-hidden="true"><path d="M5 3.2v9.6L12.8 8z"/></svg>开始识别
+</button>
+</div>
+</div>
+
+<div style="display: flex; gap: 16px;">
+<div style="width: {{kpiW}}px; flex-shrink: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; overflow: hidden;">
+<sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+<div style="padding: {{kpiPad}}; border-right: {{k.br}}; border-bottom: {{k.bb}}; display: flex; flex-direction: column; gap: 4px;">
+<div style="font-size: 13px; color: #5B6778;">{{k.label}}</div>
+<div style="font-size: {{kpiVal}}px; font-weight: 700; line-height: 1.15; color: {{k.color}};">{{k.value}}<span style="font-size: 14px; font-weight: 500; margin-left: 4px; color: {{k.unitColor}};">{{k.unit}}</span></div>
+<div style="font-size: 12px; color: #5B6778;">{{k.sub}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="flex-grow: 1; min-width: 0; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
+<div style="height: {{amtHead}}px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #EBEEF2;">
+<div style="font-size: 14px; font-weight: 700;">金额汇总 <span style="font-size: 12px; font-weight: 400; color: #5B6778;">按币种分别合计，不做汇率换算</span></div>
+<div style="font-size: 12px; color: #5B6778;">单位：原币</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; padding: 0 16px; height: {{amtCol}}px; flex-shrink: 0; align-items: center; background: #F7F8FA; font-size: 12px; color: #5B6778; font-weight: 500;">
+<div>币种</div><div>份数 前 → 后</div><div style="text-align: right;">去重前</div><div style="text-align: right;">去重后（计入）</div><div style="text-align: right;">重复扣减</div>
+</div>
+<sc-if value="{{isLoaded}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: 80px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; padding: 0 16px; height: {{amtRow}}px; align-items: center; border-bottom: 1px solid #EBEEF2; font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">
+<div style="font-weight: 500;">USD</div><div style="color: #3D4A5C;">5 → 4</div><div style="text-align: right; color: #3D4A5C;">157,191.50</div><div style="text-align: right; font-weight: 500;">121,663.50</div><div style="text-align: right; color: #B42318;">−35,528.00</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; padding: 0 16px; height: {{amtRow}}px; align-items: center; border-bottom: 1px solid #EBEEF2; font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">
+<div style="font-weight: 500;">CNY</div><div style="color: #3D4A5C;">2 → 2</div><div style="text-align: right; color: #3D4A5C;">499,920.00</div><div style="text-align: right; font-weight: 500;">499,920.00</div><div style="text-align: right; color: #6B7686;">—</div>
+</div>
+<div style="display: grid; grid-template-columns: 80px 110px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; padding: 0 16px; height: {{amtRow}}px; align-items: center; border-bottom: 1px solid #EBEEF2; font-family: 'JetBrains Mono', monospace; font-size: 13.5px;">
+<div style="font-weight: 500;">EUR</div><div style="color: #3D4A5C;">2 → 2</div><div style="text-align: right; color: #3D4A5C;">38,470.00</div><div style="text-align: right; font-weight: 500;">38,470.00</div><div style="text-align: right; color: #6B7686;">—</div>
+</div>
+<div style="flex-grow: 1; display: flex; align-items: center; gap: 8px; padding: 0 16px; min-height: {{amtRow}}px; background: #FFFBF2; font-size: 12px; color: #8A5300;">
+<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8A5300" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2z"/><path d="M8 6.5v3M8 11.2v.1"/></svg>
+<span>1 份金额未确认，未计入合计：USD 12,480.00（scan_0921_03.jpg）</span>
+</div>
+</sc-if>
+<sc-if value="{{notLoaded}}" hint-placeholder-val="{{ false }}">
+<div style="flex-grow: 1; min-height: 96px; display: flex; align-items: center; justify-content: center; gap: 14px; background: repeating-linear-gradient(180deg, #FFFFFF 0, #FFFFFF 31px, #F3F5F8 31px, #F3F5F8 32px);">
+<div style="width: 40px; height: 40px; border-radius: 8px; background: #F2F4F7; border: 1px solid #E3E7ED; display: flex; align-items: center; justify-content: center;">
+<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="#8A94A3" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3.5"/><path d="M9.2 4.6a3.5 3.5 0 1 1-1.9 6.3"/><path d="M6 4.6v2.8M5 6h2"/></svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 6px 12px; background: #FFFFFF;">
+<div style="font-size: 13px; font-weight: 500; color: #3D4A5C;">暂无金额汇总</div>
+<div style="font-size: 12px; color: #5B6778;">识别完成后按币种分别合计</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<section style="flex-grow: 1; min-height: 0; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; display: flex; flex-direction: column;">
+<div style="height: {{toolbarH}}px; flex-shrink: 0; display: flex; align-items: center; gap: 16px; padding: 0 16px; border-bottom: 1px solid #EBEEF2;">
+<div style="display: flex; gap: 2px; padding: 3px; background: #EEF1F5; border-radius: 7px;">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button onClick="{{t.pick}}" disabled="{{t.disabled}}" style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border: 0; border-radius: 5px; background: {{t.bg}}; box-shadow: {{t.shadow}}; color: {{t.fg}}; font-size: 13px; font-weight: 500; cursor: pointer;">{{t.label}}<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: {{t.countFg}};">{{t.count}}</span></button>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; width: {{searchW}}px; height: 34px; box-sizing: border-box; padding: 0 10px; border: 1px solid {{searchBorder}}; border-radius: 6px; background: {{searchBg}};">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#5B6778" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+<input aria-label="搜索记录" disabled="{{notLoaded}}" value="{{q}}" onChange="{{onSearch}}" placeholder="搜索单号、文件名、收货人、合同号" style="flex-grow: 1; min-width: 0; border: 0; outline: none; font-size: 13px; color: #0F1B2D; background: transparent;">
+</div>
+<div style="flex-grow: 1;"></div>
+<div style="position: relative;">
+<button onClick="{{toggleClean}}" disabled="{{cleanDisabled}}" aria-haspopup="menu" aria-expanded="{{cleanMenuOpen}}" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 10px 0 12px; border: 1px solid {{cleanBorder}}; border-radius: 6px; background: {{cleanBtnBg}}; color: {{cleanFg}}; font-size: 13px; cursor: pointer;">
+<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="{{cleanIcon}}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5"/></svg>清理
+<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="{{cleanIcon}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5"/></svg>
+</button>
+<sc-if value="{{cleanMenuOpen}}" hint-placeholder-val="{{ false }}">
+<div role="menu" style="position: absolute; top: 40px; right: 0; z-index: 10; width: 248px; padding: 6px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; box-shadow: 0 8px 24px rgba(15,27,45,0.16); display: flex; flex-direction: column; gap: 2px;">
+<button role="menuitem" onClick="{{cleanList}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 0; border-radius: 5px; background: #FFFFFF; cursor: pointer; text-align: left;"><span style="font-size: 13px; color: #0F1B2D;">列表清理</span><span style="font-size: 12px; color: #5B6778;">仅清除识别记录，不删除文件</span></button>
+<div style="height: 1px; background: #EBEEF2; margin: 4px 0;"></div>
+<button role="menuitem" onClick="{{cleanDocs}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 0; border-radius: 5px; background: #FFFFFF; cursor: pointer; text-align: left;"><span style="font-size: 13px; color: #B42318;">关单清理</span><span style="font-size: 12px; color: #5B6778;">当前层 PDF / 图片移入回收站</span></button>
+<button role="menuitem" onClick="{{cleanShots}}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 0; border-radius: 5px; background: #FFFFFF; cursor: pointer; text-align: left;"><span style="font-size: 13px; color: #B42318;">截图清理</span><span style="font-size: 12px; color: #5B6778;">核验截图移入回收站</span></button>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: {{cols}}; column-gap: 12px; align-items: center; height: 38px; flex-shrink: 0; padding: 0 16px; background: #F7F8FA; border-bottom: 1px solid #DDE2E9; font-size: 12.5px; font-weight: 500; color: #5B6778;">
+<div>#</div><div>状态</div><div>报关单号 / 来源文件</div><div>境外收货人</div><div>合同协议号</div><sc-if value="{{split}}" hint-placeholder-val="{{ true }}"><div>出境关别</div><div>目的国</div></sc-if><sc-if value="{{merged}}" hint-placeholder-val="{{ false }}"><div>出境关别 / 目的国</div></sc-if><div style="text-align: right;">关单总货值</div><div style="text-align: center;">查看</div><div style="text-align: center;">网页核验</div>
+</div>
+
+<div style="flex-grow: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;">
+<sc-if value="{{isLoaded}}" hint-placeholder-val="{{ true }}">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: {{cols}}; column-gap: 12px; align-items: center; height: {{rowH}}px; flex-shrink: 0; padding: 0 16px; border-bottom: 1px solid #EBEEF2; background: {{r.rowBg}}; font-size: 13.5px;">
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7686;">{{r.idx}}</div>
+<div><span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; background: {{r.tagBg}}; color: {{r.tagFg}}; font-size: 12px; font-weight: 500;">{{r.status}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: 0.01em;">{{r.no}}</div>
+<div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+<sc-if value="{{r.isRep}}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; height: 16px; line-height: 16px; padding: 0 5px; border-radius: 3px; background: #EAF1FB; color: #1F5FAE; font-size: 11px;">合计代表</span></sc-if>
+<sc-if value="{{r.isExcluded}}" hint-placeholder-val="{{ false }}"><span style="flex-shrink: 0; height: 16px; line-height: 16px; padding: 0 5px; border-radius: 3px; background: #EEF1F5; color: #4A5566; font-size: 11px;">不计入</span></sc-if>
+<span title="{{r.file}}" style="font-size: 12px; color: #5B6778; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.file}}</span>
+</div>
+</div>
+<div title="{{r.consignee}}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.consignee}}</div>
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #3D4A5C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.contract}}</div>
+<sc-if value="{{split}}" hint-placeholder-val="{{ true }}">
+<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.port}}</div>
+<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.dest}}</div>
+</sc-if>
+<sc-if value="{{merged}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.port}}</div>
+<div style="font-size: 12px; color: #5B6778; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{r.dest}}</div>
+</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+<sc-if value="{{r.confirmed}}" hint-placeholder-val="{{ true }}">
+<div style="font-family: 'JetBrains Mono', monospace;"><span style="font-size: 11.5px; color: #5B6778; margin-right: 6px;">{{r.cur}}</span><span style="font-weight: 500;">{{r.amt}}</span></div>
+</sc-if>
+<sc-if value="{{r.unconfirmed}}" hint-placeholder-val="{{ false }}">
+<div style="font-family: 'JetBrains Mono', monospace; color: #8A5300; text-decoration: underline dashed #D9A441; text-underline-offset: 4px;"><span style="font-size: 11.5px; margin-right: 6px;">{{r.cur}}</span><span style="font-weight: 500;">{{r.amt}}</span></div>
+<div style="font-size: 11px; color: #8A5300;">未确认 · 另一引擎 12,430.00</div>
+</sc-if>
+</div>
+<div style="display: flex; justify-content: center;">
+<button onClick="{{r.openDetail}}" style="height: 28px; padding: 0 10px; border: 0; border-radius: 4px; background: #F0F3F7; color: #13355E; font-size: 12.5px; font-weight: 500; cursor: pointer;">明细</button>
+</div>
+<div style="display: flex; justify-content: center;">
+<sc-if value="{{r.verified}}" hint-placeholder-val="{{ false }}">
+<span style="display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px; border-radius: 4px; background: #EAF1FB; color: #1F5FAE; font-size: 12px; font-weight: 500;"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#1F5FAE" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.5"/><circle cx="8" cy="8.5" r="2.2"/></svg>已留存</span>
+</sc-if>
+<sc-if value="{{r.notVerified}}" hint-placeholder-val="{{ true }}">
+<button style="display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; border: 1px solid #A9BEDA; border-radius: 4px; background: #FFFFFF; color: #13355E; font-size: 12.5px; font-weight: 500; cursor: pointer;">校验<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#13355E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h4v4M13 3 7.5 8.5M11 9.5V13H3V5h3.5"/></svg></button>
+</sc-if>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}">
+<div style="height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #5B6778; font-size: 13px;">
+<div style="font-size: 14px; font-weight: 500; color: #3D4A5C;">没有匹配的记录</div>
+<div>调整筛选或搜索条件；汇总仍按本批全部记录计算</div>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+<div style="flex-grow: 1; margin: 16px; border: 1.5px dashed #BCC6D3; border-radius: 8px; background: #FAFBFC; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;">
+<div style="width: 56px; height: 56px; border-radius: 12px; background: #EAF1FB; display: flex; align-items: center; justify-content: center;">
+<svg width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="#1F5FAE" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3l1.5 1.5h4.5A1.5 1.5 0 0 1 14 6v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5z"/><path d="M8 11V7M6.3 8.7 8 7l1.7 1.7"/></svg>
+</div>
+<div style="font-size: 16px; font-weight: 700;">尚未载入关单</div>
+<div style="font-size: 13px; color: #5B6778;">在设置中选择关单目录，或将 PDF / 图片拖入此处</div>
+<button onClick="{{openSettings}}" style="margin-top: 4px; display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px; border: 0; border-radius: 6px; background: #13355E; color: #FFFFFF; font-size: 13.5px; font-weight: 500; cursor: pointer;">
+<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3l1.5 1.5h4.5A1.5 1.5 0 0 1 14 6v5.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5z"/></svg>选择关单目录
+</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isReady}}" hint-placeholder-val="{{ false }}">
+<div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: repeating-linear-gradient(180deg, #FFFFFF 0, #FFFFFF 53px, #F3F5F8 53px, #F3F5F8 54px);">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px 32px; background: #FFFFFF;">
+<div style="width: 56px; height: 56px; border-radius: 12px; background: #EAF1FB; display: flex; align-items: center; justify-content: center;">
+<svg width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="#1F5FAE" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="M6 8h4M6 10.5h4"/></svg>
+</div>
+<div style="font-size: 16px; font-weight: 700;">已载入 10 个文件</div>
+<div style="font-size: 13px; color: #5B6778;">点击“开始识别”后在此列出识别结果</div>
+<div style="display: flex; gap: 8px;">
+<span style="height: 24px; line-height: 24px; padding: 0 10px; border-radius: 12px; background: #EEF1F5; color: #3D4A5C; font-size: 12px;">PDF 7</span>
+<span style="height: 24px; line-height: 24px; padding: 0 10px; border-radius: 12px; background: #EEF1F5; color: #3D4A5C; font-size: 12px;">JPG 3</span>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+
+<div style="height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-top: 1px solid #DDE2E9; font-size: 12.5px; color: #5B6778;">
+<div>{{footText}}</div>
+<div style="display: flex; align-items: center; gap: 6px;">
+<button disabled style="height: 28px; padding: 0 10px; border: 1px solid #DDE2E9; border-radius: 4px; background: #F7F8FA; color: #8A94A3; font-size: 12.5px;">上一页</button>
+<button aria-current="page" style="width: 28px; height: 28px; border: 1px solid {{pageBorder}}; border-radius: 4px; background: {{pageBg}}; color: {{pageFg}}; font-size: 12.5px; font-family: 'JetBrains Mono', monospace;">1</button>
+<button disabled style="height: 28px; padding: 0 10px; border: 1px solid #DDE2E9; border-radius: 4px; background: #F7F8FA; color: #8A94A3; font-size: 12.5px;">下一页</button>
+<span style="margin-left: 10px;">每页</span>
+<div style="position: relative;">
+<button onClick="{{togglePageSize}}" aria-haspopup="listbox" aria-expanded="{{pageSizeOpen}}" aria-label="每页条数" style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 6px 0 10px; border: 1px solid {{psBorder}}; border-radius: 4px; background: #FFFFFF; color: #0F1B2D; font-size: 12.5px; cursor: pointer; box-shadow: {{psRing}};">
+<span style="font-family: 'JetBrains Mono', monospace;">{{pageSize}}</span> 条
+<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#5B6778" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{psChevron}}"/></svg>
+</button>
+<sc-if value="{{pageSizeOpen}}" hint-placeholder-val="{{ false }}">
+<div role="listbox" style="position: absolute; bottom: 34px; right: 0; z-index: 10; width: 120px; padding: 4px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 6px; box-shadow: 0 8px 24px rgba(15,27,45,0.16); display: flex; flex-direction: column; gap: 2px;">
+<sc-for list="{{pageOpts}}" as="o" hint-placeholder-count="3">
+<button role="option" aria-selected="{{o.on}}" onClick="{{o.pick}}" style="display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border: 0; border-radius: 4px; background: {{o.bg}}; color: {{o.fg}}; font-size: 12.5px; font-weight: {{o.weight}}; cursor: pointer; text-align: left;">
+<span style="width: 14px; display: flex;"><sc-if value="{{o.on}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#1F5FAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg></sc-if></span>
+<span><span style="font-family: 'JetBrains Mono', monospace;">{{o.n}}</span> 条</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+
+<sc-if value="{{detailOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: rgba(15,27,45,0.45); display: flex; align-items: center; justify-content: center;">
+<div style="box-shadow: 0 16px 48px rgba(15,27,45,0.28); border-radius: 10px;">
+<dc-import name="Detail" rec="{{detail}}" on-close="{{closeDialogs}}" hint-size="600px,480px"></dc-import>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{settingsOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: rgba(15,27,45,0.45); display: flex; align-items: center; justify-content: center;">
+<div style="box-shadow: 0 16px 48px rgba(15,27,45,0.28); border-radius: 10px;">
+<dc-import name="Settings" on-close="{{closeDialogs}}" hint-size="520px,400px"></dc-import>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{cleanOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: rgba(15,27,45,0.45); display: flex; align-items: center; justify-content: center;">
+<div style="box-shadow: 0 16px 48px rgba(15,27,45,0.28); border-radius: 10px;">
+<dc-import name="Cleanup" kind="{{cleanKind}}" on-close="{{closeDialogs}}" hint-size="440px,260px"></dc-import>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"width":{"editor":"number","default":1440},"height":{"editor":"number","default":900},"batch":{"editor":"enum","options":["loaded","ready","empty"],"default":"loaded"},"menu":{"editor":"enum","options":["none","export","clean","pagesize"],"default":"none"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const w = Math.max(1200, Number(this.props.width) || 1440);
+    const h = Math.max(720, Number(this.props.height) || 900);
+    // 高度不足 820 时进入紧凑密度：统计区与表格行收紧，把空间留给记录列表
+    const compact = h < 820;
+    const kpiW = w < 1320 ? 420 : (w >= 1680 ? 560 : 480);
+    const searchW = w >= 1680 ? 420 : 340;
+    // 列宽规则：固定列 + 收货人填充列（最小 180）。空间不足时先压缩，再把“出境关别/目的国”合并为两行一列；
+    // 空间富余时收货人最多 420，其余平均分给合同号、出境关别、目的国。
+    const inner = w - 48 - 2 - 32;
+    const colW = (c) => c.idx + c.status + c.no + c.contract + (c.merged ? c.portDest : c.port + c.dest) + c.amount + c.detail + c.verify;
+    const gaps = (c) => (c.merged ? 8 : 9) * 12;
+    let c = { idx: 28, status: 76, no: 200, contract: 150, port: 110, dest: 76, amount: 160, detail: 72, verify: 92, merged: false, portDest: 120 };
+    let consignee = inner - gaps(c) - colW(c);
+    if (consignee < 180) {
+      c = Object.assign(c, { no: 192, contract: 124, port: 96, dest: 64, amount: 150 });
+      consignee = inner - gaps(c) - colW(c);
+    }
+    if (consignee < 180) {
+      c.merged = true;
+      consignee = inner - gaps(c) - colW(c);
+    }
+    if (consignee > 420) {
+      const extra = Math.floor((consignee - 420) / 3);
+      c.contract += extra; c.port += extra; c.dest += extra;
+      consignee = 420;
+    }
+    const cols = [c.idx, c.status, c.no].map((v) => v + 'px').join(' ') + ' minmax(0, 1fr) ' + c.contract + 'px ' +
+      (c.merged ? c.portDest + 'px ' : c.port + 'px ' + c.dest + 'px ') + [c.amount, c.detail, c.verify].map((v) => v + 'px').join(' ');
+    const batch = this.props.batch || 'loaded';
+    const isLoaded = batch === 'loaded';
+    const isReady = batch === 'ready';
+    const isEmpty = batch === 'empty';
+    const menu = this.state.menu !== undefined ? this.state.menu : (this.props.menu || 'none');
+    const setMenu = (m) => this.setState({ menu: menu === m ? 'none' : m });
+
+    const nordicItems = [
+      { seq: '1', name: '冷冻鳕鱼片', qty: '12,000 KG', price: '2.15', total: '25,800.00' },
+      { seq: '2', name: '冷冻鲭鱼', qty: '3,800 KG', price: '2.56', total: '9,728.00' }
+    ];
+    const data = [
+      { kind: 'dup', no: '220120261000183245', file: '关单_0918_A.pdf', consignee: 'NORDIC MARINE SUPPLY AS', contract: 'NMS-2026-0918', port: '大窑湾海关', dest: '挪威', cur: 'USD', amt: '35,528.00', rep: 'yes', verified: true, items: nordicItems },
+      { kind: 'dup', no: '220120261000183245', file: '关单_0918_A(1).pdf', consignee: 'NORDIC MARINE SUPPLY AS', contract: 'NMS-2026-0918', port: '大窑湾海关', dest: '挪威', cur: 'USD', amt: '35,528.00', rep: 'no', verified: false, items: nordicItems },
+      { kind: 'warn', no: '310420261000742108', file: 'scan_0921_03.jpg', consignee: 'PACIFIC RIM FOODS INC.', contract: 'PRF2026/0412', port: '宁波北仑海关', dest: '美国', cur: 'USD', amt: '12,480.00', unconfirmed: true, verified: false,
+        note: '第 2 项两引擎金额不一致（4,800.00 / 4,750.00），关单总价未确认，不计入合计',
+        items: [
+          { seq: '1', name: '脱水蔬菜', qty: '2,400 KG', price: '3.20', total: '7,680.00' },
+          { seq: '2', name: '复合调味料', qty: '1,200 KG', price: '4.00', total: '4,800.00', conflict: true, alt: '4,750.00' }
+        ] },
+      { kind: 'ok', no: '090120261000091377', file: '关单_0915_KI.pdf', consignee: 'KANTO INDUSTRIAL CO., LTD.', contract: 'KI-HT-26-0877', port: '大连湾海关', dest: '日本', cur: 'CNY', amt: '371,520.00', verified: true,
+        items: [
+          { seq: '1', name: '不锈钢法兰', qty: '1,200 PCS', price: '186.00', total: '223,200.00' },
+          { seq: '2', name: '阀门组件', qty: '480 SET', price: '309.00', total: '148,320.00' }
+        ] },
+      { kind: 'ok', no: '220120261000184102', file: '关单_0919_GS.pdf', consignee: 'GULF STAR GENERAL TRADING LLC', contract: 'GS/2026/115', port: '大窑湾海关', dest: '阿联酋', cur: 'USD', amt: '48,960.00', verified: false,
+        items: [
+          { seq: '1', name: '陶瓷砖', qty: '3,200 M2', price: '9.80', total: '31,360.00' },
+          { seq: '2', name: '卫浴洁具', qty: '440 SET', price: '40.00', total: '17,600.00' }
+        ] },
+      { kind: 'ok', no: '090120261000092216', file: '关单_0919_EP.pdf', consignee: 'EURO PARTS GMBH', contract: 'EP-26-00319', port: '大连湾海关', dest: '德国', cur: 'EUR', amt: '22,150.00', verified: true,
+        items: [
+          { seq: '1', name: '汽车机油滤清器', qty: '5,000 PCS', price: '2.63', total: '13,150.00' },
+          { seq: '2', name: '盘式刹车片', qty: '1,500 SET', price: '6.00', total: '9,000.00' }
+        ] },
+      { kind: 'ok', no: '420120261000330915', file: 'scan_0920_01.jpg', consignee: 'SEOUL HANBIT FOOD CO., LTD.', contract: 'HB20260907', port: '青岛大港海关', dest: '韩国', cur: 'USD', amt: '9,875.50', verified: false,
+        items: [
+          { seq: '1', name: '盐渍裙带菜', qty: '2,500 KG', price: '2.35', total: '5,875.00' },
+          { seq: '2', name: '海带结', qty: '889 KG', price: '4.50', total: '4,000.50' }
+        ] },
+      { kind: 'ok', no: '220120261000185560', file: '关单_0920_AA.pdf', consignee: 'AUSTRAL AGRI PTY LTD', contract: 'AA-2026-044', port: '大窑湾海关', dest: '澳大利亚', cur: 'CNY', amt: '128,400.00', verified: false,
+        items: [ { seq: '1', name: '大豆分离蛋白', qty: '20,000 KG', price: '6.42', total: '128,400.00' } ] },
+      { kind: 'ok', no: '090120261000093024', file: 'scan_0922_02.jpg', consignee: 'BALTIC COLD CHAIN OU', contract: 'BCC-0922', port: '大连湾海关', dest: '爱沙尼亚', cur: 'EUR', amt: '16,320.00', verified: false,
+        items: [ { seq: '1', name: '冷藏箱配件', qty: '240 SET', price: '68.00', total: '16,320.00' } ] },
+      { kind: 'ok', no: '220120261000186631', file: '关单_0922_NW.pdf', consignee: 'NORTHWIND LOGISTICS INC.', contract: 'NWL-26-3310', port: '大窑湾海关', dest: '加拿大', cur: 'USD', amt: '27,300.00', verified: false,
+        items: [ { seq: '1', name: '仓储托盘货架', qty: '600 SET', price: '45.50', total: '27,300.00' } ] }
+    ];
+    const look = {
+      dup: { status: '重复', tagBg: '#FDECEA', tagFg: '#B42318', rowBg: '#FFF6F5' },
+      warn: { status: '需关注', tagBg: '#FDF1DC', tagFg: '#8A5300', rowBg: '#FFFCF4' },
+      ok: { status: '正常', tagBg: '#E6F4EE', tagFg: '#17714F', rowBg: '#FFFFFF' }
+    };
+    const filter = this.state.filter || 'all';
+    const q = (this.state.q || '').trim().toLowerCase();
+    const rows = isLoaded ? data
+      .map((r, i) => Object.assign({}, r, look[r.kind], {
+        idx: String(i + 1).padStart(2, '0'),
+        isRep: r.rep === 'yes',
+        isExcluded: r.rep === 'no',
+        confirmed: !r.unconfirmed,
+        unconfirmed: !!r.unconfirmed,
+        notVerified: !r.verified,
+        openDetail: () => this.setState({ detail: r, menu: 'none' })
+      }))
+      .filter((r) => filter === 'all' || r.kind === filter)
+      .filter((r) => !q || [r.no, r.file, r.consignee, r.contract].join(' ').toLowerCase().indexOf(q) !== -1) : [];
+
+    const counts = isLoaded ? { all: 10, ok: 7, dup: 2, warn: 1 } : { all: 0, ok: 0, dup: 0, warn: 0 };
+    const defs = [
+      { id: 'all', label: '全部' }, { id: 'ok', label: '正常' }, { id: 'dup', label: '重复' }, { id: 'warn', label: '需关注' }
+    ];
+    const tabs = defs.map((t) => {
+      const on = t.id === filter;
+      const tone = t.id === 'dup' ? '#B42318' : (t.id === 'warn' ? '#8A5300' : '#5B6778');
+      return {
+        label: t.label,
+        count: counts[t.id],
+        disabled: !isLoaded,
+        pick: () => this.setState({ filter: t.id }),
+        bg: on ? '#FFFFFF' : 'transparent',
+        shadow: on ? '0 1px 2px rgba(15,27,45,0.12)' : 'none',
+        fg: !isLoaded ? (on ? '#5B6778' : '#8A94A3') : (on ? '#0F1B2D' : '#4A5566'),
+        countFg: isLoaded ? tone : '#8A94A3'
+      };
+    });
+
+    const border = '1px solid #EBEEF2';
+    const dash = '#AEB9C8';
+    let kpis;
+    if (isLoaded) {
+      kpis = [
+        { label: '本批文件', value: '10', unit: '', sub: '识别完成 10 / 10', color: '#0F1B2D', unitColor: '#5B6778' },
+        { label: '重复单号', value: '1', unit: '组', sub: '2 份文件，合计只计 1 份', color: '#B42318', unitColor: '#B42318' },
+        { label: '需关注', value: '1', unit: '', sub: '金额双引擎不一致', color: '#8A5300', unitColor: '#5B6778' },
+        { label: '截图留存', value: '3', unit: '/ 9 单号', sub: '网页悬浮按钮截图后自动回填', color: '#1F5FAE', unitColor: '#5B6778' }
+      ];
+    } else if (isReady) {
+      kpis = [
+        { label: '本批文件', value: '10', unit: '', sub: '待识别', color: '#0F1B2D', unitColor: '#5B6778' },
+        { label: '重复单号', value: '—', unit: '', sub: '识别后统计', color: dash, unitColor: dash },
+        { label: '需关注', value: '—', unit: '', sub: '识别后统计', color: dash, unitColor: dash },
+        { label: '截图留存', value: '—', unit: '', sub: '识别后统计', color: dash, unitColor: dash }
+      ];
+    } else {
+      kpis = ['本批文件', '重复单号', '需关注', '截图留存'].map((label) => ({ label: label, value: '—', unit: '', sub: '尚未载入', color: dash, unitColor: dash }));
+    }
+    kpis = kpis.map((k, i) => Object.assign(k, { br: i % 2 === 0 ? border : 'none', bb: i < 2 ? border : 'none' }));
+
+    const pageSize = this.state.pageSize || 50;
+    const pageSizeOpen = menu === 'pagesize';
+    const pageOpts = [50, 100, 200].map((n) => {
+      const on = n === pageSize;
+      return { n: n, on: on, bg: on ? '#EAF1FB' : '#FFFFFF', fg: on ? '#13355E' : '#0F1B2D', weight: on ? 500 : 400,
+        pick: () => this.setState({ pageSize: n, menu: 'none' }) };
+    });
+
+    const exportDisabled = !isLoaded;
+    const exportOpen = menu === 'export' && isLoaded;
+    const cleanDisabled = isEmpty;
+    const cleanMenuOpen = menu === 'clean' && !isEmpty;
+
+    return {
+      mainPad: compact ? '16px 24px' : '20px 24px', mainGap: compact ? 12 : 16,
+      kpiPad: compact ? '10px 16px' : '14px 18px', kpiVal: compact ? 22 : 26,
+      amtHead: compact ? 36 : 40, amtCol: compact ? 28 : 30, amtRow: compact ? 28 : 32,
+      toolbarH: compact ? 50 : 56, rowH: compact ? 48 : 54,
+      w: w, h: h, kpiW: kpiW, searchW: searchW, cols: cols, split: !c.merged, merged: c.merged,
+      isLoaded: isLoaded, isReady: isReady, isEmpty: isEmpty, notLoaded: !isLoaded,
+      tagLabel: isLoaded ? '识别完成' : (isReady ? '待识别' : '未载入'),
+      tagBg: isLoaded ? '#E6F4EE' : (isReady ? '#EAF1FB' : '#EEF1F5'),
+      tagFg: isLoaded ? '#17714F' : (isReady ? '#1F5FAE' : '#4A5566'),
+
+      exportDisabled: exportDisabled,
+      exportOpen: exportOpen,
+      toggleExport: () => setMenu('export'),
+      expBorder: exportDisabled ? '#DDE2E9' : (exportOpen ? '#A9BEDA' : '#C9D1DC'),
+      expBg: exportDisabled ? '#F7F8FA' : (exportOpen ? '#F4F8FD' : '#FFFFFF'),
+      expFg: exportDisabled ? '#8A94A3' : '#13355E',
+      expDivider: exportDisabled ? '#DDE2E9' : '#C9D1DC',
+      startDisabled: isEmpty,
+      startBg: isEmpty ? '#C3CCD8' : '#13355E',
+
+      kpis: kpis,
+      rows: rows,
+      tabs: tabs,
+      q: this.state.q || '',
+      onSearch: (e) => this.setState({ q: e.target.value }),
+      searchBorder: isLoaded ? '#C9D1DC' : '#DDE2E9',
+      searchBg: isLoaded ? '#FFFFFF' : '#F7F8FA',
+      noRows: isLoaded && rows.length === 0,
+
+      cleanDisabled: cleanDisabled,
+      cleanMenuOpen: cleanMenuOpen,
+      toggleClean: () => setMenu('clean'),
+      cleanBorder: cleanDisabled ? '#DDE2E9' : '#C9D1DC',
+      cleanBtnBg: cleanDisabled ? '#F7F8FA' : (cleanMenuOpen ? '#EEF1F5' : '#FFFFFF'),
+      cleanFg: cleanDisabled ? '#8A94A3' : '#0F1B2D',
+      cleanIcon: cleanDisabled ? '#8A94A3' : '#3D4A5C',
+      cleanList: () => this.setState({ menu: 'none', clean: 'list' }),
+      cleanDocs: () => this.setState({ menu: 'none', clean: 'docs' }),
+      cleanShots: () => this.setState({ menu: 'none', clean: 'shots' }),
+      cleanOpen: !!this.state.clean,
+      cleanKind: this.state.clean || 'docs',
+
+      footText: isLoaded ? ('显示 ' + rows.length + ' 条，共 10 条 · 重复记录置顶') : '共 0 条',
+      pageBorder: isLoaded ? '#13355E' : '#DDE2E9',
+      pageBg: isLoaded ? '#13355E' : '#F7F8FA',
+      pageFg: isLoaded ? '#FFFFFF' : '#8A94A3',
+      pageSize: pageSize,
+      pageSizeOpen: pageSizeOpen,
+      pageOpts: pageOpts,
+      togglePageSize: () => setMenu('pagesize'),
+      psBorder: pageSizeOpen ? '#1F5FAE' : '#C9D1DC',
+      psRing: pageSizeOpen ? '0 0 0 2px #D6E4F7' : 'none',
+      psChevron: pageSizeOpen ? 'm4.5 9.5 3.5-3.5 3.5 3.5' : 'm4.5 6.5 3.5 3.5 3.5-3.5',
+      closeMenus: () => this.setState({ menu: 'none' }),
+
+      detailOpen: !!this.state.detail,
+      detail: this.state.detail || null,
+      settingsOpen: !!this.state.settings,
+      openSettings: () => this.setState({ settings: true, menu: 'none' }),
+      closeDialogs: () => this.setState({ detail: null, settings: false, clean: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

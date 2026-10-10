@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>设计规范</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; box-sizing: border-box; padding: 40px 48px; background: #FFFFFF; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; gap: 32px;">
+
+<div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #DDE2E9; padding-bottom: 16px;">
+<h1 style="margin: 0; font-size: 24px; font-weight: 700;">关单核验台 · 界面规范</h1>
+<div style="font-size: 13px; color: #5B6778;">海关蓝 · 表格优先 · 等宽数字 · 状态色只表达业务含义</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px;">
+
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">基础色</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #0E2747;"></div><div style="font-size: 12.5px; font-weight: 500;">顶栏 Navy 900</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#0E2747</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #13355E;"></div><div style="font-size: 12.5px; font-weight: 500;">主按钮 Navy 700</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#13355E</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #1F5FAE;"></div><div style="font-size: 12.5px; font-weight: 500;">链接 / 焦点 / 进度</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#1F5FAE</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #0F1B2D;"></div><div style="font-size: 12.5px; font-weight: 500;">正文 Ink</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#0F1B2D</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #F2F4F7; border: 1px solid #DDE2E9;"></div><div style="font-size: 12.5px; font-weight: 500;">工作区底色</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#F2F4F7</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #DDE2E9;"></div><div style="font-size: 12.5px; font-weight: 500;">面板边框</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#DDE2E9</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #EBEEF2;"></div><div style="font-size: 12.5px; font-weight: 500;">行分隔线</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#EBEEF2</div></div>
+<div style="display: flex; flex-direction: column; gap: 6px;"><div style="height: 56px; border-radius: 6px; background: #5B6778;"></div><div style="font-size: 12.5px; font-weight: 500;">辅助文字</div><div style="font-size: 12px; color: #5B6778; font-family: 'JetBrains Mono', monospace;">#5B6778</div></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">业务状态（文字 / 底色 / 行底）</h2>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="display: grid; grid-template-columns: 96px 1fr 180px; align-items: center; gap: 16px; font-size: 13px;"><span style="display: inline-flex; justify-content: center; height: 24px; line-height: 24px; border-radius: 4px; background: #E6F4EE; color: #17714F; font-weight: 500;">正常</span><span style="color: #3D4A5C;">六字段完整，无关键冲突</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">#17714F / #E6F4EE</span></div>
+<div style="display: grid; grid-template-columns: 96px 1fr 180px; align-items: center; gap: 16px; font-size: 13px;"><span style="display: inline-flex; justify-content: center; height: 24px; line-height: 24px; border-radius: 4px; background: #FDECEA; color: #B42318; font-weight: 500;">重复</span><span style="color: #3D4A5C;">同批相同单号，置顶；行底 #FFF6F5</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">#B42318 / #FDECEA</span></div>
+<div style="display: grid; grid-template-columns: 96px 1fr 180px; align-items: center; gap: 16px; font-size: 13px;"><span style="display: inline-flex; justify-content: center; height: 24px; line-height: 24px; border-radius: 4px; background: #FDF1DC; color: #8A5300; font-weight: 500;">需关注</span><span style="color: #3D4A5C;">金额 / 单号 / 合同号冲突；可与重复叠加</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">#8A5300 / #FDF1DC</span></div>
+<div style="display: grid; grid-template-columns: 96px 1fr 180px; align-items: center; gap: 16px; font-size: 13px;"><span style="display: inline-flex; justify-content: center; height: 24px; line-height: 24px; border-radius: 4px; background: #EAF1FB; color: #1F5FAE; font-weight: 500;">已留存</span><span style="color: #3D4A5C;">只描述截图，独立一列，不覆盖识别状态</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">#1F5FAE / #EAF1FB</span></div>
+<div style="display: grid; grid-template-columns: 96px 1fr 180px; align-items: center; gap: 16px; font-size: 13px;"><span style="display: inline-flex; justify-content: center; height: 24px; line-height: 24px; border-radius: 4px; background: #EEF1F5; color: #4A5566; font-weight: 500;">识别失败</span><span style="color: #3D4A5C;">保留行与来源文件，提示重新识别</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B6778;">#4A5566 / #EEF1F5</span></div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">字体与字号</h2>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">页标题 22 / 700</span><span style="font-size: 22px; font-weight: 700;">本批关单</span></div>
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">统计数值 26 / 700</span><span style="font-size: 26px; font-weight: 700;">10</span></div>
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">区块标题 14–15 / 700</span><span style="font-size: 14px; font-weight: 700;">金额汇总</span></div>
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">表格正文 13.5 / 400</span><span style="font-size: 13.5px;">NORDIC MARINE SUPPLY AS · 大窑湾海关</span></div>
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">单号 / 金额 等宽 13–13.5</span><span style="font-size: 13.5px; font-family: 'JetBrains Mono', monospace; font-weight: 500;">220120261000183245 · USD 121,663.50</span></div>
+<div style="display: flex; align-items: baseline; gap: 20px;"><span style="width: 150px; font-size: 12px; color: #5B6778;">辅助 12 / 400</span><span style="font-size: 12px; color: #5B6778;">关单_0918_A.pdf · 用时 2 分 14 秒</span></div>
+</div>
+<div style="font-size: 12px; color: #5B6778; line-height: 1.6;">全部采用开源字体（SIL OFL 1.1）：界面文字 Noto Sans SC（思源黑体），单号与金额 JetBrains Mono。字体文件随便携包内置，由 PrivateFontCollection 加载，不依赖系统字体；许可文本放入 third-party-notices。</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 15px; font-weight: 700;">按钮</h2>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+<button style="height: 40px; padding: 0 20px; border: 0; border-radius: 6px; background: #13355E; color: #FFFFFF; font-size: 14px; font-weight: 500;">开始识别</button>
+<button style="height: 40px; padding: 0 16px; border: 1px solid #C9D1DC; border-radius: 6px; background: #FFFFFF; color: #13355E; font-size: 14px; font-weight: 500;">导出列表</button>
+<button style="height: 40px; padding: 0 16px; border: 1px solid #B42318; border-radius: 6px; background: #FFFFFF; color: #B42318; font-size: 14px; font-weight: 500;">取消识别</button>
+<button style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #B42318; color: #FFFFFF; font-size: 14px; font-weight: 500;">移入回收站</button>
+<button disabled style="height: 40px; padding: 0 16px; border: 1px solid #DDE2E9; border-radius: 6px; background: #F7F8FA; color: #8A94A3; font-size: 14px; font-weight: 500;">禁用</button>
+<button style="height: 28px; padding: 0 10px; border: 1px solid #A9BEDA; border-radius: 4px; background: #FFFFFF; color: #13355E; font-size: 12.5px; font-weight: 500;">校验</button>
+</div>
+<div style="font-size: 12px; color: #5B6778; line-height: 1.6;">每屏只有一个实心海军蓝主按钮；红色实心只出现在最终破坏性确认中。</div>
+
+<h2 style="margin: 12px 0 0; font-size: 15px; font-weight: 700;">表格行状态</h2>
+<div style="border: 1px solid #DDE2E9; border-radius: 6px; overflow: hidden; font-size: 13px;">
+<div style="height: 36px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid #EBEEF2; background: #FFFFFF;">默认 #FFFFFF</div>
+<div style="height: 36px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid #EBEEF2; background: #F5F8FC;">悬停 #F5F8FC</div>
+<div style="height: 36px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid #EBEEF2; background: #EAF1FB; box-shadow: inset 0 0 0 1px #1F5FAE;">选中单元格 #EAF1FB + 1px 焦点框</div>
+<div style="height: 36px; display: flex; align-items: center; padding: 0 14px; background: #FFF6F5;">重复行 #FFF6F5（置顶）</div>
+</div>
+</div>
+
+</div>
+
+<div style="display: flex; gap: 32px; font-size: 12.5px; color: #3D4A5C; border-top: 1px solid #DDE2E9; padding-top: 16px;">
+<span><span style="font-weight: 500; color: #0F1B2D;">间距</span> 4 · 8 · 12 · 16 · 20 · 24</span>
+<span><span style="font-weight: 500; color: #0F1B2D;">圆角</span> 标签 4 · 控件 6 · 面板 8 · 对话框 10</span>
+<span><span style="font-weight: 500; color: #0F1B2D;">行高</span> 数据行 54（两行单号）· 表头 38 · 工具栏 56</span>
+<span><span style="font-weight: 500; color: #0F1B2D;">最小窗口</span> 1200 × 720，无侧栏，设置与清理收进顶栏 / 列表菜单</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<!--
+  网页核验 · 悬浮截图按钮 参考实现（样式 + 结构）。
+  使用方式：由程序在打开单一窗口页面后注入。建议挂在 Shadow DOM 中（host.attachShadow({mode:'closed'})），
+  以免与网站样式互相影响。所有类名以 ccc- 开头。
+  状态通过根元素 data-state 切换：idle | capturing | saved | mismatch | too-long。
+  本文件可直接用浏览器打开预览五种状态。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>悬浮截图按钮 · 参考实现</title>
+<style>
+  body { margin: 0; padding: 24px; background: #F4F6F9; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+
+  .ccc-widget {
+    --ccc-primary: #13355E; --ccc-accent: #1F5FAE; --ccc-ink: #0F1B2D; --ccc-ink2: #3D4A5C;
+    --ccc-muted: #5B6778; --ccc-border: #C9D1DC; --ccc-ok: #17714F; --ccc-danger: #B42318; --ccc-warn: #8A5300;
+    box-sizing: border-box; width: 300px; padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    background: #FFFFFF; border: 1px solid var(--ccc-border); border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15,27,45,0.22);
+    font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; color: var(--ccc-ink);
+    font-size: 12px; line-height: 1.55;
+  }
+  /* 实际注入时使用固定定位，可拖动 */
+  .ccc-widget.is-floating { position: fixed; right: 24px; bottom: 24px; z-index: 2147483647; }
+
+  .ccc-head { display: flex; align-items: center; gap: 8px; cursor: move; user-select: none; }
+  .ccc-mark { width: 20px; height: 20px; border-radius: 5px; background: var(--ccc-primary); display: flex; align-items: center; justify-content: center; }
+  .ccc-title { flex: 1; font-size: 12.5px; font-weight: 700; }
+  .ccc-icon-btn { width: 26px; height: 26px; border: 0; border-radius: 4px; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .ccc-icon-btn:hover { background: #EEF1F5; }
+
+  .ccc-number { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; color: var(--ccc-primary); }
+  .ccc-hint { color: var(--ccc-muted); }
+  .ccc-path { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6B7686; }
+
+  .ccc-btn { height: 40px; border: 0; border-radius: 6px; background: var(--ccc-primary); color: #FFFFFF;
+    font: inherit; font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+  .ccc-btn:hover { background: #0E2747; }
+  .ccc-btn:focus-visible { outline: 2px solid var(--ccc-accent); outline-offset: 2px; }
+  .ccc-btn[disabled] { background: #C3CCD8; cursor: default; }
+
+  .ccc-progress { height: 6px; border-radius: 3px; background: #DCE6F3; overflow: hidden; }
+  .ccc-progress > i { display: block; height: 100%; background: var(--ccc-accent); width: var(--ccc-pct, 0%); }
+
+  .ccc-result { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+  .ccc-link { color: var(--ccc-accent); font-size: 12.5px; text-decoration: none; }
+  .ccc-link:hover { text-decoration: underline; }
+
+  /* 各状态显示的区块 */
+  .ccc-s { display: none; }
+  .ccc-widget[data-state="idle"]      .ccc-s-idle,
+  .ccc-widget[data-state="capturing"] .ccc-s-capturing,
+  .ccc-widget[data-state="saved"]     .ccc-s-saved,
+  .ccc-widget[data-state="mismatch"]  .ccc-s-mismatch,
+  .ccc-widget[data-state="too-long"]  .ccc-s-too-long { display: flex; flex-direction: column; gap: 10px; }
+  .ccc-widget[data-state="saved"]    { border-color: #9FD0B8; }
+  .ccc-widget[data-state="mismatch"] { border-color: #F0B8B1; }
+  .ccc-widget[data-state="too-long"] { border-color: #E8C98A; }
+</style>
+</head>
+<body>
+
+<!-- 一个完整组件；下方用同一结构展示五种状态 -->
+<template id="ccc-template">
+  <div class="ccc-widget" data-state="idle" role="dialog" aria-label="关单核验台截图">
+    <div class="ccc-head">
+      <svg width="10" height="16" viewBox="0 0 10 16" fill="#AEB9C8" aria-hidden="true"><circle cx="3" cy="4" r="1.2"/><circle cx="7" cy="4" r="1.2"/><circle cx="3" cy="8" r="1.2"/><circle cx="7" cy="8" r="1.2"/><circle cx="3" cy="12" r="1.2"/><circle cx="7" cy="12" r="1.2"/></svg>
+      <span class="ccc-mark"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 2.5h5.5L12 5v8.5H4z"/><path d="m6 9.2 1.6 1.6L10.5 7.8"/></svg></span>
+      <span class="ccc-title">关单核验台</span>
+      <button class="ccc-icon-btn" type="button" aria-label="收起"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#5B6778" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8"/></svg></button>
+    </div>
+    <div class="ccc-number">220120261000184102</div>
+
+    <div class="ccc-s ccc-s-idle">
+      <div class="ccc-hint">输入验证码并点击“查询”，结果出现后点击下方按钮保存整页长截图。</div>
+      <button class="ccc-btn" type="button">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.5"/><circle cx="8" cy="8.5" r="2.2"/><path d="M6 4l1-1.5h2L10 4"/></svg>长截图
+      </button>
+      <div class="ccc-path">→ D:\关单\核验截图</div>
+    </div>
+
+    <div class="ccc-s ccc-s-capturing">
+      <div class="ccc-result" style="color: var(--ccc-accent);">正在滚动截取整页 · 3 / 5 段</div>
+      <div class="ccc-progress" style="--ccc-pct: 60%;"><i></i></div>
+      <button class="ccc-btn" type="button" disabled>截取中，请勿滚动页面</button>
+    </div>
+
+    <div class="ccc-s ccc-s-saved">
+      <div class="ccc-result" style="color: var(--ccc-ok);"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#17714F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg>已保存</div>
+      <div class="ccc-path" style="color: var(--ccc-ink);">220120261000184102.png</div>
+      <div class="ccc-hint">列表中该单已标记“已留存”，可关闭此网页</div>
+      <a class="ccc-link" href="#">打开截图文件夹</a>
+    </div>
+
+    <div class="ccc-s ccc-s-mismatch">
+      <div class="ccc-result" style="color: var(--ccc-danger);"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#B42318" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>未保存：单号不一致</div>
+      <div style="color: var(--ccc-ink2);">页面结果为 <span class="ccc-number" style="font-size: 12px;">220120261000184120</span>，与待核验单号不同。请核对后重新查询。</div>
+    </div>
+
+    <div class="ccc-s ccc-s-too-long">
+      <div class="ccc-result" style="color: var(--ccc-warn);"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#8A5300" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5 14 13H2z"/><path d="M8 6.5v3M8 11.2v.1"/></svg>页面过长</div>
+      <div style="color: var(--ccc-ink2);">超过 6000 万像素，请使用浏览器分段保存。</div>
+    </div>
+  </div>
+</template>
+
+<script>
+  // 仅用于预览：把五种状态并排展示
+  const tpl = document.getElementById('ccc-template');
+  ['idle', 'capturing', 'saved', 'mismatch', 'too-long'].forEach((state) => {
+    const node = tpl.content.firstElementChild.cloneNode(true);
+    node.dataset.state = state;
+    document.body.appendChild(node);
+  });
+</script>
+</body>
+</html>

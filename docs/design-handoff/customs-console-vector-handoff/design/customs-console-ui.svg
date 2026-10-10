@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="1586" height="992" viewBox="0 0 1586 992"
+     role="img" aria-labelledby="screen-title screen-desc">
+  <title id="screen-title">关单核验台主界面矢量设计稿</title>
+  <desc id="screen-desc">Material 3 语义色与 Windows 企业桌面工具结构结合的关单统计、识别和记录主界面。全部文字、图标和容器均为可编辑矢量元素。</desc>
+
+  <defs>
+    <linearGradient id="iconBg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#123B78"/>
+      <stop offset="1" stop-color="#0E2C5C"/>
+    </linearGradient>
+    <linearGradient id="iconIce" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#D7F4FF"/>
+      <stop offset="1" stop-color="#72CCF4"/>
+    </linearGradient>
+    <filter id="elevation1" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#102A43" flood-opacity="0.06"/>
+    </filter>
+    <clipPath id="tableClip">
+      <rect x="63" y="589" width="1457" height="330" rx="6"/>
+    </clipPath>
+
+    <symbol id="i-directory-settings" viewBox="0 0 24 24">
+      <path d="M3.5 7.25V6A1.5 1.5 0 0 1 5 4.5h4.55l2.2 2.25H19a1.5 1.5 0 0 1 1.5 1.5V18a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18V7.25ZM7 11h10M9.25 9.65v2.7M7 15.5h10M14.75 14.15v2.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-declaration-clean" viewBox="0 0 24 24">
+      <path d="M7.25 3.5h6.1l4.4 4.4v11.6a1 1 0 0 1-1 1h-9.5a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1ZM13.35 3.5v4.4h4.4M9.25 12.25l5.5 5.5M14.75 12.25l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-screenshot-clean" viewBox="0 0 24 24">
+      <path d="M5.25 4.25h13.5a1.75 1.75 0 0 1 1.75 1.75v12a1.75 1.75 0 0 1-1.75 1.75H5.25A1.75 1.75 0 0 1 3.5 18V6a1.75 1.75 0 0 1 1.75-1.75ZM5.25 18.1l4.3-4.55 3 2.95 2.35-2.45 3.85 4.05M15.7 7.25l3.1 3.1M18.8 7.25l-3.1 3.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-recognition" viewBox="0 0 24 24">
+      <path d="M8 4H5.75A1.75 1.75 0 0 0 4 5.75V8M16 4h2.25A1.75 1.75 0 0 1 20 5.75V8M20 16v2.25A1.75 1.75 0 0 1 18.25 20H16M8 20H5.75A1.75 1.75 0 0 1 4 18.25V16M9 7h4.75L17 10.25V17H9V7ZM13.75 7v3.25H17M7 13.25h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-list-clean" viewBox="0 0 24 24">
+      <path d="M4.5 6.25H6M9 6.25h10.5M4.5 11.25H6M9 11.25h10.5M4.5 16.25H6M9 16.25h4M15.25 14.5l4.25 4.25M19.5 14.5l-4.25 4.25" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path d="M6 3h8l4 4v14H6V3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M14 3v5h4M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-money" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M8.5 7.5 12 11l3.5-3.5M12 11v7M8.5 13h7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="m7.5 12 3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="m15.3 15.3 4.7 4.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-empty" viewBox="0 0 64 64">
+      <rect x="10" y="6" width="34" height="44" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/>
+      <path d="M19 19h16M19 27h16M19 35h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="45" cy="46" r="11" fill="#FFFFFF" stroke="currentColor" stroke-width="2.2"/>
+      <path d="M45 40v12M39 46h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+
+    <style><![CDATA[
+      text { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; }
+      .app-title { font-size: 25px; font-weight: 700; fill: #F5F9FF; }
+      .section-title { font-size: 24px; font-weight: 700; fill: #142033; }
+      .record-title { font-size: 24px; font-weight: 700; fill: #142033; }
+      .record-count { font-size: 19px; fill: #667085; }
+      .button-text { font-size: 17px; font-weight: 650; dominant-baseline: middle; }
+      .stat-title { font-size: 19px; font-weight: 650; fill: #25354D; }
+      .stat-value { font-size: 40px; font-weight: 700; fill: #10213A; font-variant-numeric: tabular-nums; }
+      .stat-unit { font-size: 18px; font-weight: 600; fill: #172B45; }
+      .stat-helper { font-size: 16px; fill: #667085; }
+      .field-label { font-size: 17px; font-weight: 650; fill: #25354D; }
+      .field-text { font-size: 18px; fill: #263750; }
+      .field-placeholder { font-size: 18px; fill: #7A869A; }
+      .table-head { font-size: 18px; font-weight: 650; fill: #152A4C; }
+      .footer-text { font-size: 18px; fill: #53627A; font-variant-numeric: tabular-nums; }
+      .empty-title { font-size: 28px; font-weight: 600; fill: #17243A; }
+      .icon { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    ]]></style>
+  </defs>
+
+  <!-- 00 Background -->
+  <g id="layer-background" inkscape:groupmode="layer" inkscape:label="00 Background">
+    <rect width="1586" height="992" fill="#E9EEF5"/>
+  </g>
+
+  <!-- 01 App bar -->
+  <g id="layer-app-bar" inkscape:groupmode="layer" inkscape:label="01 App Bar" data-component="app-bar">
+    <rect width="1586" height="82" fill="#102D4F"/>
+    <path d="M0 81.5H1586" stroke="#224B72"/>
+    <g id="app-logo" data-component="brand" transform="translate(28 21)">
+      <svg width="40" height="40" viewBox="0 0 256 256" overflow="visible">
+    <linearGradient id="app-icon-bg-v3" x1="32" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse"><stop stop-color="#163F7D"/><stop offset="1" stop-color="#0E2C5C"/></linearGradient>
+    <linearGradient id="app-icon-ice-v3" x1="52" y1="32" x2="205" y2="226" gradientUnits="userSpaceOnUse"><stop stop-color="#E4F8FF"/><stop offset="0.5" stop-color="#A8E8FF"/><stop offset="1" stop-color="#72CCF4"/></linearGradient>
+  
+  <rect width="256" height="256" rx="52" fill="url(#app-icon-bg-v3)"/>
+  <path id="emblem" d="M55.44,82.00 L59.00,75.39 L66.00,68.46 L70.00,66.05 L72.00,66.07 L80.59,70.50 L92.69,80.00 L102.66,90.50 L112.50,103.97 L114.00,104.49 L115.22,99.00 L114.16,93.50 L110.50,83.82 L106.88,80.00 L106.89,77.50 L103.91,72.50 L87.45,54.50 L76.49,48.00 L82.50,41.01 L99.00,31.93 L103.00,31.68 L110.00,36.28 L114.74,42.00 L118.33,49.00 L122.20,65.50 L122.75,107.00 L121.26,112.00 L120.76,132.50 L122.21,141.00 L121.50,143.26 L120.28,143.00 L113.50,127.81 L108.50,119.62 L96.00,104.78 L77.00,91.16 L66.00,85.66 L59.06,83.00 L55.98,83.00 Z M132.75,86.50 L133.95,82.50 L133.27,65.00 L133.88,58.00 L135.08,55.50 L134.26,49.50 L135.61,37.50 L138.00,35.46 L147.00,32.45 L156.50,31.48 L174.00,40.44 L179.66,46.00 L180.88,49.00 L168.00,59.26 L153.94,75.00 L144.50,90.95 L142.00,93.38 L140.82,100.00 L141.50,103.82 L145.03,101.00 L157.00,84.81 L172.28,71.50 L179.50,67.67 L186.00,65.94 L192.66,70.00 L197.81,76.50 L204.00,81.35 L207.50,87.07 L210.50,89.27 L211.24,94.50 L209.87,99.00 L211.75,105.00 L211.23,111.00 L206.50,113.75 L180.00,142.97 L176.50,143.55 L174.00,142.38 L169.00,142.32 L159.50,145.59 L154.00,149.28 L148.26,156.00 L144.07,167.00 L144.77,179.00 L149.50,187.39 L152.00,189.66 L160.00,192.62 L163.50,192.41 L169.50,190.02 L173.78,185.50 L175.68,181.50 L176.13,177.00 L174.70,173.00 L172.50,170.59 L170.00,169.38 L165.50,169.38 L162.86,171.00 L161.82,174.00 L165.96,177.00 L166.50,179.16 L162.50,181.18 L158.00,180.15 L155.49,177.00 L154.80,172.50 L158.94,163.50 L167.00,159.46 L181.00,158.70 L185.50,157.13 L210.74,138.50 L205.50,156.69 L202.80,159.50 L200.51,164.50 L200.51,168.00 L198.24,170.00 L193.46,180.00 L185.50,191.19 L178.50,198.16 L170.00,204.24 L149.00,215.16 L135.00,224.10 L134.26,221.50 L134.25,101.50 L132.80,97.00 Z M146.02,128.00 L147.70,137.00 L152.00,139.94 L167.50,131.07 L176.50,129.58 L189.04,113.00 L193.60,101.00 L192.18,98.00 L189.00,94.52 L186.50,96.25 L183.50,95.51 L176.00,98.12 L173.50,101.48 L170.50,103.19 L165.00,104.70 L163.17,108.00 L160.50,108.93 L158.50,112.02 L156.00,112.51 L155.00,114.92 L150.12,119.00 L147.50,123.06 Z M43.25,103.50 L44.50,99.47 L47.01,101.50 L51.78,109.00 L61.55,118.00 L68.59,131.00 L77.00,139.56 L84.00,143.25 L107.00,149.16 L115.00,153.26 L118.50,157.30 L121.17,166.00 L120.18,191.50 L112.38,201.50 L106.50,216.72 L98.50,213.62 L88.42,207.00 L83.34,202.00 L78.47,195.00 L79.00,194.35 L86.00,196.68 L92.50,196.41 L97.50,194.55 L103.00,190.19 L107.12,183.50 L108.70,178.00 L108.55,170.50 L105.84,163.50 L102.00,158.36 L93.50,152.95 L82.50,150.36 L77.50,149.85 L74.50,151.22 L70.00,149.82 L67.58,146.00 L57.77,138.50 L51.76,131.00 L47.95,123.50 L43.34,109.00 Z M69.86,109.50 L71.00,107.97 L75.00,108.49 L83.00,111.52 L90.08,116.00 L99.24,126.50 L101.99,132.00 L102.00,134.28 L96.50,134.25 L93.50,132.55 L90.00,132.58 L80.50,127.66 L74.45,121.00 Z M51.80,154.50 L53.50,153.96 L59.50,158.20 L64.00,159.81 L72.50,161.20 L85.50,161.38 L94.00,164.97 L97.99,170.00 L97.78,178.50 L91.00,184.89 L83.50,179.95 L65.50,175.31 L56.76,167.50 Z" fill="url(#app-icon-ice-v3)" fill-rule="evenodd" stroke="#2C8ED8" stroke-width="1.45" stroke-linejoin="round"/>
+  <path d="M55.44,82.00 L59.00,75.39 L66.00,68.46 L70.00,66.05 L72.00,66.07 L80.59,70.50 L92.69,80.00 L102.66,90.50 L112.50,103.97 L114.00,104.49 L115.22,99.00 L114.16,93.50 L110.50,83.82 L106.88,80.00 L106.89,77.50 L103.91,72.50 L87.45,54.50 L76.49,48.00 L82.50,41.01 L99.00,31.93 L103.00,31.68 L110.00,36.28 L114.74,42.00 L118.33,49.00 L122.20,65.50 L122.75,107.00 L121.26,112.00 L120.76,132.50 L122.21,141.00 L121.50,143.26 L120.28,143.00 L113.50,127.81 L108.50,119.62 L96.00,104.78 L77.00,91.16 L66.00,85.66 L59.06,83.00 L55.98,83.00 Z M132.75,86.50 L133.95,82.50 L133.27,65.00 L133.88,58.00 L135.08,55.50 L134.26,49.50 L135.61,37.50 L138.00,35.46 L147.00,32.45 L156.50,31.48 L174.00,40.44 L179.66,46.00 L180.88,49.00 L168.00,59.26 L153.94,75.00 L144.50,90.95 L142.00,93.38 L140.82,100.00 L141.50,103.82 L145.03,101.00 L157.00,84.81 L172.28,71.50 L179.50,67.67 L186.00,65.94 L192.66,70.00 L197.81,76.50 L204.00,81.35 L207.50,87.07 L210.50,89.27 L211.24,94.50 L209.87,99.00 L211.75,105.00 L211.23,111.00 L206.50,113.75 L180.00,142.97 L176.50,143.55 L174.00,142.38 L169.00,142.32 L159.50,145.59 L154.00,149.28 L148.26,156.00 L144.07,167.00 L144.77,179.00 L149.50,187.39 L152.00,189.66 L160.00,192.62 L163.50,192.41 L169.50,190.02 L173.78,185.50 L175.68,181.50 L176.13,177.00 L174.70,173.00 L172.50,170.59 L170.00,169.38 L165.50,169.38 L162.86,171.00 L161.82,174.00 L165.96,177.00 L166.50,179.16 L162.50,181.18 L158.00,180.15 L155.49,177.00 L154.80,172.50 L158.94,163.50 L167.00,159.46 L181.00,158.70 L185.50,157.13 L210.74,138.50 L205.50,156.69 L202.80,159.50 L200.51,164.50 L200.51,168.00 L198.24,170.00 L193.46,180.00 L185.50,191.19 L178.50,198.16 L170.00,204.24 L149.00,215.16 L135.00,224.10 L134.26,221.50 L134.25,101.50 L132.80,97.00 Z M146.02,128.00 L147.70,137.00 L152.00,139.94 L167.50,131.07 L176.50,129.58 L189.04,113.00 L193.60,101.00 L192.18,98.00 L189.00,94.52 L186.50,96.25 L183.50,95.51 L176.00,98.12 L173.50,101.48 L170.50,103.19 L165.00,104.70 L163.17,108.00 L160.50,108.93 L158.50,112.02 L156.00,112.51 L155.00,114.92 L150.12,119.00 L147.50,123.06 Z M43.25,103.50 L44.50,99.47 L47.01,101.50 L51.78,109.00 L61.55,118.00 L68.59,131.00 L77.00,139.56 L84.00,143.25 L107.00,149.16 L115.00,153.26 L118.50,157.30 L121.17,166.00 L120.18,191.50 L112.38,201.50 L106.50,216.72 L98.50,213.62 L88.42,207.00 L83.34,202.00 L78.47,195.00 L79.00,194.35 L86.00,196.68 L92.50,196.41 L97.50,194.55 L103.00,190.19 L107.12,183.50 L108.70,178.00 L108.55,170.50 L105.84,163.50 L102.00,158.36 L93.50,152.95 L82.50,150.36 L77.50,149.85 L74.50,151.22 L70.00,149.82 L67.58,146.00 L57.77,138.50 L51.76,131.00 L47.95,123.50 L43.34,109.00 Z M69.86,109.50 L71.00,107.97 L75.00,108.49 L83.00,111.52 L90.08,116.00 L99.24,126.50 L101.99,132.00 L102.00,134.28 L96.50,134.25 L93.50,132.55 L90.00,132.58 L80.50,127.66 L74.45,121.00 Z M51.80,154.50 L53.50,153.96 L59.50,158.20 L64.00,159.81 L72.50,161.20 L85.50,161.38 L94.00,164.97 L97.99,170.00 L97.78,178.50 L91.00,184.89 L83.50,179.95 L65.50,175.31 L56.76,167.50 Z" fill="none" fill-rule="evenodd" stroke="#FFFFFF" stroke-opacity="0.48" stroke-width="0.45" stroke-linejoin="round"/>
+
+      </svg>
+    </g>
+    <text x="92" y="54" class="app-title">关单核验台</text>
+    <g id="window-controls" data-component="window-controls" fill="none" stroke="#DCE8F5" stroke-width="1.8" stroke-linecap="round">
+      <path d="M1394 41h16"/>
+      <rect x="1465" y="33" width="16" height="16" rx="1"/>
+      <path d="m1536 33 15 16M1551 33l-15 16"/>
+    </g>
+  </g>
+
+  <!-- 02 Overview toolbar -->
+  <g id="layer-overview-toolbar" inkscape:groupmode="layer" inkscape:label="02 Overview Toolbar" data-component="overview-toolbar">
+    <rect x="0" y="82" width="1586" height="79" fill="#F4F7FA"/>
+    <path d="M0 160.5H1586" stroke="#CCD6E2"/>
+    <text x="43" y="139" class="section-title">关单概览</text>
+
+    <g id="button-directory-settings" data-component="button" data-action="open-directory-settings">
+      <rect x="1007" y="107" width="171" height="44" rx="7" fill="#E5EFFD" stroke="#94B6E2"/>
+      <g transform="translate(1042 117)" color="#1766D1"><use xlink:href="#i-directory-settings" width="24" height="24"/></g>
+      <text x="1076" y="129" textLength="68" lengthAdjust="spacingAndGlyphs" class="button-text" fill="#1766D1">目录设置</text>
+    </g>
+    <path d="M1203 114v30" stroke="#CDD5DF"/>
+    <g id="button-clear-declarations" data-component="button" data-action="clear-declaration-directory">
+      <rect x="1227" y="107" width="153" height="44" rx="7" fill="#FFF4F2" stroke="#E3ABA6"/>
+      <g transform="translate(1253 117)" color="#BA1A1A"><use xlink:href="#i-declaration-clean" width="24" height="24"/></g>
+      <text x="1287" y="129" textLength="68" lengthAdjust="spacingAndGlyphs" class="button-text" fill="#BA1A1A">关单清理</text>
+    </g>
+    <path d="M1391 114v30" stroke="#CDD5DF"/>
+    <g id="button-clear-screenshots" data-component="button" data-action="clear-screenshot-directory">
+      <rect x="1404" y="107" width="139" height="44" rx="7" fill="#FFF4F2" stroke="#E3ABA6"/>
+      <g transform="translate(1423 117)" color="#BA1A1A"><use xlink:href="#i-screenshot-clean" width="24" height="24"/></g>
+      <text x="1457" y="129" textLength="68" lengthAdjust="spacingAndGlyphs" class="button-text" fill="#BA1A1A">截图清理</text>
+    </g>
+  </g>
+
+  <!-- 03 Statistic cards -->
+  <g id="layer-statistics" inkscape:groupmode="layer" inkscape:label="03 Statistics" data-component="statistics-grid">
+    <rect x="43" y="178" width="1500" height="162" rx="8" fill="#FFFFFF" stroke="#C7D2E1"/>
+    <path d="M407 198v122M791 198v122M1171 198v122" stroke="#DCE2EA"/>
+    <path d="M44 178h1498" stroke="#315C9D" stroke-width="2"/>
+    <g id="stat-total" data-component="stat-card">
+      <rect x="43" y="178" width="364" height="162" fill="none"/>
+      <rect x="69" y="194" width="42" height="42" rx="8" fill="#E8F1FF"/>
+      <g transform="translate(78 203)" color="#1766D1"><use xlink:href="#i-doc" width="24" height="24"/></g>
+      <text x="128" y="222" class="stat-title">本批关单</text>
+      <text x="69" y="284" class="stat-value">0</text>
+      <text x="119" y="283" class="stat-unit">份</text>
+      <text x="69" y="318" class="stat-helper">总共关单数量</text>
+    </g>
+    <g id="stat-duplicates" data-component="stat-card">
+      <rect x="407" y="178" width="384" height="162" fill="none"/>
+      <rect x="433" y="194" width="42" height="42" rx="8" fill="#FFEDEA"/>
+      <g transform="translate(442 203)" color="#D7372F"><use xlink:href="#i-copy" width="24" height="24"/></g>
+      <text x="492" y="222" class="stat-title">重复单号</text>
+      <text x="433" y="284" class="stat-value">0</text>
+      <text x="483" y="283" class="stat-unit">个</text>
+      <text x="433" y="318" class="stat-helper">重复单号数量</text>
+    </g>
+    <g id="stat-before" data-component="stat-card">
+      <rect x="791" y="178" width="380" height="162" fill="none"/>
+      <rect x="817" y="194" width="42" height="42" rx="8" fill="#F2EAFF"/>
+      <g transform="translate(826 203)" color="#6E45D6"><use xlink:href="#i-money" width="24" height="24"/></g>
+      <text x="876" y="222" class="stat-title">去重前总价</text>
+      <text x="817" y="284" class="stat-value">—</text>
+      <text x="817" y="318" class="stat-helper">按币种分别合计</text>
+    </g>
+    <g id="stat-after" data-component="stat-card">
+      <rect x="1171" y="178" width="372" height="162" fill="none"/>
+      <rect x="1197" y="194" width="42" height="42" rx="8" fill="#E6F7ED"/>
+      <g transform="translate(1206 203)" color="#14965F"><use xlink:href="#i-check" width="24" height="24"/></g>
+      <text x="1256" y="222" class="stat-title">去重后总价</text>
+      <text x="1197" y="284" class="stat-value">—</text>
+      <text x="1197" y="318" class="stat-helper">按币种分别合计</text>
+    </g>
+  </g>
+
+  <!-- 04 Records surface -->
+  <g id="layer-records" inkscape:groupmode="layer" inkscape:label="04 Records" data-component="records-panel" transform="translate(0 -45)">
+    <rect x="43" y="407" width="1500" height="592" rx="8" fill="#FFFFFF" stroke="#BFCBDA"/>
+
+    <g id="records-header" data-component="section-header">
+      <text x="68" y="462" class="record-title">关单记录</text>
+      <text x="218" y="462" class="record-count">共 0 条记录</text>
+      <g id="button-start-recognition" data-component="button" data-action="start-recognition">
+        <rect x="1215" y="429" width="155" height="44" rx="7" fill="#245A92" stroke="#1A4A7C"/>
+        <g transform="translate(1242 439)" color="#FFFFFF"><use xlink:href="#i-recognition" width="24" height="24"/></g>
+        <text x="1276" y="451" textLength="68" lengthAdjust="spacingAndGlyphs" class="button-text" fill="#FFFFFF">开始识别</text>
+      </g>
+      <g id="button-clear-list" data-component="button" data-action="clear-list">
+        <rect x="1385" y="429" width="133" height="44" rx="7" fill="#FFF4F2" stroke="#D9938D"/>
+        <g transform="translate(1401 439)" color="#A9231F"><use xlink:href="#i-list-clean" width="24" height="24"/></g>
+        <text x="1435" y="451" textLength="68" lengthAdjust="spacingAndGlyphs" class="button-text" fill="#A9231F">列表清理</text>
+      </g>
+    </g>
+
+    <g id="records-filters" data-component="filter-bar">
+      <g id="field-search" data-component="search-field">
+        <text x="68" y="503" class="field-label">单号搜索</text>
+        <rect x="68" y="516" width="412" height="52" rx="7" fill="#FFFFFF" stroke="#C7D2E1"/>
+        <g transform="translate(85 530)" color="#7A8BA3"><use xlink:href="#i-search" width="24" height="24"/></g>
+        <text x="129" y="549" class="field-placeholder">输入报关单编号搜索</text>
+      </g>
+      <g id="field-filter" data-component="select-field">
+        <text x="514" y="503" class="field-label">记录筛选</text>
+        <rect x="514" y="516" width="293" height="52" rx="7" fill="#FFFFFF" stroke="#C7D2E1"/>
+        <text x="533" y="549" class="field-text">全部记录</text>
+        <path d="m770 537 7 7 7-7" fill="none" stroke="#718099" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g id="field-page-size" data-component="select-field">
+        <text x="841" y="503" class="field-label">每页显示</text>
+        <rect x="841" y="516" width="245" height="52" rx="7" fill="#FFFFFF" stroke="#C7D2E1"/>
+        <text x="860" y="549" class="field-text">50 条</text>
+        <path d="m1049 537 7 7 7-7" fill="none" stroke="#718099" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <g id="records-table" data-component="data-table" data-row-height="56" clip-path="url(#tableClip)">
+      <rect x="63" y="589" width="1457" height="330" rx="6" fill="#FBFCFE" stroke="#AEBED1"/>
+      <rect x="63" y="589" width="1457" height="58" fill="#DCE6F2"/>
+      <g stroke="#B3C3D6" stroke-width="1">
+        <path d="M164 589v58"/><path d="M369 589v58"/><path d="M591 589v58"/><path d="M776 589v58"/>
+        <path d="M937 589v58"/><path d="M1076 589v58"/><path d="M1269 589v58"/><path d="M1392 589v58"/>
+      </g>
+      <g class="table-head" text-anchor="middle">
+        <text x="113.5" y="626">序号</text>
+        <text x="266.5" y="626">报关单编号</text>
+        <text x="480" y="626">境外收货人</text>
+        <text x="683.5" y="626">合同协议号</text>
+        <text x="856.5" y="626">出境类别</text>
+        <text x="1006.5" y="626">目的国</text>
+        <text x="1172.5" y="626">关单总货值</text>
+        <text x="1330.5" y="626">状态</text>
+        <text x="1456" y="626">操作</text>
+      </g>
+      <g id="empty-state" data-component="empty-state" color="#8797AD">
+        <use xlink:href="#i-empty" x="751" y="684" width="64" height="64"/>
+        <text x="783" y="803" class="empty-title" text-anchor="middle">暂无关单记录</text>
+      </g>
+    </g>
+
+    <g id="pagination" data-component="pagination" transform="translate(0 50)">
+      <text x="68" y="914" class="footer-text">共 0 条</text>
+      <text x="1158" y="914" class="footer-text">第 1 / 1 页</text>
+      <g id="page-prev" data-component="icon-button" opacity="0.58">
+        <rect x="1292" y="883" width="50" height="46" rx="8" fill="#F7F9FC" stroke="#CDD6E2"/>
+        <path d="m1320 897-9 9 9 9" fill="none" stroke="#73839B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g id="page-current" data-component="page-button">
+        <rect x="1371" y="883" width="50" height="46" rx="8" fill="#1766D1"/>
+        <text x="1396" y="914" text-anchor="middle" font-size="18" font-weight="650" fill="#FFFFFF">1</text>
+      </g>
+      <g id="page-next" data-component="icon-button" opacity="0.58">
+        <rect x="1451" y="883" width="50" height="46" rx="8" fill="#F7F9FC" stroke="#CDD6E2"/>
+        <path d="m1473 897 9 9-9 9" fill="none" stroke="#73839B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+  </g>
+</svg>

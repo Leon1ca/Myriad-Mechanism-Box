@@ -1,0 +1,57 @@
+关单核验台
+
+本程序使用以下开源组件：
+
+1. PDFium
+   Copyright The PDFium Authors
+   License: BSD 3-Clause
+   https://pdfium.googlesource.com/pdfium/
+
+2. .NET 8 Desktop Runtime
+   Copyright Microsoft Corporation
+   License: MIT
+   https://github.com/dotnet/runtime
+
+3. RapidOCR / RapidOCRCSharp（已按本程序的文档图像边界场景做稳定性修正）
+   Copyright RapidAI contributors
+   License: Apache License 2.0
+   https://github.com/RapidAI/RapidOCR
+   https://github.com/RapidAI/RapidOCRCSharp
+
+4. PP-OCRv5 中文/英文检测、方向分类、文字识别模型
+   Model copyright: Baidu / PaddleOCR contributors
+   License: Apache License 2.0
+   https://github.com/PaddlePaddle/PaddleOCR
+
+5. Microsoft ONNX Runtime
+   Copyright Microsoft Corporation
+   License: MIT
+   https://github.com/microsoft/onnxruntime
+
+6. Emgu CV 与所含 OpenCV Windows 运行组件
+   Emgu CV License: GNU GPL v3（或 Emgu 商业许可）
+   OpenCV License: Apache License 2.0
+   https://www.emgu.com/wiki/index.php/Licensing:
+   https://opencv.org/license/
+
+7. Clipper2
+   Copyright Angus Johnson
+   License: Boost Software License 1.0
+   https://github.com/AngusJohnson/Clipper2
+
+本分发包包含应用源代码说明与完整第三方许可原文：根目录 `LICENSE`（GPL 原文）、`third-party-notices/`（各组件原始许可文本）、`app/fonts/` 内字体 OFL 原文。第三方组件的权利归各自作者所有。
+
+本软件不会尝试绕过中国国际贸易单一窗口的人工验证机制。在线核验步骤需要用户在浏览器中手动完成验证。
+
+--------------------------------------------------------------------
+随包字体（SIL Open Font License 1.1，均为静态字重）
+--------------------------------------------------------------------
+Noto Sans SC Regular / Medium / Bold（NotoSansSC-Regular.ttf / NotoSansSC-Medium.ttf / NotoSansSC-Bold.ttf）
+  来源：google/fonts 固定提交 2894aab31764f10f29c421bdfd2340d3b382d384 的 ofl/notosanssc/NotoSansSC[wght].ttf
+  生成：fontTools.varLib.instancer 实例化 wght 400 / 500 / 700 为静态 TTF（无 fvar 表）
+  许可：SIL Open Font License 1.1，原文见 fonts/NotoSansSC-OFL.txt
+  保留字名：上游 OFL 声明 Reserved Font Name 'Source'；生成字族名为 Noto Sans SC，未使用该保留字名。
+
+JetBrains Mono Regular / Medium / Bold（JetBrainsMono-Regular.ttf / JetBrainsMono-Medium.ttf / JetBrainsMono-Bold.ttf）
+  来源：https://github.com/JetBrains/JetBrainsMono 发布版 v2.304
+  许可：SIL Open Font License 1.1，原文见 fonts/JetBrainsMono-OFL.txt

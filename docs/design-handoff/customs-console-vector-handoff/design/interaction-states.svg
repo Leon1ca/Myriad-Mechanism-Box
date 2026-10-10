@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+     width="1600" height="1700" viewBox="0 0 1600 1700"
+     role="img" aria-labelledby="title desc">
+  <title id="title">关单核验台交互状态与弹窗矢量稿</title>
+  <desc id="desc">包含目录设置弹窗、关单清理确认、截图清理确认、记录筛选下拉和每页显示下拉。</desc>
+  <defs>
+    <filter id="dialogShadow" x="-12%" y="-12%" width="124%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#102A43" flood-opacity="0.14"/>
+    </filter>
+    <filter id="menuShadow" x="-12%" y="-12%" width="124%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#102A43" flood-opacity="0.14"/>
+    </filter>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3 7h7l2 2h9v10H3V7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M4 7h16M9 3h6l1 4H8l1-4ZM7 7l1 13h8l1-13M10 10v7M14 10v7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <style><![CDATA[
+      text { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; }
+      .board-title { font-size: 30px; font-weight: 700; fill: #142033; }
+      .section-label { font-size: 18px; font-weight: 700; fill: #315C9D; letter-spacing: .5px; }
+      .dialog-title { font-size: 26px; font-weight: 700; fill: #142033; }
+      .dialog-body { font-size: 17px; fill: #59636F; }
+      .field-label { font-size: 16px; font-weight: 650; fill: #25354D; }
+      .field-text { font-size: 17px; fill: #263750; }
+      .placeholder { font-size: 17px; fill: #7A869A; }
+      .button { font-size: 17px; font-weight: 650; }
+      .menu-item { font-size: 17px; fill: #263750; }
+      .caption { font-size: 15px; fill: #667085; }
+    ]]></style>
+  </defs>
+
+  <rect width="1600" height="1700" fill="#E9EEF5"/>
+  <text x="64" y="70" class="board-title">关单核验台 · 交互组件与状态</text>
+
+  <!-- 01 Directory settings dialog -->
+  <g id="directory-settings-dialog" inkscape:groupmode="layer" inkscape:label="01 Directory Settings Dialog" data-component="modal">
+    <text x="64" y="122" class="section-label">01 目录设置二级弹窗</text>
+    <rect x="250" y="150" width="1100" height="500" rx="12" fill="#FFFFFF" stroke="#AEBED1" filter="url(#dialogShadow)"/>
+    <text x="298" y="207" class="dialog-title">目录设置</text>
+    <text x="298" y="239" class="dialog-body">分别设置关单读取目录与核验截图保存目录</text>
+    <g id="directory-modal-close" data-component="icon-button">
+      <rect x="1278" y="174" width="40" height="40" rx="20" fill="#F3F6FA"/>
+      <path d="m1290 186 16 16M1306 186l-16 16" stroke="#59636F" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <g id="declaration-directory-field" data-component="path-field">
+      <text x="298" y="291" class="field-label">关单读取目录</text>
+      <rect x="298" y="307" width="714" height="56" rx="8" fill="#FFFFFF" stroke="#C2C7CF"/>
+      <g transform="translate(318 323)" color="#718099"><use xlink:href="#i-folder" width="24" height="24"/></g>
+      <text x="358" y="343" class="placeholder">尚未选择关单读取目录</text>
+      <g id="choose-declaration-directory" data-component="button">
+        <rect x="1032" y="307" width="270" height="56" rx="10" fill="#E7F0FF" stroke="#AAC7FF"/>
+        <text x="1167" y="342" class="button" fill="#245A92" text-anchor="middle">选择目录</text>
+      </g>
+    </g>
+
+    <g id="screenshot-directory-field" data-component="path-field">
+      <text x="298" y="414" class="field-label">截图保存目录</text>
+      <rect x="298" y="430" width="714" height="56" rx="8" fill="#FFFFFF" stroke="#C2C7CF"/>
+      <g transform="translate(318 446)" color="#718099"><use xlink:href="#i-folder" width="24" height="24"/></g>
+      <text x="358" y="466" class="placeholder">尚未选择截图保存目录</text>
+      <g id="choose-screenshot-directory" data-component="button">
+        <rect x="1032" y="430" width="270" height="56" rx="10" fill="#E7F0FF" stroke="#AAC7FF"/>
+        <text x="1167" y="465" class="button" fill="#245A92" text-anchor="middle">选择目录</text>
+      </g>
+    </g>
+
+    <text x="298" y="526" class="caption">路径仅保存在当前设备，可随时重新设置。</text>
+    <path d="M250 556h1100" stroke="#E2E7EE"/>
+    <g id="directory-modal-cancel" data-component="button">
+      <rect x="1030" y="578" width="120" height="48" rx="10" fill="#FFFFFF" stroke="#C2C7CF"/>
+      <text x="1090" y="609" class="button" fill="#315064" text-anchor="middle">取消</text>
+    </g>
+    <g id="directory-modal-save" data-component="button">
+      <rect x="1170" y="578" width="132" height="48" rx="7" fill="#245A92"/>
+      <text x="1236" y="609" class="button" fill="#FFFFFF" text-anchor="middle">保存设置</text>
+    </g>
+  </g>
+
+  <!-- 02 Cleanup confirmation dialogs -->
+  <g id="cleanup-confirmation-dialogs" inkscape:groupmode="layer" inkscape:label="02 Cleanup Confirmations">
+    <text x="64" y="728" class="section-label">02 清理操作二次确认</text>
+
+    <g id="declaration-cleanup-confirm" data-component="confirm-dialog">
+      <rect x="64" y="758" width="708" height="330" rx="12" fill="#FFFFFF" stroke="#AEBED1" filter="url(#dialogShadow)"/>
+      <rect x="100" y="794" width="52" height="52" rx="26" fill="#FFDAD6"/>
+      <g transform="translate(114 808)" color="#BA1A1A"><use xlink:href="#i-trash" width="24" height="24"/></g>
+      <text x="174" y="828" class="dialog-title">确认清理关单目录？</text>
+      <text x="100" y="886" class="dialog-body">将删除关单读取目录中的全部文件，此操作不可撤销。</text>
+      <rect x="100" y="916" width="636" height="62" rx="10" fill="#FFF5F3"/>
+      <text x="122" y="954" font-size="16" fill="#8C1D18">请确认当前目录中没有需要保留的关单文件。</text>
+      <g data-component="button">
+        <rect x="472" y="1010" width="120" height="48" rx="10" fill="#FFFFFF" stroke="#C2C7CF"/>
+        <text x="532" y="1041" class="button" fill="#315064" text-anchor="middle">取消</text>
+      </g>
+      <g data-component="button">
+        <rect x="608" y="1010" width="128" height="48" rx="10" fill="#BA1A1A"/>
+        <text x="672" y="1041" class="button" fill="#FFFFFF" text-anchor="middle">确认清理</text>
+      </g>
+    </g>
+
+    <g id="screenshot-cleanup-confirm" data-component="confirm-dialog">
+      <rect x="828" y="758" width="708" height="330" rx="12" fill="#FFFFFF" stroke="#AEBED1" filter="url(#dialogShadow)"/>
+      <rect x="864" y="794" width="52" height="52" rx="26" fill="#FFDAD6"/>
+      <g transform="translate(878 808)" color="#BA1A1A"><use xlink:href="#i-trash" width="24" height="24"/></g>
+      <text x="938" y="828" class="dialog-title">确认清理截图目录？</text>
+      <text x="864" y="886" class="dialog-body">将删除截图保存目录中的全部文件，此操作不可撤销。</text>
+      <rect x="864" y="916" width="636" height="62" rx="10" fill="#FFF5F3"/>
+      <text x="886" y="954" font-size="16" fill="#8C1D18">请确认当前目录中没有需要保留的核验截图。</text>
+      <g data-component="button">
+        <rect x="1236" y="1010" width="120" height="48" rx="10" fill="#FFFFFF" stroke="#C2C7CF"/>
+        <text x="1296" y="1041" class="button" fill="#315064" text-anchor="middle">取消</text>
+      </g>
+      <g data-component="button">
+        <rect x="1372" y="1010" width="128" height="48" rx="10" fill="#BA1A1A"/>
+        <text x="1436" y="1041" class="button" fill="#FFFFFF" text-anchor="middle">确认清理</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- 03 Select/dropdown states -->
+  <g id="select-states" inkscape:groupmode="layer" inkscape:label="03 Select States">
+    <text x="64" y="1170" class="section-label">03 下拉组件：聚焦、展开与选中状态</text>
+
+    <g id="record-filter-open" data-component="select-open-state">
+      <rect x="64" y="1200" width="708" height="420" rx="8" fill="#FFFFFF" stroke="#C7D2E1"/>
+      <text x="104" y="1260" class="field-label">记录筛选</text>
+      <rect x="104" y="1276" width="420" height="56" rx="7" fill="#FFFFFF" stroke="#245A92" stroke-width="2"/>
+      <text x="124" y="1311" class="field-text">全部记录</text>
+      <g transform="translate(480 1292) rotate(180 12 12)" color="#315C9D"><use xlink:href="#i-chevron" width="24" height="24"/></g>
+      <g filter="url(#menuShadow)">
+        <rect x="104" y="1344" width="420" height="208" rx="10" fill="#FFFFFF" stroke="#DCE2EA"/>
+      </g>
+      <rect x="112" y="1352" width="404" height="48" rx="8" fill="#D9E7FF"/>
+      <text x="132" y="1383" class="menu-item" font-weight="650">全部记录</text>
+      <g transform="translate(478 1364)" color="#245A92"><use xlink:href="#i-check" width="24" height="24"/></g>
+      <text x="132" y="1433" class="menu-item">正常记录</text>
+      <text x="132" y="1483" class="menu-item">重复单号</text>
+      <text x="132" y="1533" class="menu-item">核验异常</text>
+      <text x="104" y="1588" class="caption">菜单项高度 48px；选中项使用 Primary Container，并显示勾选图标。</text>
+    </g>
+
+    <g id="page-size-open" data-component="select-open-state">
+      <rect x="828" y="1200" width="708" height="420" rx="8" fill="#FFFFFF" stroke="#C7D2E1"/>
+      <text x="868" y="1260" class="field-label">每页显示</text>
+      <rect x="868" y="1276" width="320" height="56" rx="7" fill="#FFFFFF" stroke="#245A92" stroke-width="2"/>
+      <text x="888" y="1311" class="field-text">50 条</text>
+      <g transform="translate(1144 1292) rotate(180 12 12)" color="#315C9D"><use xlink:href="#i-chevron" width="24" height="24"/></g>
+      <g filter="url(#menuShadow)">
+        <rect x="868" y="1344" width="320" height="158" rx="10" fill="#FFFFFF" stroke="#DCE2EA"/>
+      </g>
+      <text x="896" y="1383" class="menu-item">20 条</text>
+      <rect x="876" y="1402" width="304" height="48" rx="8" fill="#D9E7FF"/>
+      <text x="896" y="1433" class="menu-item" font-weight="650">50 条</text>
+      <g transform="translate(1146 1414)" color="#245A92"><use xlink:href="#i-check" width="24" height="24"/></g>
+      <text x="896" y="1483" class="menu-item">100 条</text>
+      <text x="868" y="1540" class="caption">关闭状态为 1px Outline；键盘聚焦或展开时使用 2px Primary 边框。</text>
+    </g>
+  </g>
+</svg>

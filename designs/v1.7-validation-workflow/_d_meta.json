@@ -1,0 +1,24 @@
+{
+  "type": "design",
+  "designSystems": [],
+  "primaryDesignSystem": null,
+  "assets": {
+    "关单核验台-v1.7-流程与视觉评审": {
+      "versions": [
+        {
+          "path": "index.html",
+          "createdAt": "2026-08-31T07:12:13.498Z",
+          "status": "approved",
+          "subtitle": "扁平化圆角PNG图标、单项复制菜单、标题主导的概览层级、自动截图流程",
+          "viewport": {
+            "width": 1586,
+            "height": 992
+          },
+          "section": "v1.7 design review"
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-08-31T07:12:13.499Z",
+  "updatedAt": "2026-08-31T08:00:05.734Z"
+}

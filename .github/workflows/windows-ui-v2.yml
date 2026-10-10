@@ -1,0 +1,481 @@
+name: Windows release validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Publish the validated portable ZIP as this GitHub Release tag (e.g. v0.1.0; must match the project version). Leave empty to only validate."
+        required: false
+        default: ""
+      prerelease:
+        description: "Mark the release as a pre-release"
+        type: boolean
+        default: false
+      evidence_ref:
+        description: "Also push the UI evidence images to the hidden ref refs/ci-evidence/latest (non-main dispatches only)"
+        type: boolean
+        default: false
+
+# Least privilege: validation only reads the repository and its release assets and
+# uploads build evidence as job artifacts. Only the optional publish-release job,
+# which runs after the full validation gate succeeds, is granted contents: write.
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: "1"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+  APP_DLL: src/CustomsClearanceConsole/bin/Release/net8.0-windows/关单核验台.dll
+
+jobs:
+  core-regression:
+    name: Core regression (net8.0)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: .nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', 'NuGet.Config', '**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+      - name: Show effective SDK
+        run: dotnet --version
+      - name: Run core regression
+        shell: pwsh
+        run: |
+          dotnet run --project tests/CoreRegression/CoreRegression.csproj -c Release
+          if ($LASTEXITCODE -ne 0) { throw "核心回归失败" }
+          dotnet run --project tests/TransportRegression/TransportRegression.csproj -c Release
+          if ($LASTEXITCODE -ne 0) { throw "浏览器通信回归失败" }
+      - name: Upload core regression log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-regression-log
+          path: |
+            tests/CoreRegression/bin/Release/**
+          if-no-files-found: ignore
+
+  windows-validation:
+    name: Build, native UI, browser E2E, export and portable package
+    runs-on: windows-latest
+    timeout-minutes: 120
+    needs: core-regression
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: .nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', 'NuGet.Config', '**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+      - name: Show effective SDK
+        run: dotnet --version
+
+      - name: Prepare OCR and native dependencies (verify SHA256SUMS)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $sourceTag = 'v0.1.0'
+          gh release view $sourceTag --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -ne 0) { throw '缺少本仓库 v0.1.0 依赖发布包，请先上传已验证的初始包。' }
+          $root = Join-Path $env:RUNNER_TEMP 'release-dependencies'
+          New-Item -ItemType Directory -Force $root | Out-Null
+          gh release download $sourceTag --repo $env:GITHUB_REPOSITORY --pattern 'SHA256SUMS.txt' --dir $root --clobber
+          gh release download $sourceTag --repo $env:GITHUB_REPOSITORY --pattern '*.zip' --dir $root --clobber
+          $zip = Get-ChildItem -LiteralPath $root -Filter *.zip | Select-Object -First 1
+          if (-not $zip) { throw "$sourceTag 发布包缺少 ZIP 资产。" }
+          $sumsPath = Join-Path $root 'SHA256SUMS.txt'
+          if (-not (Test-Path -LiteralPath $sumsPath)) { throw "$sourceTag 发布包缺少 SHA256SUMS.txt。" }
+          $line = (Get-Content -LiteralPath $sumsPath | Where-Object { $_.Trim().Length -gt 0 } | Select-Object -First 1)
+          $expected = ($line -split '\s+')[0].Trim().ToLowerInvariant()
+          $actual = (Get-FileHash -LiteralPath $zip.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          Write-Host "ZIP       : $($zip.Name)"
+          Write-Host "Expected  : $expected"
+          Write-Host "Actual    : $actual"
+          if ($actual -ne $expected) { throw "$sourceTag 发布包 SHA256 与 SHA256SUMS.txt 不一致。" }
+          $pkg = Join-Path $root 'pkg'
+          Expand-Archive -LiteralPath $zip.FullName -DestinationPath $pkg -Force
+          & "$env:GITHUB_WORKSPACE/scripts/bootstrap-from-release.ps1" -PackageRoot $pkg
+          # Keep the runtime folder for the portable package later.
+          Copy-Item -LiteralPath (Join-Path $pkg 'runtime') -Destination (Join-Path $env:RUNNER_TEMP 'portable-runtime') -Recurse -Force
+
+      - name: Prepare static fonts and original licences (verify pinned SHA256)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -m pip install --disable-pip-version-check --no-input "fonttools==4.60.2"
+          if ($LASTEXITCODE -ne 0) { throw "fonttools 安装失败：$LASTEXITCODE" }
+          & "$env:GITHUB_WORKSPACE/scripts/prepare-fonts.ps1"
+          if ($LASTEXITCODE -ne 0) { throw "静态字体准备失败：$LASTEXITCODE" }
+
+      - name: Build main application
+        id: build
+        continue-on-error: true
+        timeout-minutes: 25
+        run: dotnet build src/CustomsClearanceConsole/CustomsClearanceConsole.csproj -c Release
+
+      - name: Native UI contract self-test
+        id: uicontract
+        continue-on-error: true
+        timeout-minutes: 15
+        run: dotnet "$env:APP_DLL" --ui-contract-self-test
+
+      - name: OCR end-to-end (PP-OCRv5; PNG/JPG/BMP/TIFF/WebP, rotated pages, image-only PDF)
+        id: ocr
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet "$env:APP_DLL" --ocr-self-test artifacts/validation/ocr
+          if ($LASTEXITCODE -ne 0) { throw "OCR 端到端自检失败：$LASTEXITCODE" }
+          dotnet "$env:APP_DLL" --resource-self-test artifacts/validation/resources
+          if ($LASTEXITCODE -ne 0) { throw "原生资源自检失败：$LASTEXITCODE" }
+          dotnet "$env:APP_DLL" --self-test
+          if ($LASTEXITCODE -ne 2) { throw "缺少参数的命令未正确拒绝" }
+          dotnet "$env:APP_DLL" --unknown-command
+          if ($LASTEXITCODE -ne 2) { throw "未知命令未正确拒绝" }
+          exit 0
+
+      - name: Environment, DPI and font report (fails if static weights are not real)
+        id: envreport
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet "$env:APP_DLL" --env-report artifacts/validation/environment
+          if ($LASTEXITCODE -ne 0) { throw "环境/字体报告失败：$LASTEXITCODE" }
+          $report = Get-Content 'artifacts/validation/environment/environment.json' -Raw | ConvertFrom-Json
+          Write-Host "actualDeviceDpi=$($report.dpi) windowDpi=$($report.dpiProbe.windowDpi) systemDpi=$($report.dpiProbe.systemDpi)"
+          Write-Host "realMonitorScalingVerified=$($report.realMonitorScalingVerified)"
+          Write-Host "fontVerification.ok=$($report.fontVerification.ok) detail=$($report.fontVerification.detail)"
+          if (-not $report.fontVerification.ok) { throw "随包静态字体未真实加载：$($report.fontVerification.detail)" }
+
+      - name: Excel and Markdown export validation
+        id: export
+        continue-on-error: true
+        timeout-minutes: 15
+        run: dotnet "$env:APP_DLL" --export-samples artifacts/validation/export
+
+      - name: Native UI state snapshots and layout assertions
+        id: snapshots
+        continue-on-error: true
+        timeout-minutes: 8
+        shell: pwsh
+        env:
+          CUSTOMS_CONSOLE_APILOG: ${{ github.workspace }}\artifacts\validation\ui-states\app.log
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $evidence = Join-Path $env:GITHUB_WORKSPACE 'artifacts/validation/ui-states'
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+          $collect = Join-Path $env:GITHUB_WORKSPACE 'scripts/collect-snapshot-diagnostics.ps1'
+          # The native snapshot process is bounded well below the whole-job budget: a hung UI
+          # or native call (modal dialog, CopyFromScreen, display switch) must not burn the
+          # 25-minute step. Evidence is collected before the process is killed, then the step
+          # fails so the final gate stays red while browser/export/package still run.
+          $limitMinutes = 5
+          $stdout = Join-Path $evidence 'snapshot-stdout.log'
+          $stderr = Join-Path $evidence 'snapshot-stderr.log'
+          $process = Start-Process -FilePath 'dotnet' `
+            -ArgumentList @("$env:APP_DLL", '--ui-state-snapshot', $evidence) `
+            -PassThru -NoNewWindow -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          Write-Host "UI 快照进程已启动：PID=$($process.Id)，上限 $limitMinutes 分钟。"
+          if (-not $process.WaitForExit($limitMinutes * 60 * 1000)) {
+            Write-Host "::error::UI 快照进程超过 $limitMinutes 分钟未退出，收集诊断证据后结束。"
+            & $collect -OutputFolder $evidence -ProcessId $process.Id -Label 'timeout'
+            try { $process.Kill($true) } catch { Write-Host "结束进程失败：$($_.Exception.Message)" }
+            try { $process.WaitForExit(30000) | Out-Null } catch { }
+            Write-Host '----- snapshot stdout tail -----'
+            Get-Content -LiteralPath $stdout -Tail 200 -ErrorAction SilentlyContinue | Write-Host
+            Write-Host '----- snapshot stderr tail -----'
+            Get-Content -LiteralPath $stderr -Tail 200 -ErrorAction SilentlyContinue | Write-Host
+            throw "UI 快照进程超时（$limitMinutes 分钟），已保存超时诊断证据。"
+          }
+          Write-Host "UI 快照进程退出码：$($process.ExitCode)"
+          Get-Content -LiteralPath $stdout -ErrorAction SilentlyContinue | Write-Host
+          Get-Content -LiteralPath $stderr -ErrorAction SilentlyContinue | Write-Host
+          if ($process.ExitCode -ne 0) {
+            & $collect -OutputFolder $evidence -ProcessId 0 -Label 'failed'
+            throw "UI 快照命令退出码非 0：$($process.ExitCode)"
+          }
+
+      - name: Controlled browser long-screenshot E2E
+        id: browser
+        continue-on-error: true
+        timeout-minutes: 35
+        env:
+          # Keep the browser E2E app log inside the uploaded evidence so a frame/authorization
+          # failure ships the exact CDP-side reason instead of only the scenario summary.
+          CUSTOMS_CONSOLE_APILOG: ${{ github.workspace }}\artifacts\validation\browser\app.log
+        run: dotnet "$env:APP_DLL" --browser-e2e artifacts/validation/browser
+
+      - name: Portable package (root runtime + tools + launcher + app fonts/licences)
+        id: package
+        continue-on-error: true
+        timeout-minutes: 45
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = ([xml](Get-Content 'src/CustomsClearanceConsole/CustomsClearanceConsole.csproj' -Raw)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
+          if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "项目版本无效：$version" }
+          $root = Join-Path $env:GITHUB_WORKSPACE 'artifacts/local-current'
+          Remove-Item -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force (Join-Path $root 'app') | Out-Null
+          dotnet publish src/CustomsClearanceConsole/CustomsClearanceConsole.csproj -c Release -o (Join-Path $root 'app')
+          if ($LASTEXITCODE -ne 0) { throw "dotnet publish 失败：$LASTEXITCODE" }
+          Copy-Item -LiteralPath (Join-Path $env:RUNNER_TEMP 'portable-runtime') -Destination (Join-Path $root 'runtime') -Recurse -Force
+          # The portable layout keeps native tools at the package root, matching AppPaths.
+          if (Test-Path -LiteralPath (Join-Path $root 'app/tools')) {
+            Move-Item -LiteralPath (Join-Path $root 'app/tools') -Destination (Join-Path $root 'tools')
+          }
+          & "$env:GITHUB_WORKSPACE/scripts/build-launcher.ps1"
+          if ($LASTEXITCODE -ne 0) { throw "启动器构建失败：$LASTEXITCODE" }
+          Copy-Item -LiteralPath 'artifacts/launcher/关单核验台.exe' -Destination (Join-Path $root '关单核验台.exe') -Force
+          Copy-Item -LiteralPath "docs/release-notes-v$version.md" -Destination (Join-Path $root "更新说明-v$version.md") -Force
+          Copy-Item -LiteralPath 'src/CustomsClearanceConsole/使用说明.txt' -Destination (Join-Path $root '使用说明.txt') -Force
+          # GPL, third-party and font licences ship both at the root and inside app/.
+          Copy-Item -LiteralPath 'LICENSE' -Destination (Join-Path $root 'LICENSE') -Force
+          Copy-Item -LiteralPath 'third-party-notices' -Destination (Join-Path $root 'third-party-notices') -Recurse -Force
+          Copy-Item -LiteralPath 'src/CustomsClearanceConsole/AboutAndLicenses.txt' -Destination (Join-Path $root 'AboutAndLicenses.txt') -Force
+          # Fonts and licences must ship inside the portable app folder.
+          $fontDir = Join-Path $root 'app/fonts'
+          if (-not (Test-Path -LiteralPath $fontDir)) { throw '便携包缺少 fonts 目录。' }
+          foreach ($font in @('NotoSansSC-Regular.ttf', 'NotoSansSC-Medium.ttf', 'NotoSansSC-Bold.ttf',
+                              'JetBrainsMono-Regular.ttf', 'JetBrainsMono-Medium.ttf', 'JetBrainsMono-Bold.ttf',
+                              'NotoSansSC-OFL.txt', 'JetBrainsMono-OFL.txt', 'MANIFEST.json')) {
+            if (-not (Test-Path -LiteralPath (Join-Path $fontDir $font))) { throw "便携包缺少字体、许可或清单：$font" }
+          }
+          if (-not (Test-Path -LiteralPath (Join-Path $root 'app/assets/ui-v2/icons/png/play-white-24.png'))) { throw '便携包缺少 UI v2 图标。' }
+          if (-not (Test-Path -LiteralPath (Join-Path $root 'tools/pdfium/pdfium.dll'))) { throw '便携包缺少根 tools/pdfium。' }
+          if (Test-Path -LiteralPath (Join-Path $root 'tools/tesseract')) { throw '便携包不应再包含 Tesseract。' }
+          & "$env:GITHUB_WORKSPACE/scripts/package-release.ps1" -SourceRoot $root
+
+      - name: Verify portable ZIP contents
+        id: zipverify
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $zip = Get-ChildItem -LiteralPath 'artifacts/releases' -Recurse -Filter '*.zip' | Select-Object -First 1
+          if (-not $zip) { throw '未生成便携 ZIP。' }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
+          try {
+            $names = $archive.Entries | ForEach-Object { $_.FullName }
+            foreach ($required in @('关单核验台.exe', 'LICENSE', 'AboutAndLicenses.txt',
+                                    'third-party-notices/EmguCV-GPLv3-or-Commercial.txt',
+                                    'third-party-notices/ONNXRuntime-MIT.txt',
+                                    'app/关单核验台.dll', 'app/AboutAndLicenses.txt',
+                                    'app/fonts/NotoSansSC-Regular.ttf', 'app/fonts/NotoSansSC-Medium.ttf',
+                                    'app/fonts/NotoSansSC-Bold.ttf', 'app/fonts/JetBrainsMono-Regular.ttf',
+                                    'app/fonts/NotoSansSC-OFL.txt', 'app/fonts/JetBrainsMono-OFL.txt',
+                                    'runtime/dotnet.exe',
+                                    'tools/pdfium/pdfium.dll', 'app/ocr-models/ppocrv5_dict.txt')) {
+              if (-not ($names -contains $required)) { throw "便携 ZIP 缺少：$required" }
+            }
+            if ($names | Where-Object { $_ -like 'tools/tesseract/*' }) { throw '便携 ZIP 不应再包含 Tesseract。' }
+            if ($names -contains 'app/fonts/NotoSansSC-Variable.ttf') { throw '便携 ZIP 仍包含可变字体，违反静态字体要求。' }
+            Write-Host "便携 ZIP 文件数：$($names.Count)"
+          } finally { $archive.Dispose() }
+          Get-Content (Get-ChildItem -LiteralPath 'artifacts/releases' -Recurse -Filter 'SHA256SUMS.txt' | Select-Object -First 1).FullName
+
+      - name: Smoke test clean ZIP extraction through the root launcher
+        id: smoke
+        continue-on-error: true
+        timeout-minutes: 25
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $zip = Get-ChildItem -LiteralPath 'artifacts/releases' -Recurse -Filter '*.zip' | Select-Object -First 1
+          $extract = Join-Path $env:RUNNER_TEMP 'portable-smoke'
+          Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue
+          Expand-Archive -LiteralPath $zip.FullName -DestinationPath $extract -Force
+          $launcher = Join-Path $extract '关单核验台.exe'
+          function Invoke-Launcher {
+            param([string]$Arguments, [string]$Label)
+            $process = Start-Process -FilePath $launcher -ArgumentList $Arguments -PassThru -WorkingDirectory $extract
+            if (-not $process.WaitForExit(300000)) { $process.Kill(); throw "$Label 超时未退出。" }
+            Write-Host "$Label 退出码：$($process.ExitCode)"
+            if ($process.ExitCode -ne 0) { throw "$Label 退出码非 0：$($process.ExitCode)" }
+          }
+          Invoke-Launcher '--ui-contract-self-test' '根启动器契约自检'
+          $envReport = Join-Path $extract 'smoke-evidence'
+          Invoke-Launcher "--env-report `"$envReport`"" '根启动器环境/字体报告'
+          $report = Get-Content (Join-Path $envReport 'environment.json') -Raw | ConvertFrom-Json
+          if (-not $report.fontVerification.ok) { throw "解压后字体未真实加载：$($report.fontVerification.detail)" }
+          Write-Host "干净解压包 DeviceDpi=$($report.dpi) 字体=$($report.fontVerification.detail)"
+
+      # Runs last because it changes the display scaling for the rest of the job. Processes
+      # started afterwards see 144 DPI as both system and window DPI, the same situation as a
+      # laptop that signs in at 150%. Every state must pass the geometry and text-fit checks.
+      - name: 150% display scaling snapshots
+        id: dpi150
+        continue-on-error: true
+        timeout-minutes: 12
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $evidence = Join-Path $env:GITHUB_WORKSPACE 'artifacts/validation/ui-states-150'
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+          & "$env:GITHUB_WORKSPACE/scripts/set-display-scale.ps1" -ScalePercent 150 -MinWidth 2880 -MinHeight 1620
+          dotnet "$env:APP_DLL" --env-report (Join-Path $evidence 'environment')
+          $report = Get-Content (Join-Path $evidence 'environment/environment.json') -Raw | ConvertFrom-Json
+          Write-Host "150%: actualDeviceDpi=$($report.dpi) windowDpi=$($report.dpiProbe.windowDpi) systemDpi=$($report.dpiProbe.systemDpi)"
+          $stdout = Join-Path $evidence 'snapshot-stdout.log'
+          $stderr = Join-Path $evidence 'snapshot-stderr.log'
+          $process = Start-Process -FilePath 'dotnet' -ArgumentList @("$env:APP_DLL", '--ui-state-snapshot', $evidence) `
+            -PassThru -NoNewWindow -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          if (-not $process.WaitForExit(8 * 60 * 1000)) { try { $process.Kill($true) } catch { }; throw '150% 快照超时。' }
+          Get-Content -LiteralPath $stdout -Tail 60 -ErrorAction SilentlyContinue | Write-Host
+          Get-Content -LiteralPath $stderr -Tail 60 -ErrorAction SilentlyContinue | Write-Host
+          if ($process.ExitCode -ne 0) { throw "150% 快照退出码非 0：$($process.ExitCode)" }
+
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-v2-validation-evidence
+          path: |
+            artifacts/validation/**
+          if-no-files-found: warn
+
+      - name: Upload portable package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-v2-portable-package
+          path: |
+            artifacts/releases/**
+          if-no-files-found: warn
+
+      # Evidence steps run independently (continue-on-error) so one failure still uploads
+      # every other usable artifact. This gate is the single place that fails the final job
+      # when any required step did not actually succeed.
+      - name: Enforce validation gate
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $results = [ordered]@{
+            'build'      = '${{ steps.build.outcome }}'
+            'uicontract' = '${{ steps.uicontract.outcome }}'
+            'ocr'        = '${{ steps.ocr.outcome }}'
+            'envreport'  = '${{ steps.envreport.outcome }}'
+            'export'     = '${{ steps.export.outcome }}'
+            'snapshots'  = '${{ steps.snapshots.outcome }}'
+            'browser'    = '${{ steps.browser.outcome }}'
+            'package'    = '${{ steps.package.outcome }}'
+            'zipverify'  = '${{ steps.zipverify.outcome }}'
+            'smoke'      = '${{ steps.smoke.outcome }}'
+            'dpi150'     = '${{ steps.dpi150.outcome }}'
+          }
+          $failed = @()
+          foreach ($entry in $results.GetEnumerator()) {
+            Write-Host ("{0,-12} {1}" -f $entry.Key, $entry.Value)
+            if ($entry.Value -ne 'success') { $failed += "$($entry.Key)=$($entry.Value)" }
+          }
+          if ($failed.Count -gt 0) {
+            throw "以下必需验证步骤未成功：$($failed -join '、')"
+          }
+          Write-Host "全部必需验证步骤成功。"
+
+  # Publishes exactly the ZIP the gate above built and smoke-tested; it never rebuilds.
+  # Releases require a manual dispatch from main with a matching new tag.
+  # Publishing does not delete existing Releases or tags.
+  publish-release:
+    name: Publish GitHub Release
+    needs: windows-validation
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.release_tag != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-v2-portable-package
+          path: dist
+      - name: Verify tag, version and checksum, then publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.release_tag || 'v0.1.0' }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          set -euo pipefail
+          version=$(grep -oPm1 '(?<=<Version>)[0-9]+\.[0-9]+\.[0-9]+(?=</Version>)' src/CustomsClearanceConsole/CustomsClearanceConsole.csproj)
+          [ "$TAG" = "v$version" ] || { echo "Tag $TAG does not match project version v$version"; exit 1; }
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; not overwriting"; exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then echo "Tag $TAG already exists; not moving it"; exit 1; fi
+          zip=$(find dist -name '*.zip' | head -n1); sums=$(find dist -name 'SHA256SUMS.txt' | head -n1)
+          [ -n "$zip" ] && [ -n "$sums" ] || { echo "Validated package or SHA256SUMS.txt missing"; exit 1; }
+          expected=$(awk 'NF{print $1; exit}' "$sums"); actual=$(sha256sum "$zip" | awk '{print $1}')
+          [ "$expected" = "$actual" ] || { echo "Checksum mismatch: $expected vs $actual"; exit 1; }
+          # GitHub strips non-ASCII characters from asset names, so publish under an ASCII
+          # name and list that same name in SHA256SUMS.txt.
+          mkdir -p out
+          asset="Qianjixia-Windows-x64-v$version.zip"
+          cp "$zip" "out/$asset"
+          (cd out && sha256sum "$asset" > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          flags=()
+          [ "$PRERELEASE" = "true" ] && flags+=(--prerelease)
+          gh release create "$TAG" "out/$asset" out/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --title "千机匣 $TAG" --notes-file "docs/release-notes-v$version.md" "${flags[@]}"
+
+  # Development aid: the evidence artifact lives in blob storage that some reviewing
+  # environments cannot reach, so on request the same files are also pushed to a hidden,
+  # non-branch ref that can be fetched with git and deleted afterwards.
+  evidence-ref:
+    name: Push UI evidence to a hidden ref
+    needs: windows-validation
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.evidence_ref && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-v2-validation-evidence
+          path: evidence
+      - name: Commit and push to refs/ci-evidence/latest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd evidence
+          find . -type f ! -name '*.png' ! -name '*.json' ! -name '*.log' ! -name '*.txt' -delete
+          git init -q
+          git checkout -q --orphan evidence
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "UI evidence run ${GITHUB_RUN_ID} (${GITHUB_SHA})"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/ci-evidence/latest

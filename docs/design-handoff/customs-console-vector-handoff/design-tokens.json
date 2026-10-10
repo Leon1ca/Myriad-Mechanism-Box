@@ -1,0 +1,143 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "Customs Console Material 3",
+    "version": "2.2.0",
+    "referenceViewport": {
+      "width": 1586,
+      "height": 992
+    }
+  },
+  "color": {
+    "primary": { "$type": "color", "$value": "#315C9D" },
+    "primaryStrong": { "$type": "color", "$value": "#245A92" },
+    "onPrimary": { "$type": "color", "$value": "#FFFFFF" },
+    "primaryContainer": { "$type": "color", "$value": "#D9E7FF" },
+    "onPrimaryContainer": { "$type": "color", "$value": "#0E2C5C" },
+    "appBar": { "$type": "color", "$value": "#102D4F" },
+    "onAppBar": { "$type": "color", "$value": "#F5F9FF" },
+    "commandBar": { "$type": "color", "$value": "#F4F7FA" },
+    "background": { "$type": "color", "$value": "#E9EEF5" },
+    "surface": { "$type": "color", "$value": "#FFFFFF" },
+    "surfaceContainer": { "$type": "color", "$value": "#F1F4F8" },
+    "surfaceContainerHigh": { "$type": "color", "$value": "#E9EDF3" },
+    "onSurface": { "$type": "color", "$value": "#1A1C1E" },
+    "onSurfaceVariant": { "$type": "color", "$value": "#59636F" },
+    "outline": { "$type": "color", "$value": "#C2C7CF" },
+    "outlineVariant": { "$type": "color", "$value": "#DCE2EA" },
+    "error": { "$type": "color", "$value": "#BA1A1A" },
+    "errorContainer": { "$type": "color", "$value": "#FFDAD6" },
+    "onErrorContainer": { "$type": "color", "$value": "#410002" },
+    "statBlueContainer": { "$type": "color", "$value": "#E8F1FF" },
+    "statRedContainer": { "$type": "color", "$value": "#FFEDEA" },
+    "statPurpleContainer": { "$type": "color", "$value": "#F2EAFF" },
+    "statGreenContainer": { "$type": "color", "$value": "#E6F7ED" }
+  },
+  "spacing": {
+    "1": { "$type": "dimension", "$value": "4px" },
+    "2": { "$type": "dimension", "$value": "8px" },
+    "3": { "$type": "dimension", "$value": "12px" },
+    "4": { "$type": "dimension", "$value": "16px" },
+    "5": { "$type": "dimension", "$value": "20px" },
+    "6": { "$type": "dimension", "$value": "24px" },
+    "8": { "$type": "dimension", "$value": "32px" },
+    "10": { "$type": "dimension", "$value": "40px" },
+    "12": { "$type": "dimension", "$value": "48px" }
+  },
+  "radius": {
+    "field": { "$type": "dimension", "$value": "7px" },
+    "button": { "$type": "dimension", "$value": "7px" },
+    "card": { "$type": "dimension", "$value": "8px" },
+    "dialog": { "$type": "dimension", "$value": "12px" },
+    "round": { "$type": "dimension", "$value": "999px" }
+  },
+  "size": {
+    "appBarHeight": { "$type": "dimension", "$value": "82px" },
+    "appIcon": { "$type": "dimension", "$value": "40px" },
+    "buttonIcon": { "$type": "dimension", "$value": "24px" },
+    "buttonIconStroke": { "$type": "dimension", "$value": "1.8px" },
+    "buttonHeight": { "$type": "dimension", "$value": "44px" },
+    "minimumTarget": { "$type": "dimension", "$value": "44px" },
+    "fieldHeight": { "$type": "dimension", "$value": "52px" },
+    "dialogPathFieldHeight": { "$type": "dimension", "$value": "56px" },
+    "dialogButtonHeight": { "$type": "dimension", "$value": "48px" },
+    "tableHeaderHeight": { "$type": "dimension", "$value": "58px" },
+    "tableRowHeight": { "$type": "dimension", "$value": "56px" },
+    "menuItemHeight": { "$type": "dimension", "$value": "48px" },
+    "paginationButtonWidth": { "$type": "dimension", "$value": "50px" },
+    "paginationButtonHeight": { "$type": "dimension", "$value": "46px" }
+  },
+  "typography": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "$value": ["Microsoft YaHei", "PingFang SC", "Noto Sans SC", "sans-serif"]
+    },
+    "appTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "25px", "fontWeight": 700, "lineHeight": 1.2 }
+    },
+    "sectionTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "24px", "fontWeight": 700, "lineHeight": 1.2 }
+    },
+    "cardTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "19px", "fontWeight": 650, "lineHeight": 1.35 }
+    },
+    "statValue": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "40px", "fontWeight": 700, "lineHeight": 1.2 }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "16px", "fontWeight": 400, "lineHeight": 1.5 }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "17px", "fontWeight": 650, "lineHeight": 1.4 }
+    },
+    "button": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "17px", "fontWeight": 650, "lineHeight": 1.0 }
+    },
+    "fieldText": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "18px", "fontWeight": 400, "lineHeight": 1.4 }
+    },
+    "tableHead": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "18px", "fontWeight": 650, "lineHeight": 1.3 }
+    },
+    "recordCount": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "19px", "fontWeight": 400, "lineHeight": 1.4 }
+    },
+    "emptyTitle": {
+      "$type": "typography",
+      "$value": { "fontFamily": "{typography.fontFamily}", "fontSize": "28px", "fontWeight": 600, "lineHeight": 1.3 }
+    }
+  },
+  "elevation": {
+    "card": { "$type": "shadow", "$value": { "color": "#102A4312", "offsetX": "0px", "offsetY": "1px", "blur": "4px", "spread": "0px" } },
+    "menu": { "$type": "shadow", "$value": { "color": "#102A4329", "offsetX": "0px", "offsetY": "8px", "blur": "24px", "spread": "0px" } },
+    "dialog": { "$type": "shadow", "$value": { "color": "#102A4338", "offsetX": "0px", "offsetY": "18px", "blur": "52px", "spread": "0px" } }
+  },
+  "breakpoint": {
+    "compact": { "$type": "dimension", "$value": "820px" },
+    "medium": { "$type": "dimension", "$value": "1180px" },
+    "reference": { "$type": "dimension", "$value": "1586px" }
+  },
+  "component": {
+    "select": {
+      "closedBorder": "1px solid {color.outline}",
+      "focusBorder": "2px solid {color.primaryStrong}",
+      "selectedFill": "{color.primaryContainer}",
+      "selectedText": "{color.onPrimaryContainer}"
+    },
+    "destructiveAction": {
+      "foreground": "{color.error}",
+      "container": "{color.errorContainer}",
+      "requiresConfirmation": true
+    }
+  }
+}

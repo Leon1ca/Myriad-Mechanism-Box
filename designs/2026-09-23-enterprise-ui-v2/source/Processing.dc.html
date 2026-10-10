@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>识别进行中</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1184px; height: 360px; box-sizing: border-box; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; background: #F2F4F7; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif;">
+
+<div style="display: flex; align-items: flex-end; justify-content: space-between;">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700;">本批关单</h1>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 4px; background: #EAF1FB; color: #1F5FAE; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 3px; background: #1F5FAE;"></span>识别中</span>
+</div>
+<div style="font-size: 13px; color: #5B6778;">14:32 开始 · 已用 51 秒 · 结果逐条写入列表</div>
+</div>
+<div style="display: flex; gap: 10px;">
+<button disabled style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid #DDE2E9; border-radius: 6px; background: #F7F8FA; color: #8A94A3; font-size: 14px; font-weight: 500;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8A94A3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>导出列表
+</button>
+<button style="display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 20px; border: 1px solid #B42318; border-radius: 6px; background: #FFFFFF; color: #B42318; font-size: 14px; font-weight: 500; cursor: pointer;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="#B42318" stroke="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1"/></svg>取消识别
+</button>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #DDE2E9; border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; align-items: baseline; justify-content: space-between;">
+<div style="display: flex; align-items: baseline; gap: 14px;">
+<div style="font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">6<span style="font-size: 16px; color: #5B6778; font-weight: 400;"> / 10</span></div>
+<div style="font-size: 13px; color: #3D4A5C;">当前文件 <span style="font-family: 'JetBrains Mono', monospace; color: #0F1B2D; font-weight: 500;">scan_0921_03.jpg</span></div>
+</div>
+<div style="font-size: 13px; color: #5B6778;">完成 5 · 需关注 0 · 失败 0</div>
+</div>
+<div style="height: 8px; border-radius: 4px; background: #E6EAF0; overflow: hidden;">
+<div style="width: 55%; height: 8px; border-radius: 4px; background: #1F5FAE;"></div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 8px; background: #E9EDF3; font-size: 13px; color: #3D4A5C;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3D4A5C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="7" width="9" height="6.5" rx="1.2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>
+<span style="font-weight: 500;">识别期间已锁定：</span><span>目录修改 · 拖入新批次 · 导出 · 三类清理 · 网页核验</span>
+<span style="flex-grow: 1;"></span>
+<span style="color: #5B6778;">取消后保留已完成结果；正在进行的 ONNX 推理需等待当前调用返回</span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1184,"height":360}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

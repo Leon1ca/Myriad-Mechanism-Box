@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>关单明细弹窗</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 600px; height: 480px; box-sizing: border-box; background: #FFFFFF; color: #0F1B2D; font-family: 'Noto Sans SC', 'Source Han Sans SC', sans-serif; display: flex; flex-direction: column; border: 1px solid #DDE2E9; border-radius: 10px; overflow: hidden;">
+
+<div style="padding: 16px 16px 14px 20px; border-bottom: 1px solid #EBEEF2; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+<div style="display: flex; align-items: baseline; gap: 10px;">
+<h2 style="margin: 0; font-size: 16px; font-weight: 700;">关单明细</h2>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; color: #13355E;">{{no}}</span>
+</div>
+<div style="font-size: 12.5px; color: #5B6778; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{consignee}} · 合同 <span style="font-family: 'JetBrains Mono', monospace;">{{contract}}</span> · {{file}}</div>
+</div>
+<button onClick="{{close}}" aria-label="关闭明细" style="width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 6px; background: transparent; cursor: pointer;">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3D4A5C" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+</button>
+</div>
+
+<div style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 120px 90px 130px; column-gap: 12px; align-items: center; height: 34px; flex-shrink: 0; padding: 0 20px; background: #F7F8FA; border-bottom: 1px solid #DDE2E9; font-size: 12px; font-weight: 500; color: #5B6778;">
+<div>项号</div><div>商品名称</div><div style="text-align: right;">数量 / 单位</div><div style="text-align: right;">单价</div><div style="text-align: right;">总价（{{cur}}）</div>
+</div>
+
+<div style="flex-grow: 1; min-height: 0; overflow-y: auto;">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 36px minmax(0, 1fr) 120px 90px 130px; column-gap: 12px; align-items: center; min-height: 44px; padding: 6px 20px; box-sizing: border-box; border-bottom: 1px solid #EBEEF2; background: {{it.rowBg}}; font-size: 13.5px;">
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #5B6778;">{{it.seq}}</div>
+<div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{it.name}}</div>
+<div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #3D4A5C;">{{it.qty}}</div>
+<div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #3D4A5C;">{{it.price}}</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+<sc-if value="{{it.plain}}" hint-placeholder-val="{{ true }}">
+<span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">{{it.total}}</span>
+</sc-if>
+<sc-if value="{{it.conflict}}" hint-placeholder-val="{{ false }}">
+<span style="font-family: 'JetBrains Mono', monospace; font-weight: 500; color: #8A5300; text-decoration: underline dashed #D9A441; text-underline-offset: 4px;">{{it.total}}</span>
+<span style="font-size: 11px; color: #8A5300;">另一引擎 {{it.alt}}</span>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="flex-shrink: 0; border-top: 1px solid #DDE2E9; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; background: #FAFBFC;">
+<div style="display: flex; align-items: baseline; justify-content: space-between;">
+<span style="font-size: 13px; color: #5B6778;">共 {{count}} 项 · 关单总价</span>
+<span style="font-family: 'JetBrains Mono', monospace;"><span style="font-size: 12px; color: #5B6778; margin-right: 8px;">{{cur}}</span><span style="font-size: 18px; font-weight: 500; color: {{totalColor}};">{{amt}}</span></span>
+</div>
+<sc-if value="{{match}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #17714F;"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#17714F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-6.5"/></svg>分项合计与关单总价一致</div>
+</sc-if>
+<sc-if value="{{mismatch}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: #8A5300; line-height: 1.5;"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#8A5300" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px;"><path d="M8 2.5 14 13H2z"/><path d="M8 6.5v3M8 11.2v.1"/></svg>{{note}}</div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"rec":{"editor":null},"onClose":{"editor":null},"$preview":{"width":600,"height":480}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const fallback = {
+      no: '220120261000183245', file: '关单_0918_A.pdf', consignee: 'NORDIC MARINE SUPPLY AS', contract: 'NMS-2026-0918', cur: 'USD', amt: '35,528.00',
+      items: [
+        { seq: '1', name: '冷冻鳕鱼片', qty: '12,000 KG', price: '2.15', total: '25,800.00' },
+        { seq: '2', name: '冷冻鲭鱼', qty: '3,800 KG', price: '2.56', total: '9,728.00' }
+      ]
+    };
+    const r = this.props.rec || fallback;
+    const items = (r.items || []).map((it) => Object.assign({}, it, {
+      conflict: !!it.conflict,
+      plain: !it.conflict,
+      rowBg: it.conflict ? '#FFFCF4' : '#FFFFFF'
+    }));
+    const bad = !!r.unconfirmed;
+    return {
+      no: r.no, file: r.file, consignee: r.consignee, contract: r.contract, cur: r.cur, amt: r.amt,
+      items: items,
+      count: items.length,
+      match: !bad,
+      mismatch: bad,
+      note: r.note || '',
+      totalColor: bad ? '#8A5300' : '#0F1B2D',
+      close: () => { if (this.props.onClose) this.props.onClose(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

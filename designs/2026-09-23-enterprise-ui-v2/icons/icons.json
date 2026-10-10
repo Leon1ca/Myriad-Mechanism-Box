@@ -1,0 +1,328 @@
+{
+  "naming": "png/{图标}-{颜色}-{尺寸}.png；16/24/32/48 对应 100%/150%/200%/300% DPI",
+  "tints": {
+    "ink": "#3D4A5C",
+    "muted": "#5B6778",
+    "navy": "#13355E",
+    "white": "#FFFFFF",
+    "red": "#B42318",
+    "green": "#17714F",
+    "amber": "#8A5300",
+    "blue": "#1F5FAE",
+    "disabled": "#8A94A3"
+  },
+  "icons": [
+    {
+      "name": "play",
+      "usage": "开始识别",
+      "tints": {
+        "white": "#FFFFFF"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "export",
+      "usage": "导出列表",
+      "tints": {
+        "navy": "#13355E",
+        "disabled": "#8A94A3"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "file-excel",
+      "usage": "导出菜单 · Excel",
+      "tints": {
+        "green": "#17714F"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "file-markdown",
+      "usage": "导出菜单 · Markdown / 待识别空状态",
+      "tints": {
+        "ink": "#3D4A5C",
+        "blue": "#1F5FAE"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "settings",
+      "usage": "设置",
+      "tints": {
+        "white": "#FFFFFF",
+        "ink": "#3D4A5C"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "trash",
+      "usage": "清理菜单 / 清理确认",
+      "tints": {
+        "ink": "#3D4A5C",
+        "red": "#B42318",
+        "disabled": "#8A94A3"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "search",
+      "usage": "搜索框",
+      "tints": {
+        "muted": "#5B6778"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "chevron-down",
+      "usage": "下拉按钮",
+      "tints": {
+        "muted": "#5B6778",
+        "navy": "#13355E",
+        "disabled": "#8A94A3"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "chevron-up",
+      "usage": "每页条数下拉展开",
+      "tints": {
+        "muted": "#5B6778"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "check",
+      "usage": "识别完成 / 一致 / 已保存 / 下拉当前项",
+      "tints": {
+        "green": "#17714F",
+        "white": "#FFFFFF",
+        "blue": "#1F5FAE"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "alert",
+      "usage": "需关注 / 未确认",
+      "tints": {
+        "amber": "#8A5300"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "error",
+      "usage": "失败 / 单号不一致",
+      "tints": {
+        "red": "#B42318"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "info",
+      "usage": "说明",
+      "tints": {
+        "ink": "#3D4A5C"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "close",
+      "usage": "关闭弹窗",
+      "tints": {
+        "ink": "#3D4A5C"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "copy",
+      "usage": "右键复制",
+      "tints": {
+        "navy": "#13355E",
+        "ink": "#3D4A5C"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "camera",
+      "usage": "已留存 / 长截图",
+      "tints": {
+        "blue": "#1F5FAE",
+        "white": "#FFFFFF"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "external",
+      "usage": "校验（跳转网页）",
+      "tints": {
+        "navy": "#13355E"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "lock",
+      "usage": "识别中锁定",
+      "tints": {
+        "ink": "#3D4A5C",
+        "disabled": "#8A94A3"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "folder",
+      "usage": "选择关单目录",
+      "tints": {
+        "white": "#FFFFFF",
+        "blue": "#1F5FAE"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "folder-upload",
+      "usage": "未载入空状态",
+      "tints": {
+        "blue": "#1F5FAE"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "amount-empty",
+      "usage": "金额汇总空状态",
+      "tints": {
+        "disabled": "#8A94A3"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "stop",
+      "usage": "取消识别",
+      "tints": {
+        "red": "#B42318"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    },
+    {
+      "name": "minus",
+      "usage": "收起悬浮按钮",
+      "tints": {
+        "muted": "#5B6778"
+      },
+      "sizes": [
+        16,
+        24,
+        32,
+        48
+      ]
+    }
+  ]
+}
