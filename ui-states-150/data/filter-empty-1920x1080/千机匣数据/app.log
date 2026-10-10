@@ -1,0 +1,18 @@
+﻿[2026-10-10 07:50:22] [UI-PHASE +7.42s] filter-empty-1920x1080 seeded
+[2026-10-10 07:50:22] [UI-PHASE +7.43s]   form.Show begin (1920x1080)
+[2026-10-10 07:50:22] [UI-PHASE +7.48s]   form.Show returned
+[2026-10-10 07:50:22] [UI-PHASE +7.54s]   form layout set · DoEvents begin
+[2026-10-10 07:50:22] [UI-PHASE +7.58s]   form DoEvents returned · client={Width=2880, Height=1620}
+[2026-10-10 07:50:22] [UI-PHASE +7.58s] filter-empty-1920x1080 form shown
+[2026-10-10 07:50:22] [UI-PHASE +7.61s] filter-empty-1920x1080 layout+DoEvents done · starting capture
+[2026-10-10 07:50:22] [UI-PHASE +7.61s]   geometry assert begin · client={Width=2880, Height=1620}
+[2026-10-10 07:50:22] [UI-PHASE +7.61s]   geometry assert passed
+[2026-10-10 07:50:22] [UI-PHASE +7.61s]   RenderForm PerformLayout begin
+[2026-10-10 07:50:22] [UI-PHASE +7.61s]   RenderForm DoEvents begin
+[2026-10-10 07:50:22] [UI-PHASE +7.62s]   RenderForm DrawToBitmap begin · {Width=2880, Height=1620}
+[2026-10-10 07:50:22] [UI-PHASE +7.65s]   RenderForm DrawToBitmap returned
+[2026-10-10 07:50:22] [UI-PHASE +7.65s]   save PNG begin · D:\a\Myriad-Mechanism-Box\Myriad-Mechanism-Box\artifacts\validation\ui-states-150\filter-empty-1920x1080.png
+[2026-10-10 07:50:22] [UI-PHASE +7.75s]   save PNG returned
+[2026-10-10 07:50:22] [UI-PHASE +7.75s]   screen info · bounds={X=0,Y=0,Width=1920,Height=1080} working={X=0,Y=0,Width=1920,Height=1008} desktop={X=0,Y=0,Width=1920,Height=1080} form={X=0,Y=0,Width=1946,Height=1106}
+[2026-10-10 07:50:22] [UI-PHASE +7.75s]   CopyFromScreen skipped · window not fully on screen
+[2026-10-10 07:50:22] [UI-PHASE +7.75s] filter-empty-1920x1080 done · realScreen=False

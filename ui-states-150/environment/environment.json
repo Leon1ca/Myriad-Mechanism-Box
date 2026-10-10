@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0.0",
+  "os": "Microsoft Windows NT 10.0.26100.0",
+  "isWindows": true,
+  "dpi": 144,
+  "dpiProbe": {
+    "formDeviceDpi": 144,
+    "windowDpi": 144,
+    "systemDpi": 144,
+    "threadContext": "PER_MONITOR_AWARE_V2"
+  },
+  "realMonitorScalingVerified": true,
+  "dpiNote": "\u4E91\u7AEF runner \u5B9E\u9645 DeviceDpi=144\uFF0C\u5FEB\u7167\u4E0E\u63A7\u4EF6\u6309\u8BE5 DPI \u771F\u5B9E\u6E32\u67D3\u3002",
+  "fontVerification": {
+    "ok": true,
+    "detail": "regular=Noto Sans SC/Regular\uFF1Bbold=Noto Sans SC/Bold\uFF1Bmedium=Noto Sans SC Medium/Regular\uFF1Bmono=JetBrains Mono/Regular\uFF1BmonoMedium=JetBrains Mono Medium/Regular"
+  },
+  "uiFamilyLoaded": true,
+  "monoFamilyLoaded": true,
+  "loadedFamilies": [
+    "JetBrains Mono",
+    "JetBrains Mono Medium",
+    "Noto Sans SC",
+    "Noto Sans SC Medium"
+  ],
+  "primaryUrl": "https://www.singlewindow.cn/#/publicInquiryDetail?id=pi4",
+  "browser": "\u7CFB\u7EDF\u9ED8\u8BA4\u6D4F\u89C8\u5668\uFF08Edge\uFF09",
+  "assets": {
+    "appIcon": true,
+    "uiV2Icons": true,
+    "fontsDirectory": true,
+    "fontFiles": [
+      "FONTS.md",
+      "JetBrainsMono-Bold.ttf",
+      "JetBrainsMono-Medium.ttf",
+      "JetBrainsMono-OFL.txt",
+      "JetBrainsMono-Regular.ttf",
+      "MANIFEST.json",
+      "NotoSansSC-Bold.ttf",
+      "NotoSansSC-Medium.ttf",
+      "NotoSansSC-OFL.txt",
+      "NotoSansSC-Regular.ttf"
+    ],
+    "licenses": {
+      "rootLicense": false,
+      "thirdPartyNotices": false,
+      "about": true,
+      "notoOfl": true,
+      "jetBrainsOfl": true
+    }
+  }
+}

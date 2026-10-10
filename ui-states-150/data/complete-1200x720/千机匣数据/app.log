@@ -1,0 +1,21 @@
+﻿[2026-10-10 07:50:17] [UI-PHASE +2.36s] complete-1200x720 seeded
+[2026-10-10 07:50:17] [UI-PHASE +2.40s]   form.Show begin (1200x720)
+[2026-10-10 07:50:17] [UI-PHASE +2.45s]   form.Show returned
+[2026-10-10 07:50:17] [UI-PHASE +2.48s]   form layout set · DoEvents begin
+[2026-10-10 07:50:17] [UI-PHASE +2.87s]   form DoEvents returned · client={Width=1800, Height=1080}
+[2026-10-10 07:50:17] [UI-PHASE +2.87s] complete-1200x720 form shown
+[2026-10-10 07:50:17] [UI-PHASE +2.87s] complete-1200x720 layout+DoEvents done · starting capture
+[2026-10-10 07:50:17] [UI-PHASE +2.88s]   geometry assert begin · client={Width=1800, Height=1080}
+[2026-10-10 07:50:17] [UI-PHASE +2.88s]   geometry assert passed
+[2026-10-10 07:50:17] [UI-PHASE +2.88s]   RenderForm PerformLayout begin
+[2026-10-10 07:50:17] [UI-PHASE +2.88s]   RenderForm DoEvents begin
+[2026-10-10 07:50:17] [UI-PHASE +2.88s]   RenderForm DrawToBitmap begin · {Width=1800, Height=1080}
+[2026-10-10 07:50:17] [UI-PHASE +2.93s]   RenderForm DrawToBitmap returned
+[2026-10-10 07:50:17] [UI-PHASE +2.93s]   save PNG begin · D:\a\Myriad-Mechanism-Box\Myriad-Mechanism-Box\artifacts\validation\ui-states-150\complete-1200x720.png
+[2026-10-10 07:50:17] [UI-PHASE +2.97s]   save PNG returned
+[2026-10-10 07:50:17] [UI-PHASE +2.97s]   screen info · bounds={X=0,Y=0,Width=1920,Height=1080} working={X=0,Y=0,Width=1920,Height=1008} desktop={X=0,Y=0,Width=1920,Height=1080} form={X=0,Y=0,Width=1800,Height=1080}
+[2026-10-10 07:50:17] [UI-PHASE +2.97s]   CopyFromScreen show/DoEvents begin
+[2026-10-10 07:50:17] [UI-PHASE +2.97s]   CopyFromScreen begin
+[2026-10-10 07:50:17] [UI-PHASE +3.05s]   CopyFromScreen returned
+[2026-10-10 07:50:17] [UI-PHASE +3.13s]   seam check self-proof · leaked smoothing detected=True (194,738) seam=ffc0b8b8 left=fffff6f5 right=fffff6f5
+[2026-10-10 07:50:18] [UI-PHASE +3.21s] complete-1200x720 done · realScreen=True

@@ -1,0 +1,188 @@
+{
+  "generatedAt": "2026-10-10T07:50:24",
+  "actualDeviceDpi": 144,
+  "dpiProbe": {
+    "formDeviceDpi": 144,
+    "windowDpi": 144,
+    "systemDpi": 144,
+    "threadContext": "PER_MONITOR_AWARE_V2"
+  },
+  "desktop": {
+    "configured": false,
+    "detail": "\u6CA1\u6709 \u003E= 2880x1620 \u7684\u663E\u793A\u6A21\u5F0F\uFF08\u5F53\u524D 1920x1080\uFF09",
+    "requested": "1920x1080 (logical)",
+    "virtualScreen": "{X=0,Y=0,Width=1920,Height=1080}",
+    "primaryWorkingArea": "{X=0,Y=0,Width=1920,Height=1008}"
+  },
+  "windowDpiNote": "\u672C\u673A\u5B9E\u9645 DeviceDpi=144\uFF08window=144\uFF0Csystem=144\uFF09\uFF1B\u56DB\u6863\u903B\u8F91\u5C3A\u5BF8\u5FEB\u7167\u6309\u8BE5\u5B9E\u9645 DPI \u6E32\u67D3\u5E76\u65AD\u8A00\u5B9E\u9645 ClientSize/PNG \u50CF\u7D20\u3002\u5176\u4F59 DPI \u6863\u4F4D\u7531 UiScale/Responsive \u65AD\u8A00\u8986\u76D6\uFF1B\u771F\u5B9E 125/150/200% \u663E\u793A\u5668\u7F29\u653E\u4ECD\u662F\u4EBA\u5DE5\u9A8C\u6536\u9879\uFF0C\u672A\u4F2A\u9020\u3002",
+  "states": [
+    {
+      "state": "unloaded",
+      "size": "1200x720",
+      "file": "unloaded-1200x720.png",
+      "notes": "{\u0022RequestedWidth\u0022:1200,\u0022RequestedHeight\u0022:720,\u0022ActualWidth\u0022:1800,\u0022ActualHeight\u0022:1080,\u0022PngWidth\u0022:1800,\u0022PngHeight\u0022:1080,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=True\u0022,\u0022RealScreen\u0022:true}"
+    },
+    {
+      "state": "ready",
+      "size": "1200x720",
+      "file": "ready-1200x720.png",
+      "notes": "{\u0022RequestedWidth\u0022:1200,\u0022RequestedHeight\u0022:720,\u0022ActualWidth\u0022:1800,\u0022ActualHeight\u0022:1080,\u0022PngWidth\u0022:1800,\u0022PngHeight\u0022:1080,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=True\u0022,\u0022RealScreen\u0022:true}"
+    },
+    {
+      "state": "complete",
+      "size": "1200x720",
+      "file": "complete-1200x720.png",
+      "notes": "{\u0022RequestedWidth\u0022:1200,\u0022RequestedHeight\u0022:720,\u0022ActualWidth\u0022:1800,\u0022ActualHeight\u0022:1080,\u0022PngWidth\u0022:1800,\u0022PngHeight\u0022:1080,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=True\u0022,\u0022RealScreen\u0022:true}"
+    },
+    {
+      "state": "filter-empty",
+      "size": "1200x720",
+      "file": "filter-empty-1200x720.png",
+      "notes": "{\u0022RequestedWidth\u0022:1200,\u0022RequestedHeight\u0022:720,\u0022ActualWidth\u0022:1800,\u0022ActualHeight\u0022:1080,\u0022PngWidth\u0022:1800,\u0022PngHeight\u0022:1080,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=True\u0022,\u0022RealScreen\u0022:true}"
+    },
+    {
+      "state": "unloaded",
+      "size": "1280x800",
+      "file": "unloaded-1280x800.png",
+      "notes": "{\u0022RequestedWidth\u0022:1280,\u0022RequestedHeight\u0022:800,\u0022ActualWidth\u0022:1920,\u0022ActualHeight\u0022:1200,\u0022PngWidth\u0022:1920,\u0022PngHeight\u0022:1200,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "ready",
+      "size": "1280x800",
+      "file": "ready-1280x800.png",
+      "notes": "{\u0022RequestedWidth\u0022:1280,\u0022RequestedHeight\u0022:800,\u0022ActualWidth\u0022:1920,\u0022ActualHeight\u0022:1200,\u0022PngWidth\u0022:1920,\u0022PngHeight\u0022:1200,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "complete",
+      "size": "1280x800",
+      "file": "complete-1280x800.png",
+      "notes": "{\u0022RequestedWidth\u0022:1280,\u0022RequestedHeight\u0022:800,\u0022ActualWidth\u0022:1920,\u0022ActualHeight\u0022:1200,\u0022PngWidth\u0022:1920,\u0022PngHeight\u0022:1200,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "filter-empty",
+      "size": "1280x800",
+      "file": "filter-empty-1280x800.png",
+      "notes": "{\u0022RequestedWidth\u0022:1280,\u0022RequestedHeight\u0022:800,\u0022ActualWidth\u0022:1920,\u0022ActualHeight\u0022:1200,\u0022PngWidth\u0022:1920,\u0022PngHeight\u0022:1200,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "unloaded",
+      "size": "1440x900",
+      "file": "unloaded-1440x900.png",
+      "notes": "{\u0022RequestedWidth\u0022:1440,\u0022RequestedHeight\u0022:900,\u0022ActualWidth\u0022:2160,\u0022ActualHeight\u0022:1350,\u0022PngWidth\u0022:2160,\u0022PngHeight\u0022:1350,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=480;search=340;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "ready",
+      "size": "1440x900",
+      "file": "ready-1440x900.png",
+      "notes": "{\u0022RequestedWidth\u0022:1440,\u0022RequestedHeight\u0022:900,\u0022ActualWidth\u0022:2160,\u0022ActualHeight\u0022:1350,\u0022PngWidth\u0022:2160,\u0022PngHeight\u0022:1350,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=480;search=340;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "complete",
+      "size": "1440x900",
+      "file": "complete-1440x900.png",
+      "notes": "{\u0022RequestedWidth\u0022:1440,\u0022RequestedHeight\u0022:900,\u0022ActualWidth\u0022:2160,\u0022ActualHeight\u0022:1350,\u0022PngWidth\u0022:2160,\u0022PngHeight\u0022:1350,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=480;search=340;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "filter-empty",
+      "size": "1440x900",
+      "file": "filter-empty-1440x900.png",
+      "notes": "{\u0022RequestedWidth\u0022:1440,\u0022RequestedHeight\u0022:900,\u0022ActualWidth\u0022:2160,\u0022ActualHeight\u0022:1350,\u0022PngWidth\u0022:2160,\u0022PngHeight\u0022:1350,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=480;search=340;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "unloaded",
+      "size": "1920x1080",
+      "file": "unloaded-1920x1080.png",
+      "notes": "{\u0022RequestedWidth\u0022:1920,\u0022RequestedHeight\u0022:1080,\u0022ActualWidth\u0022:2880,\u0022ActualHeight\u0022:1620,\u0022PngWidth\u0022:2880,\u0022PngHeight\u0022:1620,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=560;search=420;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "ready",
+      "size": "1920x1080",
+      "file": "ready-1920x1080.png",
+      "notes": "{\u0022RequestedWidth\u0022:1920,\u0022RequestedHeight\u0022:1080,\u0022ActualWidth\u0022:2880,\u0022ActualHeight\u0022:1620,\u0022PngWidth\u0022:2880,\u0022PngHeight\u0022:1620,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=560;search=420;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "complete",
+      "size": "1920x1080",
+      "file": "complete-1920x1080.png",
+      "notes": "{\u0022RequestedWidth\u0022:1920,\u0022RequestedHeight\u0022:1080,\u0022ActualWidth\u0022:2880,\u0022ActualHeight\u0022:1620,\u0022PngWidth\u0022:2880,\u0022PngHeight\u0022:1620,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=560;search=420;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "filter-empty",
+      "size": "1920x1080",
+      "file": "filter-empty-1920x1080.png",
+      "notes": "{\u0022RequestedWidth\u0022:1920,\u0022RequestedHeight\u0022:1080,\u0022ActualWidth\u0022:2880,\u0022ActualHeight\u0022:1620,\u0022PngWidth\u0022:2880,\u0022PngHeight\u0022:1620,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=560;search=420;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "processing",
+      "size": "1280x800",
+      "file": "processing-1280x800.png",
+      "notes": "{\u0022RequestedWidth\u0022:1280,\u0022RequestedHeight\u0022:800,\u0022ActualWidth\u0022:1920,\u0022ActualHeight\u0022:1200,\u0022PngWidth\u0022:1920,\u0022PngHeight\u0022:1200,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=420;search=340;compact=True;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "processing",
+      "size": "1440x900",
+      "file": "processing-1440x900.png",
+      "notes": "{\u0022RequestedWidth\u0022:1440,\u0022RequestedHeight\u0022:900,\u0022ActualWidth\u0022:2160,\u0022ActualHeight\u0022:1350,\u0022PngWidth\u0022:2160,\u0022PngHeight\u0022:1350,\u0022WorkingArea\u0022:\u0022{X=0,Y=0,Width=1920,Height=1008}\u0022,\u0022ScreenBounds\u0022:\u0022{X=0,Y=0,Width=1920,Height=1080}\u0022,\u0022Dpi\u0022:144,\u0022Responsive\u0022:\u0022kpi=480;search=340;compact=False;merged=False\u0022,\u0022RealScreen\u0022:false}"
+    },
+    {
+      "state": "menu-export",
+      "size": "logical-1280x800",
+      "file": "menu-export.png",
+      "notes": "\u771F\u5B9E\u5F39\u51FA bounds={X=1272,Y=213,Width=372,Height=138};anchor={X=1422,Y=112,Width=222,Height=61};working={X=0,Y=0,Width=1920,Height=1008};popupDpi=144;anchorDpi=144"
+    },
+    {
+      "state": "menu-export-popup",
+      "size": "-",
+      "file": "menu-export-popup.png",
+      "notes": "\u771F\u5B9E\u5F39\u51FA bounds={X=1272,Y=213,Width=372,Height=138};anchor={X=1422,Y=112,Width=222,Height=61};working={X=0,Y=0,Width=1920,Height=1008};popupDpi=144;anchorDpi=144"
+    },
+    {
+      "state": "menu-cleanup",
+      "size": "logical-1280x800",
+      "file": "menu-cleanup.png",
+      "notes": "\u771F\u5B9E\u5F39\u51FA bounds={X=1486,Y=653,Width=372,Height=257};anchor={X=1690,Y=582,Width=168,Height=41};working={X=0,Y=0,Width=1920,Height=1008};popupDpi=144;anchorDpi=144"
+    },
+    {
+      "state": "menu-cleanup-popup",
+      "size": "-",
+      "file": "menu-cleanup-popup.png",
+      "notes": "\u771F\u5B9E\u5F39\u51FA bounds={X=1486,Y=653,Width=372,Height=257};anchor={X=1690,Y=582,Width=168,Height=41};working={X=0,Y=0,Width=1920,Height=1008};popupDpi=144;anchorDpi=144"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-settings.png",
+      "notes": "\u8BBE\u7F6E 520x400"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-detail.png",
+      "notes": "\u660E\u7EC6 600x480"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-detail-conflict.png",
+      "notes": "\u660E\u7EC6\u51B2\u7A81"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-cleanup-docs-step1.png",
+      "notes": "\u5173\u5355\u6E05\u7406 1/2"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-cleanup-docs-step2.png",
+      "notes": "\u5173\u5355\u6E05\u7406 2/2"
+    },
+    {
+      "state": "dialog",
+      "size": "-",
+      "file": "dialog-cleanup-list.png",
+      "notes": "\u5217\u8868\u6E05\u7406"
+    }
+  ]
+}

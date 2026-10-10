@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0.0",
+  "os": "Microsoft Windows NT 10.0.26100.0",
+  "isWindows": true,
+  "dpi": 96,
+  "dpiProbe": {
+    "formDeviceDpi": 96,
+    "windowDpi": 96,
+    "systemDpi": 96,
+    "threadContext": "PER_MONITOR_AWARE_V2"
+  },
+  "realMonitorScalingVerified": false,
+  "dpiNote": "\u4E91\u7AEF runner \u5B9E\u9645 DeviceDpi=96\u3002UiScale/Responsive \u7684 120/144/192 \u65AD\u8A00\u8986\u76D6\u7F29\u653E\u7B97\u5F0F\uFF0C\u4F46\u771F\u5B9E 125/150/200% \u663E\u793A\u5668\u7F29\u653E\u672A\u5728\u6B64\u73AF\u5883\u9A8C\u8BC1\uFF0C\u4FDD\u7559\u4E3A\u5B9E\u673A\u4EBA\u5DE5\u9A8C\u6536\u9879\u3002",
+  "fontVerification": {
+    "ok": true,
+    "detail": "regular=Noto Sans SC/Regular\uFF1Bbold=Noto Sans SC/Bold\uFF1Bmedium=Noto Sans SC Medium/Regular\uFF1Bmono=JetBrains Mono/Regular\uFF1BmonoMedium=JetBrains Mono Medium/Regular"
+  },
+  "uiFamilyLoaded": true,
+  "monoFamilyLoaded": true,
+  "loadedFamilies": [
+    "JetBrains Mono",
+    "JetBrains Mono Medium",
+    "Noto Sans SC",
+    "Noto Sans SC Medium"
+  ],
+  "primaryUrl": "https://www.singlewindow.cn/#/publicInquiryDetail?id=pi4",
+  "browser": "\u7CFB\u7EDF\u9ED8\u8BA4\u6D4F\u89C8\u5668\uFF08Edge\uFF09",
+  "assets": {
+    "appIcon": true,
+    "uiV2Icons": true,
+    "fontsDirectory": true,
+    "fontFiles": [
+      "FONTS.md",
+      "JetBrainsMono-Bold.ttf",
+      "JetBrainsMono-Medium.ttf",
+      "JetBrainsMono-OFL.txt",
+      "JetBrainsMono-Regular.ttf",
+      "MANIFEST.json",
+      "NotoSansSC-Bold.ttf",
+      "NotoSansSC-Medium.ttf",
+      "NotoSansSC-OFL.txt",
+      "NotoSansSC-Regular.ttf"
+    ],
+    "licenses": {
+      "rootLicense": false,
+      "thirdPartyNotices": false,
+      "about": true,
+      "notoOfl": true,
+      "jetBrainsOfl": true
+    }
+  }
+}

@@ -1,0 +1,18 @@
+﻿[2026-10-10 07:50:22] [UI-PHASE +8.16s] processing-1440x900 seeded
+[2026-10-10 07:50:22] [UI-PHASE +8.17s]   form.Show begin (1440x900)
+[2026-10-10 07:50:23] [UI-PHASE +8.21s]   form.Show returned
+[2026-10-10 07:50:23] [UI-PHASE +8.28s]   form layout set · DoEvents begin
+[2026-10-10 07:50:23] [UI-PHASE +8.30s]   form DoEvents returned · client={Width=2160, Height=1350}
+[2026-10-10 07:50:23] [UI-PHASE +8.30s] processing-1440x900 form shown
+[2026-10-10 07:50:23] [UI-PHASE +8.33s] processing-1440x900 layout+DoEvents done · starting capture
+[2026-10-10 07:50:23] [UI-PHASE +8.33s]   geometry assert begin · client={Width=2160, Height=1350}
+[2026-10-10 07:50:23] [UI-PHASE +8.33s]   geometry assert passed
+[2026-10-10 07:50:23] [UI-PHASE +8.33s]   RenderForm PerformLayout begin
+[2026-10-10 07:50:23] [UI-PHASE +8.33s]   RenderForm DoEvents begin
+[2026-10-10 07:50:23] [UI-PHASE +8.34s]   RenderForm DrawToBitmap begin · {Width=2160, Height=1350}
+[2026-10-10 07:50:23] [UI-PHASE +8.37s]   RenderForm DrawToBitmap returned
+[2026-10-10 07:50:23] [UI-PHASE +8.37s]   save PNG begin · D:\a\Myriad-Mechanism-Box\Myriad-Mechanism-Box\artifacts\validation\ui-states-150\processing-1440x900.png
+[2026-10-10 07:50:23] [UI-PHASE +8.44s]   save PNG returned
+[2026-10-10 07:50:23] [UI-PHASE +8.44s]   screen info · bounds={X=0,Y=0,Width=1920,Height=1080} working={X=0,Y=0,Width=1920,Height=1008} desktop={X=0,Y=0,Width=1920,Height=1080} form={X=0,Y=0,Width=1946,Height=1106}
+[2026-10-10 07:50:23] [UI-PHASE +8.44s]   CopyFromScreen skipped · window not fully on screen
+[2026-10-10 07:50:23] [UI-PHASE +8.44s] processing-1440x900 done · realScreen=False

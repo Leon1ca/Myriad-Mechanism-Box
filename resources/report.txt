@@ -1,0 +1,8 @@
+PASS: 未加载模型及重复释放安全
+PASS: 已加载部分模型后的初始化失败可安全释放
+PASS: 已释放 OCR 引擎拒绝新任务
+PASS: 损坏图片明确报错且不改变进程 Console.Out
+PASS: PDF 文件读取失败不泄漏原生库引用
+PASS: PDF 打开失败释放固定内存和原生库引用
+PASS: 失败与释放后的终结过程正常
+RESOURCE_SELF_TEST_OK: 7 checks

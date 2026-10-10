@@ -1,0 +1,27 @@
+﻿[2026-10-10 07:50:23] [UI-PHASE +8.47s] menus begin
+[2026-10-10 07:50:23] [UI-PHASE +8.49s]   form.Show begin (1280x800)
+[2026-10-10 07:50:23] [UI-PHASE +8.54s]   form.Show returned
+[2026-10-10 07:50:23] [UI-PHASE +8.59s]   form layout set · DoEvents begin
+[2026-10-10 07:50:23] [UI-PHASE +8.64s]   form DoEvents returned · client={Width=1920, Height=1200}
+[2026-10-10 07:50:23] [UI-PHASE +8.64s] menus form ready
+[2026-10-10 07:50:23] [UI-PHASE +8.64s]   menu-export PerformClick begin
+[2026-10-10 07:50:23] [UI-PHASE +8.68s]   menu-export PerformClick+DoEvents returned
+[2026-10-10 07:50:23] [UI-PHASE +8.68s]   menu-export popup DrawToBitmap begin · {Width=372, Height=138}
+[2026-10-10 07:50:23] [UI-PHASE +8.69s]   menu-export popup DrawToBitmap returned
+[2026-10-10 07:50:23] [UI-PHASE +8.69s]   RenderForm PerformLayout begin
+[2026-10-10 07:50:23] [UI-PHASE +8.69s]   RenderForm DoEvents begin
+[2026-10-10 07:50:23] [UI-PHASE +8.69s]   RenderForm DrawToBitmap begin · {Width=1920, Height=1200}
+[2026-10-10 07:50:23] [UI-PHASE +8.73s]   RenderForm DrawToBitmap returned
+[2026-10-10 07:50:23] [UI-PHASE +8.78s]   menu-export popup Close begin
+[2026-10-10 07:50:23] [UI-PHASE +8.82s]   menu-export popup Close returned
+[2026-10-10 07:50:23] [UI-PHASE +8.82s]   menu-cleanup PerformClick begin
+[2026-10-10 07:50:23] [UI-PHASE +8.92s]   menu-cleanup PerformClick+DoEvents returned
+[2026-10-10 07:50:23] [UI-PHASE +8.92s]   menu-cleanup popup DrawToBitmap begin · {Width=372, Height=257}
+[2026-10-10 07:50:23] [UI-PHASE +8.92s]   menu-cleanup popup DrawToBitmap returned
+[2026-10-10 07:50:23] [UI-PHASE +8.92s]   RenderForm PerformLayout begin
+[2026-10-10 07:50:23] [UI-PHASE +8.92s]   RenderForm DoEvents begin
+[2026-10-10 07:50:23] [UI-PHASE +8.93s]   RenderForm DrawToBitmap begin · {Width=1920, Height=1106}
+[2026-10-10 07:50:23] [UI-PHASE +8.97s]   RenderForm DrawToBitmap returned
+[2026-10-10 07:50:23] [UI-PHASE +9.02s]   menu-cleanup popup Close begin
+[2026-10-10 07:50:23] [UI-PHASE +9.03s]   menu-cleanup popup Close returned
+[2026-10-10 07:50:23] [UI-PHASE +9.03s] menus done

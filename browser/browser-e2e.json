@@ -1,0 +1,237 @@
+{
+  "pass": true,
+  "scenarios": [
+    {
+      "Name": "success-fullpage",
+      "Pass": true,
+      "Details": [
+        "\u771F\u5B9E\u9F20\u6807\u70B9\u51FB\u540E\u6574\u9875\u9996\u5C3E\u6807\u8BB0\u3001\u63A7\u4EF6\u6392\u9664\u4E0E\u9875\u9762\u6062\u590D\u5747\u901A\u8FC7"
+      ]
+    },
+    {
+      "Name": "tiling-beyond-viewport",
+      "Pass": true,
+      "Details": [
+        "\u8DE8 12000px \u5206\u7247\u62FC\u63A5\u4E14\u63A5\u7F1D\u5185\u5BB9\u5B8C\u6574"
+      ]
+    },
+    {
+      "Name": "mismatch-rejected",
+      "Pass": true,
+      "Details": [
+        "\u7ED3\u679C\u5355\u53F7\u4E0D\u4E00\u81F4\u65F6\u672A\u4FDD\u5B58\u6587\u4EF6"
+      ]
+    },
+    {
+      "Name": "too-long-rejected",
+      "Pass": true,
+      "Details": [
+        "\u8D85\u8FC7\u50CF\u7D20\u4E0A\u9650\u65F6\u62D2\u7EDD\u4E14\u65E0\u6587\u4EF6"
+      ]
+    },
+    {
+      "Name": "double-click-single-file",
+      "Pass": true,
+      "Details": [
+        "\u91CD\u590D\u70B9\u51FB\u53EA\u4FDD\u5B58\u4E00\u6B21"
+      ]
+    },
+    {
+      "Name": "reload-click-capture",
+      "Pass": true,
+      "Details": [
+        "\u5237\u65B0\u6E05\u7406\u65E7\u4E0A\u4E0B\u6587\u540E\u771F\u5B9E\u70B9\u51FB\u622A\u56FE\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "no-query-rejected",
+      "Pass": true,
+      "Details": [
+        "\u771F\u5B9E\u70B9\u51FB\u540E\u672A\u67E5\u8BE2\u65F6\u672A\u4FDD\u5B58\u5047\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "captcha-error-rejected",
+      "Pass": true,
+      "Details": [
+        "\u9A8C\u8BC1\u7801\u9519\u8BEF\u65F6\u672A\u4FDD\u5B58\u5047\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "write-rejected",
+      "Pass": true,
+      "Details": [
+        "\u76EE\u5F55\u4E0D\u53EF\u5199\u65F6\u5931\u8D25\u4E14\u65E0\u6587\u4EF6"
+      ]
+    },
+    {
+      "Name": "repeat-capture-visible-retry",
+      "Pass": true,
+      "Details": [
+        "\u53EF\u89C1\u6309\u94AE\u771F\u5B9E\u70B9\u51FB\u53EF\u518D\u6B21\u622A\u56FE\u4E14\u6587\u4EF6\u540D\u552F\u4E00"
+      ]
+    },
+    {
+      "Name": "same-origin-frame",
+      "Pass": true,
+      "Details": [
+        "\u540C\u6E90 frame \u5185\u5BB9\u4E0E\u5D4C\u5957\u6EDA\u52A8\u88AB\u5B8C\u6574\u6355\u83B7"
+      ]
+    },
+    {
+      "Name": "no-click-no-save",
+      "Pass": true,
+      "Details": [
+        "\u672A\u70B9\u51FB\u7F51\u9875\u6309\u94AE\u4E0D\u4FDD\u5B58\u6587\u4EF6"
+      ]
+    },
+    {
+      "Name": "missing-number-rejected",
+      "Pass": true,
+      "Details": [
+        "\u771F\u5B9E\u70B9\u51FB\u540E\u7F3A\u5C11\u5355\u53F7\u7684\u751F\u4EA7\u8DEF\u5F84\u62D2\u7EDD\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "stale-result-rejected",
+      "Pass": true,
+      "Details": [
+        "\u771F\u5B9E\u70B9\u51FB\u540E\u65E7\u7ED3\u679C\u672A\u53D8\u5316\u62D2\u7EDD\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "failure-retry",
+      "Pass": true,
+      "Details": [
+        "\u5931\u8D25\u72B6\u6001\u53EF\u91CD\u8BD5\u5E76\u6210\u529F\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "prepare-failure-restore",
+      "Pass": true,
+      "Details": [
+        "\u51C6\u5907\u9636\u6BB5\u5C40\u90E8\u5199\u6837\u5F0F\u5931\u8D25\u4E0D\u4FDD\u5B58\u4E14\u5148\u524D\u4FEE\u6539/\u6EDA\u52A8/\u5361\u7247\u5747\u6062\u590D\uFF0C\u53EF\u91CD\u8BD5\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "cross-origin-frame",
+      "Pass": true,
+      "Details": [
+        "\u9876\u5C42\u65E0\u67E5\u8BE2\uFF0Cmax-height \u7EA6\u675F\u7684\u8DE8\u6E90 frame \u5185\u67E5\u8BE2\u9996\u5C3E\u5B8C\u6574\u4E14\u539F\u6837\u5F0F\u4F18\u5148\u7EA7\u590D\u539F"
+      ]
+    },
+    {
+      "Name": "cross-site-oopif-frame",
+      "Pass": true,
+      "Details": [
+        "\u72EC\u7ACB\u8FDB\u7A0B OOPIF frame \u5185\u67E5\u8BE2\u7ECF CDP session \u5B8C\u6574\u6355\u83B7\u3001\u6837\u5F0F\u4E0E\u89C6\u53E3\u5747\u590D\u539F"
+      ]
+    },
+    {
+      "Name": "cross-site-oopif-preexpanded-frame",
+      "Pass": true,
+      "Details": [
+        "\u539F\u672C\u5DF2\u5305\u4F4F\u5185\u5BB9\u7684\u8DE8\u8FDB\u7A0B OOPIF \u5728\u4E0D\u6539 owner \u9AD8\u5EA6\u65F6\u4ECD\u7ECF\u771F\u5B9E\u89C6\u53E3\u5B8C\u6574\u7ED8\u5236\u5E76\u590D\u539F\u6837\u5F0F/\u89C6\u53E3"
+      ]
+    },
+    {
+      "Name": "oopif-child-session-navigation",
+      "Pass": true,
+      "Details": [
+        "\u5B50 session \u65E0 parentId \u6839\u5BFC\u822A\u672A\u8986\u76D6\u9876\u5C42\u8EAB\u4EFD/URL/\u4EE3\u6B21\uFF0C\u5B50 frame URL \u66F4\u65B0\u4E14\u6574\u9875\u9996\u5C3E/\u67E5\u8BE2\u7ED3\u679C\u5B8C\u6574\u3001\u6837\u5F0F\u4E0E\u89C6\u53E3\u590D\u539F"
+      ]
+    },
+    {
+      "Name": "oopif-viewport-read-failure",
+      "Pass": true,
+      "Details": [
+        "OOPIF \u53C2\u4E0E\u65F6\u89C6\u53E3\u8BFB\u53D6\u5931\u8D25\u4F1A\u62D2\u7EDD\u4FDD\u5B58\uFF0C\u6CE8\u5165\u7ED3\u675F\u540E\u540C\u4E00\u4F1A\u8BDD\u7ECF\u771F\u5B9E\u70B9\u51FB\u6062\u590D\u5E76\u53EF\u7ACB\u5373\u91CD\u8BD5\u5B8C\u6574\u622A\u56FE"
+      ]
+    },
+    {
+      "Name": "official-dom-success",
+      "Pass": true,
+      "Details": [
+        "\u4EFF\u5B98\u7F51 DOM \u771F\u5B9E\u70B9\u51FB\u67E5\u8BE2\u4E0E\u5361\u7247\u540E display-content/content-field \u5B8C\u6574\u6355\u83B7"
+      ]
+    },
+    {
+      "Name": "official-hash-route",
+      "Pass": true,
+      "Details": [
+        "\u5355\u9875\u5E94\u7528\u5207\u6362\u5230 #/publicInquiryDetail \u540E\u622A\u56FE\u88AB\u63A5\u53D7\u5E76\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "official-same-site",
+      "Pass": true,
+      "Details": [
+        "www/swapp \u540C\u7AD9\u8DE8\u6E90\u67E5\u8BE2\u6846\u67B6\u622A\u56FE\u4FDD\u5B58\uFF081.1s\uFF09"
+      ]
+    },
+    {
+      "Name": "stalled-capture",
+      "Pass": true,
+      "Details": [
+        "\u5361\u4F4F\u7684\u622A\u56FE 3.1s \u5185\u4EE5\u8D85\u65F6\u7ED3\u675F\u5E76\u663E\u793A\u539F\u56E0\uFF0C\u91CD\u8BD5\u4FDD\u5B58\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "official-dom-wrong-number",
+      "Pass": true,
+      "Details": [
+        "\u5B98\u65B9 DOM \u7ED3\u679C\u5355\u53F7\u4E0D\u7B26\u65F6\u62D2\u7EDD\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "official-dom-empty-result",
+      "Pass": true,
+      "Details": [
+        "\u5B98\u65B9 DOM \u7A7A\u7ED3\u679C\u4E0D\u4FDD\u5B58\u5047\u6210\u529F"
+      ]
+    },
+    {
+      "Name": "official-dom-captcha-error",
+      "Pass": true,
+      "Details": [
+        "\u5B98\u65B9\u201C\u9A8C\u8BC1\u7801\u65E0\u6548/\u6CA1\u6709\u7B26\u5408\u6761\u4EF6\u7684\u6570\u636E\u201D\u6587\u6848\u88AB\u8BC6\u522B\u4E3A\u5931\u8D25"
+      ]
+    },
+    {
+      "Name": "official-dom-result-change",
+      "Pass": true,
+      "Details": [
+        "\u5B98\u65B9 DOM \u6355\u83B7\u4E2D field-order \u53D8\u5316\u88AB\u64A4\u9500\u4FDD\u5B58"
+      ]
+    },
+    {
+      "Name": "concurrent-session-isolation",
+      "Pass": true,
+      "Details": [
+        "\u4E0D\u540C\u4F1A\u8BDD\u5E76\u53D1\u622A\u56FE\u5F7C\u6B64\u9694\u79BB"
+      ]
+    },
+    {
+      "Name": "navigate-away-return",
+      "Pass": true,
+      "Details": [
+        "\u79BB\u5F00\u76EE\u6807\u9875\u518D\u8FD4\u56DE\u540E\u91CD\u65B0\u6CE8\u5165\u5E76\u53EF\u622A\u56FE"
+      ]
+    },
+    {
+      "Name": "result-change-aborts-save",
+      "Pass": true,
+      "Details": [
+        "\u6355\u83B7\u4E2D\u7ED3\u679C\u53D8\u5316\u88AB\u64A4\u9500\u4E14\u65E0\u9519\u8BEF\u56DE\u586B"
+      ]
+    },
+    {
+      "Name": "reconnect-recovery",
+      "Pass": true,
+      "Details": [
+        "\u8FDE\u63A5\u4E2D\u65AD\u540E\u6062\u590D\u5E76\u53EF\u5B8C\u6210\u622A\u56FE"
+      ]
+    }
+  ],
+  "issues": []
+}
