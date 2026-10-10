@@ -9,8 +9,9 @@ $appSource = Join-Path $resolvedPackage 'app'
 $toolsSource = Join-Path $resolvedPackage 'tools'
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\src\CustomsClearanceConsole')).Path
 
-if (-not (Test-Path -LiteralPath (Join-Path $appSource '关单核验台.dll'))) {
-    throw "PackageRoot 不是完整的关单核验台解压目录：$resolvedPackage"
+# v0.1.0 packages still carry the old assembly name; both are valid dependency sources.
+if (-not ((Test-Path -LiteralPath (Join-Path $appSource '千机匣.dll')) -or (Test-Path -LiteralPath (Join-Path $appSource '关单核验台.dll')))) {
+    throw "PackageRoot 不是完整的千机匣解压目录：$resolvedPackage"
 }
 if (-not (Test-Path -LiteralPath $toolsSource)) {
     throw "发布包缺少 tools 目录：$toolsSource"

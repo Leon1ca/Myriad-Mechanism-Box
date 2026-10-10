@@ -20,6 +20,7 @@ src/CustomsClearanceConsole/fonts/MANIFEST.json
 artifacts/
 dist/
 *.zip
+千机匣数据/
 关单核验台数据/
 Screenshots/
 *.log

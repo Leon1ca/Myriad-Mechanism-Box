@@ -113,7 +113,7 @@ try {
     }
     Get-ChildItem -LiteralPath $OutputFolder -Recurse -Filter 'app.log' -ErrorAction SilentlyContinue |
         ForEach-Object { Write-Host "per-state app.log: $($_.FullName)"; Get-Content -LiteralPath $_.FullName -Tail 40 | ForEach-Object { Write-Host $_ } }
-    $localApp = Join-Path $env:LOCALAPPDATA '关单核验台\app.log'
+    $localApp = Join-Path $env:LOCALAPPDATA '千机匣\app.log'
     if (Test-Path -LiteralPath $localApp) {
         Copy-Item -LiteralPath $localApp -Destination (Join-Path $OutputFolder "$Label-localappdata-app.log") -Force
         Write-Host "LOCALAPPDATA app.log copied."

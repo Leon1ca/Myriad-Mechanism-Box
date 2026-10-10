@@ -98,7 +98,7 @@ internal sealed partial class MainForm : Form
         _batchFolder = string.IsNullOrWhiteSpace(_state.LastFolder) ? "" : _state.LastFolder;
         if (_batchFolder.Length > 0 && _state.Records.Count == 0) LoadBatchFileSummary(_batchFolder);
 
-        Text = "关单核验台";
+        Text = AppInfo.DisplayName;
         StartPosition = FormStartPosition.CenterScreen;
         MinimumSize = new Size(1200, 720);
         Size = new Size(1440, 900);

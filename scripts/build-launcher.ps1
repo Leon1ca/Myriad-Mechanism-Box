@@ -10,7 +10,7 @@ $launcherRoot = Join-Path $repoRoot 'src\Launcher'
 $icon = Join-Path $repoRoot 'src\CustomsClearanceConsole\Assets\app.ico'
 $outputRoot = Join-Path $repoRoot 'artifacts\launcher'
 New-Item -ItemType Directory -Force $outputRoot | Out-Null
-$output = Join-Path $outputRoot '关单核验台.exe'
+$output = Join-Path $outputRoot '千机匣.exe'
 
 & $compiler '/nologo' '/target:winexe' '/optimize+' '/platform:anycpu' "/win32icon:$icon" "/win32manifest:$(Join-Path $launcherRoot 'app.manifest')" '/reference:System.dll' '/reference:System.Core.dll' '/reference:System.Windows.Forms.dll' "/out:$output" (Join-Path $launcherRoot 'Program.cs') (Join-Path $launcherRoot 'AssemblyInfo.cs')
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

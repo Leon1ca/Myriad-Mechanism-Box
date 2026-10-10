@@ -34,7 +34,7 @@ env:
   DOTNET_NOLOGO: "1"
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
-  APP_DLL: src/CustomsClearanceConsole/bin/Release/net8.0-windows/关单核验台.dll
+  APP_DLL: src/CustomsClearanceConsole/bin/Release/net8.0-windows/千机匣.dll
 
 jobs:
   core-regression:
@@ -254,7 +254,7 @@ jobs:
           }
           & "$env:GITHUB_WORKSPACE/scripts/build-launcher.ps1"
           if ($LASTEXITCODE -ne 0) { throw "启动器构建失败：$LASTEXITCODE" }
-          Copy-Item -LiteralPath 'artifacts/launcher/关单核验台.exe' -Destination (Join-Path $root '关单核验台.exe') -Force
+          Copy-Item -LiteralPath 'artifacts/launcher/千机匣.exe' -Destination (Join-Path $root '千机匣.exe') -Force
           Copy-Item -LiteralPath "docs/release-notes-v$version.md" -Destination (Join-Path $root "更新说明-v$version.md") -Force
           Copy-Item -LiteralPath 'src/CustomsClearanceConsole/使用说明.txt' -Destination (Join-Path $root '使用说明.txt') -Force
           # GPL, third-party and font licences ship both at the root and inside app/.
@@ -287,10 +287,10 @@ jobs:
           $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName)
           try {
             $names = $archive.Entries | ForEach-Object { $_.FullName }
-            foreach ($required in @('关单核验台.exe', 'LICENSE', 'AboutAndLicenses.txt',
+            foreach ($required in @('千机匣.exe', 'LICENSE', 'AboutAndLicenses.txt',
                                     'third-party-notices/EmguCV-GPLv3-or-Commercial.txt',
                                     'third-party-notices/ONNXRuntime-MIT.txt',
-                                    'app/关单核验台.dll', 'app/AboutAndLicenses.txt',
+                                    'app/千机匣.dll', 'app/AboutAndLicenses.txt',
                                     'app/fonts/NotoSansSC-Regular.ttf', 'app/fonts/NotoSansSC-Medium.ttf',
                                     'app/fonts/NotoSansSC-Bold.ttf', 'app/fonts/JetBrainsMono-Regular.ttf',
                                     'app/fonts/NotoSansSC-OFL.txt', 'app/fonts/JetBrainsMono-OFL.txt',
@@ -315,7 +315,7 @@ jobs:
           $extract = Join-Path $env:RUNNER_TEMP 'portable-smoke'
           Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue
           Expand-Archive -LiteralPath $zip.FullName -DestinationPath $extract -Force
-          $launcher = Join-Path $extract '关单核验台.exe'
+          $launcher = Join-Path $extract '千机匣.exe'
           function Invoke-Launcher {
             param([string]$Arguments, [string]$Label)
             $process = Start-Process -FilePath $launcher -ArgumentList $Arguments -PassThru -WorkingDirectory $extract

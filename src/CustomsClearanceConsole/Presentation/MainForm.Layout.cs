@@ -50,15 +50,12 @@ internal sealed partial class MainForm
     private Control BuildHeader()
     {
         var header = new Panel { Dock = DockStyle.Fill, Margin = Padding.Empty, BackColor = Theme.HeaderBg, AccessibleName = "应用标题栏" };
-        var logoBack = new RoundedPanel { Location = new Point(20, 10), Size = new Size(28, 28), Radius = 6, BackColor = Theme.Accent, BorderColor = Theme.Accent };
-        var logo = new PictureBox { Dock = DockStyle.Fill, SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Transparent };
-        var appIcon = LoadApplicationIcon();
-        if (appIcon is not null) logo.Image = appIcon;
-        logoBack.Controls.Add(logo);
+        // The brand icon carries its own rounded blue tile, so it is drawn directly on the bar.
+        var logoBack = new AppLogo { Location = new Point(20, 10), Size = new Size(28, 28), BackColor = Theme.HeaderBg };
         header.Controls.Add(logoBack);
         var title = new Label
         {
-            Text = "关单核验台",
+            Text = AppInfo.DisplayName,
             Location = new Point(60, 0),
             Size = new Size(160, UiTokens.Metrics.Header),
             Font = AppFonts.Ui(15F, UiWeight.Bold),
@@ -135,19 +132,6 @@ internal sealed partial class MainForm
         foreach (var control in new Control[] { header, title, version, logoBack })
             control.DoubleClick += (_, _) => ToggleMaximize();
         return header;
-    }
-
-    private static Bitmap? LoadApplicationIcon()
-    {
-        try
-        {
-            var path = Path.Combine(AppContext.BaseDirectory, "assets", "ui-v2", "icons", "app", "app-icon-48.png");
-            if (File.Exists(path)) { using var source = new Bitmap(path); return new Bitmap(source); }
-            var ico = Path.Combine(AppContext.BaseDirectory, "app.ico");
-            if (File.Exists(ico)) { using var icon = new Icon(ico); return icon.ToBitmap(); }
-        }
-        catch (Exception ex) { AppLog.Write(ex); }
-        return null;
     }
 
     private Control BuildTitleRow()

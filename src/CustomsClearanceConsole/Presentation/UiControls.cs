@@ -552,3 +552,61 @@ internal sealed class SectionPanel : TableLayoutPanel
         if (y >= 0) e.Graphics.DrawLine(PaintCache.Pen(DividerColor), 0, y, Width, y);
     }
 }
+
+/// <summary>
+/// Application logo for the title bar. The brand PNGs come in exact pixel sizes; the control
+/// picks the closest size at or above its real pixel size for the current DPI and draws it with
+/// high-quality scaling, so the fine mask lines stay crisp at 100%, 150% and 200%.
+/// </summary>
+internal sealed class AppLogo : Control
+{
+    private static readonly int[] Sizes = [16, 20, 24, 28, 32, 40, 48, 64, 96, 128, 256];
+    private Bitmap? _image;
+    private int _imageSize;
+
+    public AppLogo()
+    {
+        AccessibleName = AppInfo.DisplayName;
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
+    }
+
+    internal static string? PathFor(int pixels)
+    {
+        var folder = Path.Combine(AppContext.BaseDirectory, "assets", "brand");
+        foreach (var size in Sizes.Where(x => x >= pixels).Concat(Sizes.Reverse()))
+        {
+            var path = Path.Combine(folder, $"app-icon-{size}.png");
+            if (File.Exists(path)) return path;
+        }
+        return null;
+    }
+
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        e.Graphics.Clear(BackColor);
+        var pixels = Math.Min(Width, Height);
+        if (pixels <= 0) return;
+        if (_image is null || _imageSize != pixels)
+        {
+            _image?.Dispose();
+            _image = null;
+            _imageSize = pixels;
+            var path = PathFor(pixels);
+            try
+            {
+                if (path is not null) { using var source = new Bitmap(path); _image = new Bitmap(source); }
+            }
+            catch (Exception ex) { AppLog.Write($"应用图标加载失败：{path} · {ex.Message}"); }
+        }
+        if (_image is null) return;
+        e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+        e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+        e.Graphics.DrawImage(_image, new Rectangle((Width - pixels) / 2, (Height - pixels) / 2, pixels, pixels));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing) _image?.Dispose();
+        base.Dispose(disposing);
+    }
+}

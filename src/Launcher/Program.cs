@@ -14,10 +14,10 @@ namespace CustomsLauncher
             var root = AppDomain.CurrentDomain.BaseDirectory;
             var host = Path.Combine(root, "runtime", "dotnet.exe");
             var appFolder = Path.Combine(root, "app");
-            var app = Path.Combine(appFolder, "关单核验台.dll");
+            var app = Path.Combine(appFolder, "千机匣.dll");
             if (!File.Exists(host) || !File.Exists(app))
             {
-                MessageBox.Show("程序组件不完整。请完整解压压缩包后，再双击“关单核验台.exe”。", "关单核验台", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("程序组件不完整。请完整解压压缩包后，再双击“千机匣.exe”。", "千机匣", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace CustomsLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show("程序启动失败：" + ex.Message, "关单核验台", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("程序启动失败：" + ex.Message, "千机匣", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

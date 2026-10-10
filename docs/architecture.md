@@ -20,7 +20,7 @@ flowchart LR
 
 ## 源码目录与职责
 
-以下目录均位于 `src/CustomsClearanceConsole`，保留同一程序集与命名空间，避免为当前桌面工具增加无必要的项目依赖。
+以下目录均位于 `src/CustomsClearanceConsole`，保留同一程序集与命名空间，避免为当前桌面工具增加无必要的项目依赖。产品名称统一由 `AppInfo` 提供（千机匣 / Myriad Mechanism Box），程序集与启动器均输出为 `千机匣`；源码目录与命名空间 `CustomsClearanceConsole` 仅为内部标识，不出现在界面中。
 
 | 目录 | 职责与主要入口 |
 | --- | --- |
@@ -49,9 +49,9 @@ flowchart LR
 
 ## 数据边界与运行
 
-每批最多 200 个当前层文件。原关单只读；历史通常保存在 `%LocalAppData%\关单核验台`，测试可用 `CUSTOMS_CONSOLE_DATA` 隔离。截图保存在用户设置的目录，OCR 临时目录统一清理。在线核验由用户主动触发，验证码在浏览器中人工完成。
+每批最多 200 个当前层文件。原关单只读；历史通常保存在 `%LocalAppData%\千机匣`（v0.1.0 及以前的 `关单核验台` 目录在首次启动时整体迁移），测试可用 `CUSTOMS_CONSOLE_DATA` 隔离。截图保存在用户设置的目录，OCR 临时目录统一清理。在线核验由用户主动触发，验证码在浏览器中人工完成。
 
-根目录启动器调用包内 `runtime/dotnet.exe app/关单核验台.dll`。运行时、模型、PDFium 和字体随完整便携包提供。
+根目录启动器调用包内 `runtime/dotnet.exe app/千机匣.dll`。运行时、模型、PDFium 和字体随完整便携包提供。
 
 ## 界面刷新与绘制
 
