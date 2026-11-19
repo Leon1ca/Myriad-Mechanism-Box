@@ -54,24 +54,45 @@ internal static class OcrImages
     }
 
     /// <summary>Rotates clockwise by <paramref name="rotation"/> degrees and scales to the OCR working size on white.</summary>
-    public static Bitmap Prepare(Bitmap source, int rotation)
+    public static Bitmap Prepare(Bitmap source, int rotation, int? longEdgeOverride = null)
     {
-        using var rotated = new Bitmap(source);
-        rotated.RotateFlip(rotation switch
-        {
-            90 => RotateFlipType.Rotate90FlipNone,
-            180 => RotateFlipType.Rotate180FlipNone,
-            270 => RotateFlipType.Rotate270FlipNone,
-            _ => RotateFlipType.RotateNoneFlipNone
-        });
+        using var rotated = Orient(source, rotation);
         var longEdge = Math.Max(rotated.Width, rotated.Height);
-        var factor = longEdge < 2400 || longEdge > 3000 ? Math.Clamp(TargetLongEdge / (double)longEdge, .25, 6d) : 1d;
+        var target = longEdgeOverride ?? TargetLongEdge;
+        var factor = longEdgeOverride is not null || longEdge < 2400 || longEdge > 3000
+            ? Math.Clamp(target / (double)longEdge, .25, 6d) : 1d;
         var bitmap = new Bitmap(Math.Max(1, (int)(rotated.Width * factor)), Math.Max(1, (int)(rotated.Height * factor)), PixelFormat.Format24bppRgb);
         using var graphics = Graphics.FromImage(bitmap);
         graphics.Clear(Color.White);
         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
         graphics.DrawImage(rotated, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+        return bitmap;
+    }
+
+    public static Bitmap Orient(Bitmap source, int rotation)
+    {
+        var oriented = new Bitmap(source);
+        oriented.RotateFlip(rotation switch
+        {
+            90 => RotateFlipType.Rotate90FlipNone,
+            180 => RotateFlipType.Rotate180FlipNone,
+            270 => RotateFlipType.Rotate270FlipNone,
+            _ => RotateFlipType.RotateNoneFlipNone
+        });
+        return oriented;
+    }
+
+    public static Bitmap CropWithWhiteBorder(Bitmap source, Rectangle area, float? threshold = null)
+    {
+        var border = Math.Max(5, area.Height / 5);
+        var bitmap = new Bitmap(area.Width + 2 * border, area.Height + 2 * border, PixelFormat.Format24bppRgb);
+        using var graphics = Graphics.FromImage(bitmap);
+        using var attributes = new ImageAttributes();
+        if (threshold is { } level) attributes.SetThreshold(level);
+        graphics.Clear(Color.White);
+        graphics.DrawImage(source, new Rectangle(border, border, area.Width, area.Height),
+            area.X, area.Y, area.Width, area.Height, GraphicsUnit.Pixel, attributes);
         return bitmap;
     }
 

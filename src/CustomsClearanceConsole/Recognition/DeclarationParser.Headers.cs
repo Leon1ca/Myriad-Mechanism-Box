@@ -23,9 +23,9 @@ internal sealed partial class DeclarationParser
         return scores.OrderByDescending(x => x.Value).ThenBy(x => x.Key).Select(x => x.Key).FirstOrDefault() ?? "";
     }
 
-    private static string ReadLabeledValue(TextPage page, params string[] labels)
+    private static string ReadLabeledValue(TextPage page, string label, double? nextRowTop = null)
     {
-        var anchor = FindAnchor(page, labels);
+        var anchor = FindAnchor(page, label);
         if (anchor is null) return "";
 
         var anchors = FindKnownAnchors(page);
@@ -43,17 +43,21 @@ internal sealed partial class DeclarationParser
             .OrderBy(x => x.Top)
             .FirstOrDefault();
         var bottom = Math.Min(anchor.Bottom + page.Height * .075, nextRow?.Top - 1 ?? double.MaxValue);
+        if (nextRowTop is { } rowTop && rowTop > anchor.CenterY) bottom = Math.Min(bottom, rowTop - 1);
 
         var valueTokens = page.Tokens.Where(t =>
             t.CenterY >= anchor.Bottom - 1 && t.CenterY <= bottom + 1 &&
             t.CenterX >= left && t.CenterX <= right &&
-            !Overlaps(t, anchor));
+            t.CenterY > anchor.CenterY && !IsHeaderLabel(t.Text));
         return string.Join(" ", Lines(valueTokens, LineTolerance(page)).Select(Join)).Trim();
     }
 
-    private static string ReadValueImmediatelyAboveLabel(TextPage page, params string[] labels)
+    private static TextToken? FindProducerRow(TextPage page) =>
+        FindAnchor(page, "生产销售单位") ?? FindAnchor(page, "监管方式", "征免性质", "许可证号");
+
+    private static string ReadConsigneeAboveProducer(TextPage page)
     {
-        var anchor = FindAnchor(page, labels);
+        var anchor = FindAnchor(page, "生产销售单位");
         if (anchor is null) return "";
 
         var sameRowTolerance = Math.Max(4, page.Height * .012);
@@ -63,13 +67,28 @@ internal sealed partial class DeclarationParser
             .FirstOrDefault();
         var left = Math.Max(0, anchor.Left - page.Width * .006);
         var right = rightAnchor?.Left - 1 ?? Math.Min(page.Width, anchor.Left + page.Width * .34);
+        var top = anchor.Top - page.Height * .075;
+        var transport = FindAnchor(page, "运输方式");
+        if (transport is not null && transport.Left > anchor.Left && transport.CenterY >= top && transport.CenterY < anchor.CenterY)
+        {
+            right = Math.Min(right, transport.Left - 1);
+            top = Math.Max(top, transport.CenterY);
+        }
+        var consigneeLabel = FindAnchor(page, "境外收货人");
+        if (consigneeLabel is not null) top = Math.Max(top, consigneeLabel.Bottom - 1);
         var candidates = page.Tokens.Where(t =>
             t.CenterX >= left && t.CenterX <= right &&
-            t.Bottom <= anchor.Top - 1 && t.Top >= anchor.Top - page.Height * .075);
+            t.CenterY >= top && t.CenterY < anchor.Top && !IsHeaderLabel(t.Text));
         var closestLine = Lines(candidates, LineTolerance(page))
             .OrderByDescending(line => line.Average(x => x.CenterY))
             .FirstOrDefault();
         return closestLine is null ? "" : Join(closestLine).Trim();
+    }
+
+    private static bool IsHeaderLabel(string text)
+    {
+        var label = Regex.Replace(text, @"(?:\s*[（(][^（）()]*[）)])+\s*[:：]?\s*$", "");
+        return KnownLabels.Contains(NormalizeLabel(label), StringComparer.Ordinal);
     }
 
     private static string ReadExitCustoms(TextPage page, string declarationNo)
@@ -200,18 +219,6 @@ internal sealed partial class DeclarationParser
         for (var i = 1; i < segments.Length; i++)
             rebuilt.Append(separators[i - 1]).Append(segments[i].ToUpperInvariant());
         return rebuilt.ToString();
-    }
-
-    private static string NormalizeContractOcr(string value)
-    {
-        var compact = Regex.Replace(value, @"\s+", "").ToUpperInvariant();
-        var compound = Regex.Match(compact, @"^([A-NP-Z]{1,6})([0-9O]{2,})([A-NP-Z]{1,6})([0-9O]{4,})$");
-        if (compound.Success)
-            return compound.Groups[1].Value + compound.Groups[2].Value.Replace('O', '0') +
-                   compound.Groups[3].Value + compound.Groups[4].Value.Replace('O', '0');
-
-        var simple = Regex.Match(compact, @"^([A-NP-Z]{1,6})([0-9O]{2,})$");
-        return simple.Success ? simple.Groups[1].Value + simple.Groups[2].Value.Replace('O', '0') : compact;
     }
 
     private static string PreferOcrText(string current, string wider, string knownValue)

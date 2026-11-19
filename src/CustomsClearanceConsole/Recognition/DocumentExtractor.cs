@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CustomsClearanceConsole;
 
@@ -93,7 +94,8 @@ internal sealed partial class DocumentExtractor : IAsyncDisposable
                     _ => (ch, left, rawHeight - top, right, rawHeight - bottom)
                 });
             }
-            return new TextPage { PageNumber = pageNumber, Width = width, Height = height, Tokens = GroupCharacters(chars) };
+            return new TextPage { PageNumber = pageNumber, Width = width, Height = height, HasPdfTextLayer = true,
+                Tokens = GroupCharacters(chars) };
         }
         finally { PdfiumNative.FPDFText_ClosePage(textPage); }
     }
@@ -160,7 +162,144 @@ internal sealed partial class DocumentExtractor : IAsyncDisposable
             .ThenByDescending(x => x.Page.Tokens.Sum(t => t.Text.Length * t.Confidence))
             .First();
         AppLog.Write($"OCR 页面方向：{string.Join("；", candidates.Select(x => $"{x.Rotation}° 竖框 {x.TallFraction:P0} 倒置 {x.FlippedFraction:P0} 得分 {DeclarationPageScore(x.Page)}"))}；采用 {best.Rotation}°。");
-        return await RecoverTableAsync(source, best, cancellationToken);
+        var page = await RecoverTableAsync(source, best, cancellationToken);
+        page = await RetryIncompleteDeclarationAsync(source, best.Rotation, page, cancellationToken);
+        return await RetryProductSpecificationsAsync(source, best.Rotation, page, cancellationToken);
+    }
+
+    private async Task<TextPage> RetryProductSpecificationsAsync(Bitmap source, int rotation, TextPage page,
+        CancellationToken cancellationToken)
+    {
+        var product = page.Tokens.FirstOrDefault(t => t.Text.Contains("规格型号", StringComparison.Ordinal));
+        var quantity = page.Tokens.FirstOrDefault(t => t.Text.Contains("数量及单位", StringComparison.Ordinal));
+        if (product is null || quantity is null || quantity.Left <= product.Left) return page;
+
+        var tokens = page.Tokens.ToList();
+        var footer = page.Tokens.Where(t => t.Top > product.Bottom && t.Text.Contains("特殊关系确认", StringComparison.Ordinal))
+            .Select(t => t.Top).DefaultIfEmpty(page.Height * .985).Min();
+        bool InProductColumn(TextToken token) => token.CenterY >= product.Bottom && token.CenterY < footer &&
+            token.Left > page.Width * .085 && token.Right <= quantity.Left;
+        var candidates = tokens.Where(token => token.OcrBox is { Length: 4 } && InProductColumn(token)).ToList();
+        if (candidates.Count == 0 && !tokens.Any(t => InProductColumn(t) && DamagedSpecPrefix().IsMatch(t.Text))) return page;
+
+        using var oriented = OcrImages.Orient(source, rotation);
+        var scaleX = oriented.Width / page.Width;
+        var scaleY = oriented.Height / page.Height;
+        if (candidates.Count > 0)
+        {
+            var recovered = await _rapidOcr.RecoverSpecificationsAsync(OcrImages.ToPng(oriented), candidates, scaleX, scaleY, cancellationToken);
+            for (var i = 0; i < tokens.Count; i++)
+                if (recovered.TryGetValue(tokens[i], out var text)) tokens[i] = tokens[i] with { Text = text };
+        }
+
+        var specs = tokens.Select((token, index) => (token, index))
+            .Where(x => InProductColumn(x.token))
+            .Select(x => (x.token, x.index, prefix: DamagedSpecPrefix().Match(x.token.Text)))
+            .Where(x => x.prefix.Success)
+            .ToList();
+        foreach (var (token, index, prefix) in specs)
+        {
+            var expectedPrefix = $"{prefix.Groups["first"].Value}|{prefix.Groups["second"].Value}|";
+            var expectedText = WithoutSeparators(expectedPrefix + token.Text[prefix.Length..]);
+            var height = token.Bottom - token.Top;
+            var left = (int)Math.Round((token.Left - height * .10) * scaleX);
+            var top = (int)Math.Round((token.Top + height * .10) * scaleY);
+            var right = (int)Math.Round((token.Right - height * .10) * scaleX);
+            var bottom = (int)Math.Round((token.Bottom + height * .10) * scaleY);
+            var area = Rectangle.Intersect(Rectangle.FromLTRB(left, top, right, bottom),
+                new Rectangle(Point.Empty, oriented.Size));
+            if (area.Width <= 0 || area.Height <= 0) continue;
+
+            var reread = string.Concat(await ReadCroppedLineAsync(oriented, area, cancellationToken)).Replace('｜', '|');
+            if (reread.StartsWith(expectedPrefix, StringComparison.Ordinal) &&
+                WithoutSeparators(reread).Equals(expectedText, StringComparison.Ordinal))
+                tokens[index] = token with { Text = reread };
+        }
+        return new TextPage { PageNumber = page.PageNumber, Width = page.Width, Height = page.Height, Tokens = tokens };
+
+        static string WithoutSeparators(string text) => Regex.Replace(text, @"[\s|｜]", "");
+    }
+
+    [GeneratedRegex(@"^(?<first>[0-9])(?:[1I](?=[0-9]\p{L}.*[|｜]))?(?<second>[0-9])(?:[{}]|(?=\p{L}.*[|｜]))(?=\p{L})")]
+    private static partial Regex DamagedSpecPrefix();
+
+    private async Task<string[]> ReadCroppedLineAsync(Bitmap oriented, Rectangle area, CancellationToken cancellationToken,
+        float? threshold = null)
+    {
+        using var crop = OcrImages.CropWithWhiteBorder(oriented, area, threshold);
+        using var enlarged = OcrImages.Prepare(crop, 0);
+        var retry = await _rapidOcr.RecognizeAsync(OcrImages.ToPng(enlarged), enlarged.Width, enlarged.Height, cancellationToken);
+        return retry.Page.Tokens.Where(t => t.Confidence >= 65).OrderBy(t => t.Left).Select(t => t.Text).ToArray();
+    }
+
+    private async Task<TextPage> RetryIncompleteDeclarationAsync(Bitmap source, int rotation, TextPage page,
+        CancellationToken cancellationToken)
+    {
+        var expectedRows = DeclarationParser.ExpectedItemRows(page);
+        if (expectedRows == 0) return page;
+
+        var parser = new DeclarationParser();
+        DeclarationRecord Parse(TextPage text) => parser.Parse("ocr-page.png",
+            new DocumentText { UsedOcr = true, Pages = [text] });
+        var first = Parse(page);
+        if (!first.NeedsAttention || (first.LineTotals.Count >= expectedRows && first.Consignee.Length > 0)) return page;
+
+        // A different detector scale can separate small glyphs from nearby table rules.
+        var retry = await RecognizeRotatedAsync(source, rotation, cancellationToken, longEdgeOverride: 2500);
+        var second = Parse(retry.Page);
+        if (second.NeedsAttention || second.DeclarationNo != first.DeclarationNo ||
+            second.LineTotals.Count < expectedRows ||
+            !SameOrMissing(first.ContractNo, second.ContractNo) ||
+            !SameOrMissing(first.Consignee, second.Consignee) ||
+            !SameOrMissing(first.ExitCustoms, second.ExitCustoms) ||
+            !SameOrMissing(first.DestinationCountry, second.DestinationCountry) ||
+            !first.LineTotals.Where(line => line.IsReliable).All(line =>
+                second.LineTotals.Any(other => line.ItemNo == other.ItemNo && line.Currency == other.Currency &&
+                    line.Amount == other.Amount && line.Quantity == other.Quantity && line.UnitPrice == other.UnitPrice &&
+                    line.Unit == other.Unit && line.ProductName == other.ProductName)))
+            return page;
+
+        AppLog.Write("OCR 备用分辨率补齐报关单字段。");
+        return await RefineConsigneeAsync(source, rotation, page, retry.Page, first.Consignee, second.Consignee, cancellationToken);
+
+        static bool SameOrMissing(string original, string candidate) =>
+            original.Length == 0 || string.Equals(original.Replace(" ", ""), candidate.Replace(" ", ""),
+                StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<TextPage> RefineConsigneeAsync(Bitmap source, int rotation, TextPage original, TextPage retry,
+        string firstValue, string retryValue, CancellationToken cancellationToken)
+    {
+        // A faint scan can lose a stroke even after the page has been recovered. Two contrast
+        // levels must agree before replacing any letters in a single-line name.
+        if (firstValue.Length < 8 || !firstValue.All(c => c <= 127)) return retry;
+        var originalToken = original.Tokens.FirstOrDefault(t => t.CenterY < original.Height * .35 && t.Text == firstValue);
+        var tokens = retry.Tokens.ToList();
+        var index = tokens.FindIndex(t => t.CenterY < retry.Height * .35 && t.Text == retryValue);
+        if (originalToken is null || index < 0) return retry;
+
+        using var oriented = OcrImages.Orient(source, rotation);
+        var sx = oriented.Width / original.Width;
+        var sy = oriented.Height / original.Height;
+        var height = originalToken.Bottom - originalToken.Top;
+        var area = Rectangle.Intersect(Rectangle.FromLTRB(
+            (int)Math.Round((originalToken.Left - height * .15) * sx),
+            (int)Math.Round((originalToken.Top + height * .07) * sy),
+            (int)Math.Round((originalToken.Right + height * 1.15) * sx),
+            (int)Math.Round((originalToken.Bottom + height * .13) * sy)), new Rectangle(Point.Empty, oriented.Size));
+        if (area.Width <= 0 || area.Height <= 0) return retry;
+
+        var lighter = string.Join(" ", await ReadCroppedLineAsync(oriented, area, cancellationToken, 214f / 255));
+        var darker = string.Join(" ", await ReadCroppedLineAsync(oriented, area, cancellationToken, 228f / 255));
+        var first = Compact(firstValue);
+        var recovered = Compact(lighter);
+        if (recovered.Length != first.Length || recovered != Compact(darker) ||
+            first.Zip(recovered).Count(pair => pair.First != pair.Second) is < 1 or > 2) return retry;
+
+        tokens[index] = tokens[index] with { Text = lighter };
+        return new TextPage { PageNumber = retry.PageNumber, Width = retry.Width, Height = retry.Height, Tokens = tokens };
+
+        static string Compact(string value) => Regex.Replace(value.ToUpperInvariant(), @"[^A-Z0-9]", "");
     }
 
     private async Task<TextPage> RecoverTableAsync(Bitmap source, RapidOcrPage reading, CancellationToken cancellationToken)
@@ -191,7 +330,7 @@ internal sealed partial class DocumentExtractor : IAsyncDisposable
         var tokens = page.Tokens.ToList();
         foreach (var token in retry.Page.Tokens.Where(t => t.Confidence >= 65))
         {
-            var mapped = token with { Left = left + token.Left * scaleX, Right = left + token.Right * scaleX,
+            var mapped = token with { OcrBox = null, Left = left + token.Left * scaleX, Right = left + token.Right * scaleX,
                 Top = top + token.Top * scaleY, Bottom = top + token.Bottom * scaleY };
             // Add only missing boxes; a conflicting rereading does not overwrite the first pass.
             var overlaps = tokens.Any(t => Math.Min(t.Right, mapped.Right) - Math.Max(t.Left, mapped.Left) >
@@ -203,10 +342,11 @@ internal sealed partial class DocumentExtractor : IAsyncDisposable
         return new TextPage { PageNumber = page.PageNumber, Width = page.Width, Height = page.Height, Tokens = tokens };
     }
 
-    private async Task<RapidOcrPage> RecognizeRotatedAsync(Bitmap source, int rotation, CancellationToken cancellationToken)
+    private async Task<RapidOcrPage> RecognizeRotatedAsync(Bitmap source, int rotation, CancellationToken cancellationToken,
+        int? longEdgeOverride = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        using var prepared = OcrImages.Prepare(source, rotation);
+        using var prepared = OcrImages.Prepare(source, rotation, longEdgeOverride);
         var png = OcrImages.ToPng(prepared);
         var page = await _rapidOcr.RecognizeAsync(png, prepared.Width, prepared.Height, cancellationToken);
         return page with { Rotation = rotation };

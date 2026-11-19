@@ -70,10 +70,37 @@ internal static class OcrSelfTest
                 failures.Add($"{name}：{ex.GetBaseException().Message}");
             }
         }
+        var specification = await VerifySpecificationAsync();
+        report.Add(specification);
+        Console.WriteLine(specification);
+        if (specification.StartsWith("FAIL", StringComparison.Ordinal)) failures.Add(specification);
         foreach (var failure in failures) Console.Error.WriteLine(failure);
         File.WriteAllLines(Path.Combine(folder, "report.txt"), report.Concat(failures));
         Console.WriteLine(failures.Count == 0 ? $"OCR_SELF_TEST_OK: {files.Count} files" : $"OCR_SELF_TEST_FAILED: {failures.Count}");
         return failures.Count == 0 ? 0 : 1;
+    }
+
+    private static async Task<string> VerifySpecificationAsync()
+    {
+        const string expected = "3|0|示例包装|100ML|||SAMPLE";
+        using var bitmap = new Bitmap(700, 56, PixelFormat.Format24bppRgb);
+        using (var graphics = Graphics.FromImage(bitmap))
+        using (var font = AppFonts.Ui(33))
+        {
+            graphics.Clear(Color.White);
+            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            graphics.DrawString(expected, font, Brushes.Black, 4, 5);
+        }
+        var damaged = new TextToken("30}示例包装100MLSAMPLE", 0, 0, bitmap.Width, bitmap.Height)
+        {
+            OcrBox = [new(0, 0), new(bitmap.Width, 0), new(bitmap.Width, bitmap.Height), new(0, bitmap.Height)]
+        };
+        await using var engine = new RapidOcrEngine();
+        var recovered = await engine.RecoverSpecificationsAsync(OcrImages.ToPng(bitmap), [damaged], 1, 1, CancellationToken.None);
+        var actual = recovered.GetValueOrDefault(damaged);
+        return actual == expected
+            ? "PASS: OCR 商品规格保留连续分隔符及空字段"
+            : $"FAIL: OCR 商品规格补读为“{actual}”，期望“{expected}”";
     }
 
     private static Bitmap RenderDeclaration()

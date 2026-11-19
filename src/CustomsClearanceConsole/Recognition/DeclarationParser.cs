@@ -84,6 +84,7 @@ internal sealed partial class DeclarationParser
 
 
         var first = document.Pages[0];
+        var ocrHeaders = document.UsedOcr && !first.HasPdfTextLayer;
 
         var allText = string.Join(" ", first.Tokens.Select(t => t.Text));
 
@@ -107,7 +108,7 @@ internal sealed partial class DeclarationParser
 
         record.DeclarationNo = FindDeclarationNo(first);
 
-        record.Consignee = ReadLabeledValue(first, "境外收货人");
+        record.Consignee = ReadLabeledValue(first, "境外收货人", FindProducerRow(first)?.Top);
 
         record.ContractNo = ReadLabeledValue(first, "合同协议号");
 
@@ -119,7 +120,7 @@ internal sealed partial class DeclarationParser
 
         if (string.IsNullOrWhiteSpace(record.Consignee))
 
-            record.Consignee = ReadValueImmediatelyAboveLabel(first, "生产销售单位");
+            record.Consignee = ReadConsigneeAboveProducer(first);
 
         if (string.IsNullOrWhiteSpace(record.Consignee))
 
@@ -143,7 +144,7 @@ internal sealed partial class DeclarationParser
 
 
 
-        if (document.UsedOcr)
+        if (ocrHeaders)
 
         {
 
@@ -163,15 +164,19 @@ internal sealed partial class DeclarationParser
 
         record.Consignee = CleanValue(record.Consignee, "境外收货人");
 
+        if (IsHeaderLabel(record.Consignee)) record.Consignee = "";
+
         record.Consignee = NormalizeConsigneeIdentifiers(record.Consignee);
 
-        record.ContractNo = NormalizeContractOcr(CleanValue(record.ContractNo, "合同协议号"));
+        record.ContractNo = CleanValue(record.ContractNo, "合同协议号");
+        if (ocrHeaders) record.ContractNo = Regex.Replace(record.ContractNo, @"\s+", "").ToUpperInvariant();
 
         record.DestinationCountry = ResolveDestinationCountry(first,
 
             CleanValue(record.DestinationCountry, "运抵国（地区）", "运抵国(地区)", "运抵国"));
 
         var ruleProblems = ApplyOcrRules(record, document.Pages);
+        ruleProblems.AddRange(ReconcileRepeatedItems(record, document.Pages));
 
         record.Confidence = CalculateConfidence(record, document.UsedOcr);
 

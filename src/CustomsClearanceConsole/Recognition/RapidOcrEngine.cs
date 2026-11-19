@@ -65,7 +65,13 @@ internal sealed class RapidOcrEngine : IAsyncDisposable
 
                     var charConfidence = block.CharScores is { Count: > 0 } ? block.CharScores.Average() : block.BoxScore;
                     var confidence = Math.Clamp(Math.Min(block.BoxScore, charConfidence) * 100d, 0, 100);
-                    tokens.Add(new TextToken(block.Text.Trim(), left, top, right, bottom, confidence));
+                    var text = block.Text.Trim();
+                    tokens.Add(new TextToken(text, left, top, right, bottom, confidence)
+                    {
+                        OcrBox = block.BoxPoints.Count == 4 && OcrProductSpecification.IsCandidate(text)
+                            ? block.BoxPoints.Select(p => new Point(p.X - padding, p.Y - padding)).ToArray()
+                            : null
+                    });
                 }
                 cancellationToken.ThrowIfCancellationRequested();
                 return new RapidOcrPage(new TextPage { Width = width, Height = height, Tokens = tokens },
@@ -75,6 +81,34 @@ internal sealed class RapidOcrEngine : IAsyncDisposable
             {
                 result?.BoxImg?.Dispose();
             }
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    public async Task<Dictionary<TextToken, string>> RecoverSpecificationsAsync(byte[] image,
+        IReadOnlyList<TextToken> specifications, double scaleX, double scaleY, CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            ObjectDisposedException.ThrowIf(_disposed != 0, this);
+            var engine = await GetEngineAsync();
+            using var source = new Emgu.CV.Mat();
+            Emgu.CV.CvInvoke.Imdecode(image, Emgu.CV.CvEnum.ImreadModes.ColorBgr, source);
+            var recovered = new Dictionary<TextToken, string>();
+            foreach (var token in specifications)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var corners = token.OcrBox!.Select(p => new Point((int)Math.Round(p.X * scaleX),
+                    (int)Math.Round(p.Y * scaleY))).ToList();
+                using var line = OcrUtils.GetRotateCropImage(source, corners);
+                if (OcrProductSpecification.TryRead(line, token.Text, engine.RecognizeLine) is { } value)
+                    recovered.Add(token, value);
+            }
+            return recovered;
         }
         finally
         {

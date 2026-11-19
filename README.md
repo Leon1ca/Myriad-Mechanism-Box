@@ -1,8 +1,8 @@
 # 千机匣 · Myriad Mechanism Box
 
-千机匣（Myriad Mechanism Box）是 Windows 10 / 11 x64 本地关单识别与核验工具，原名“关单核验台”。当前版本为 **v0.2.0**（2026-10-10），在 v0.1.0 基础上精简列表与明细、消除刷新闪屏并整体审查代码。
+千机匣（Myriad Mechanism Box）是 Windows 10 / 11 x64 本地关单识别与核验工具，原名“关单核验台”。当前版本 **v0.2.1** 改进了扫描件的字段定位和商品规格识别。
 
-[下载便携版](https://github.com/Leon1ca/Myriad-Mechanism-Box/releases) · [v0.2.0 版本说明](docs/release-notes-v0.2.0.md) · [v0.1.0 版本说明](docs/release-notes-v0.1.0.md)
+[下载便携版](https://github.com/Leon1ca/Myriad-Mechanism-Box/releases) · [v0.2.1 版本说明](docs/release-notes-v0.2.1.md) · [v0.2.0 版本说明](docs/release-notes-v0.2.0.md)
 
 ![千机匣主界面](docs/images/main-ui.png)
 

@@ -17,6 +17,13 @@ internal sealed partial class DeclarationParser
             if (header is not null && header.Top >= page.Height * .07 && header.Top <= page.Height * .76)
             {
                 var originHeader = FindAnchor(page, "原产国");
+                var productHeader = FindAnchor(page, "商品名称及规格型号", "商品名称规格型号");
+                // Compare headings on the same printed row. In a tilted scan the
+                // right-hand currency can extend below the next left-hand product name.
+                var productOffset = productHeader is not null && productHeader.Right < header.Left &&
+                    Math.Abs(header.CenterY - productHeader.CenterY) <= page.Height * .04
+                    ? Math.Max(0, header.CenterY - productHeader.CenterY)
+                    : 0;
                 var left = Math.Max(0, header.Left - page.Width * .02);
                 var right = originHeader is not null &&
                             Math.Abs(originHeader.CenterY - header.CenterY) < Math.Max(5, page.Height * .018)
@@ -62,7 +69,8 @@ internal sealed partial class DeclarationParser
                         Currency = currency,
                         Amount = total.Value
                     };
-                    AttachRowDetails(page, line, left, right, rowTop, currencyY, totalLine.Average(x => x.CenterY));
+                    AttachRowDetails(page, line, left, right, rowTop, currencyY, totalLine.Average(x => x.CenterY),
+                        previousRowBottom is null && itemToken is null, itemToken is null ? productOffset : 0);
                     pageTotals.Add(line);
                     previousRowBottom = Math.Max(lines[i].Max(x => x.Bottom), itemToken?.Bottom ?? 0);
                 }
@@ -74,7 +82,11 @@ internal sealed partial class DeclarationParser
             if (pageTotals.Count == 0) pageTotals = ReadLineTotalsFromCurrencyRows(page);
             result.AddRange(pageTotals);
         }
-        for (var i = 0; i < result.Count; i++) result[i].Sequence = i + 1;
+        for (var i = 0; i < result.Count; i++)
+        {
+            result[i].Sequence = i + 1;
+            result[i].PrintedItemNo = result[i].ItemNo;
+        }
         NormalizeItemNumbers(result);
         return result;
     }
@@ -132,7 +144,8 @@ internal sealed partial class DeclarationParser
                     Currency = currency,
                     Amount = total
                 };
-                AttachRowDetails(page, line, left, right, rowTop, currencyY, amountLine.Average(x => x.CenterY));
+                AttachRowDetails(page, line, left, right, rowTop, currencyY, amountLine.Average(x => x.CenterY),
+                    previousRowBottom is null && itemToken is null);
                 result.Add(line);
                 previousRowBottom = Math.Max(currencyLine.Max(x => x.Bottom), itemToken?.Bottom ?? 0);
                 break;
@@ -188,7 +201,8 @@ internal sealed partial class DeclarationParser
     /// a value that cannot be located in the source stays empty and renders as “—”.
     /// </summary>
     private static void AttachRowDetails(TextPage page, DeclarationLineTotal line,
-        double priceLeft, double priceRight, double rowTop, double currencyY, double totalLineY)
+        double priceLeft, double priceRight, double rowTop, double currencyY, double totalLineY,
+        bool firstRowWithoutNumber, double productOffset = 0)
     {
         if (priceLeft >= priceRight) return;
         var tolerance = Math.Max(2.5, page.Height * .0048);
@@ -300,17 +314,26 @@ internal sealed partial class DeclarationParser
 
         // Product name: everything else between the item number and the quantity/price column.
         var productRight = quantityLeft ?? priceLeft;
+        var productTop = firstRowWithoutNumber &&
+            FindAnchor(page, "商品名称及规格型号", "商品名称规格型号") is { } productHeader &&
+            productHeader.Bottom < currencyY && productHeader.Right < productRight
+            ? productHeader.Bottom
+            : rowTop - productOffset;
         var productTokens = page.Tokens
-            // Diagonal watermarks have much taller character boxes than the row text.
-            .Where(t => t.Bottom - t.Top <= Math.Max(12, page.Height * .028))
+            // A slightly skewed scan makes a long description box taller than a short glyph box.
+            .Where(t => IsRowText(page, t) || t.Right - t.Left >= 5 * (t.Bottom - t.Top) &&
+                t.Bottom - t.Top <= page.Height * .04)
             .Where(t => t.CenterX >= itemNoRight && t.CenterX < productRight - 1)
-            .Where(t => t.CenterY >= rowTop && t.CenterY <= bandBottom)
+            .Where(t => t.CenterY >= productTop && t.CenterY <= bandBottom)
             .ToList();
         var product = string.Join(" ", Lines(productTokens, tolerance)
             .Select(Join)
             .Select(value => Regex.Replace(value.Trim(), @"^\d{10}(?=\D|$)\s*", ""))
             .Where(value => value.Length > 0 && !Regex.IsMatch(value, @"^[\p{P}\p{S}\s]+$")));
         line.ProductName = Regex.Replace(product, @"\s+", " ").Trim();
+        line.CommodityCode = productTokens
+            .Select(t => Regex.Match(t.Text.Trim(), @"^(\d{10})(?=\D|$)").Groups[1].Value)
+            .FirstOrDefault(code => code.Length == 10) ?? "";
 
         // A quantity without a recognized unit token leaves the unit empty so the dialog
         // and exports show “—”; an arbitrary following word is never stored as the unit.

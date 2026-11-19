@@ -351,6 +351,13 @@ Check(Destination(DeclarationPage(t => Replace(t, "阿尔及利亚", "").Where(x
 Check(Destination(DeclarationPage(t => Replace(Replace(t, "(DZA)", "(IDN)"), "阿尔及利亚", "印度尼西亚"))) == "印度尼西亚", "目的国：印度尼西亚不被截成印度");
 Check(Destination(DeclarationPage(t => Replace(Replace(t, "(DZA)", "(HKG)"), "阿尔及利亚", "中国香港"))) == "中国香港", "目的国：转运时仍取运抵国（中国香港），不取最终目的国");
 Check(CountryNames.FirstNameIn("斯基克达（阿尔及利亚）") == "阿尔及利亚" && CountryNames.FromCode("dza") == "阿尔及利亚", "国别代码表与名称匹配");
+var letterOContract = DeclarationPage(t => Replace(t, "TESTX-DX-20260101-001", "FO20260101"));
+Check(ParsePage(letterOContract).ContractNo == "FO20260101", "合同协议号中的字母 O 不应改写为数字 0");
+var pdfContractPage = new TextPage { Width = letterOContract.Width, Height = letterOContract.Height,
+    HasPdfTextLayer = true, Tokens = Replace(letterOContract.Tokens, "FO20260101", "FOa-20260101") };
+var mixedDocument = new DocumentText { UsedOcr = true, Pages = [pdfContractPage] };
+Check(new DeclarationParser().Parse("mixed.pdf", mixedDocument).ContractNo == "FOa-20260101",
+    "混合 PDF 的文字层合同协议号保留大小写");
 
 
 // Initial release: synthetic regressions for field overlap, quantity selection and watermark digits.
@@ -372,6 +379,23 @@ Check(CountryNames.FirstNameIn("斯基克达（阿尔及利亚）") == "阿尔�
     Check(selected.Quantity == 140 && selected.Unit == "条" && selected.RuleCheckPassed == true,
         "计价数量取自实际印刷的140条，保留法定112千克为候选而不倒算");
     Check(selected.ProductName == "测试毯子", "合并商品编码的名称剔除10位HS编码且保留行起点上方的名称");
+    var slanted = RowPage(new("6301400000测试毯子", 90, 722, 295, 737),
+        new("3|0|示例规格|100ML|||示例牌", 110, 736, 346, 778));
+    slanted.Tokens.RemoveAll(t => t.Text == "1" || (t.Text == "6301400000测试毯子" && t.Top == 754));
+    var priceLabel = slanted.Tokens.First(t => t.Text == "单价/总价/币制");
+    slanted.Tokens.Remove(priceLabel);
+    slanted.Tokens.Add(priceLabel with { Top = 723, Bottom = 745 });
+    Check(ParsePage(slanted).LineTotals.Single().ProductName == "测试毯子 3|0|示例规格|100ML|||示例牌",
+        "斜扫时以商品栏自身的表头恢复首行品名，保留较宽的规格文字框");
+    var firstCurrency = slanted.Tokens.First(t => t.Text == "美元");
+    slanted.Tokens.Remove(firstCurrency);
+    slanted.Tokens.AddRange([firstCurrency with { Top = 812, Bottom = 848 },
+        new("4819500000测试封套", 90, 835, 280, 853), new("3|0|纸制|||示例牌", 110, 860, 320, 882),
+        new("140个", 415, 885, 470, 905), new("9.3186", 550, 858, 630, 878),
+        new("1304.61", 550, 890, 630, 910), new("美元", 570, 921, 630, 939)]);
+    Check(ParsePage(slanted).LineTotals.Select(l => l.ProductName).SequenceEqual(
+        ["测试毯子 3|0|示例规格|100ML|||示例牌", "测试封套 3|0|纸制|||示例牌"]),
+        "斜扫多商品行按两栏高度差恢复后一项品名，上一项不串行");
     var watermarked = ParsePage(RowPage(new("1", 542, 772, 565, 835), new("9", 520, 745, 545, 810)));
     Check(watermarked.LineTotals.Single().Amount == 1304.61m && watermarked.LineTotals.Single().UnitPrice == 9.3186m,
         "斜向大字水印不会拼入单价或总价");
@@ -397,9 +421,82 @@ Check(CountryNames.FirstNameIn("斯基克达（阿尔及利亚）") == "阿尔�
     overlap.Tokens.Remove(consignee);
     overlap.Tokens.Add(consignee with { Bottom = next.Top + 2 });
     Check(ParsePage(overlap).Consignee.Contains("EXAMPLE GLOBAL TRADING"), "收货人文字框轻微跨越下一标签边界仍能按中心定位");
+    var overlappingHeader = DeclarationPage(tokens => Without(
+        Replace(tokens.Select(t => t.Text == consignee.Text ? t with { Top = 259, Bottom = 298 } : t).ToList(),
+            "运输方式", "运输方式（2）"), "(2)", "监管方式"));
+    Check(ParsePage(overlappingHeader).Consignee == consignee.Text, "收货人文字框与上下两个标签轻微重叠时仍从本栏取值");
+    overlappingHeader.Tokens.RemoveAll(t => t.Text == consignee.Text);
+    var missingConsignee = ParsePage(overlappingHeader);
+    Check(missingConsignee.Consignee == "" && missingConsignee.Warning.Contains("境外收货人"),
+        "收货人空白时提示缺失，禁止用旁边的运输方式或栏标题填充");
     var bill = new DeclarationParser().Parse("bill.pdf", new DocumentText { Pages = [new TextPage { Width = 600, Height = 800,
         Tokens = [new("BILL OF LADING", 40, 50, 350, 70), new("SAME AS CONSIGNEE", 40, 150, 350, 170)] }] });
     Check(bill.Warning.Contains("未检测到报关单页面") && bill.Totals.Count == 0 && bill.DeclarationNo == "", "提单不伪装成关单记录");
+}
+
+// The same declaration can contain a compact main table and expanded copies of its items.
+{
+    TextPage RepeatedPage(int pageNumber, string itemNo = "1", params (string From, string To)[] replacements)
+    {
+        var page = DeclarationPage();
+        var tokens = page.Tokens.Select(token => token.Text == "1" && token.Top == 622
+            ? token with { Text = itemNo } : token).ToList();
+        foreach (var (from, to) in replacements) tokens = Replace(tokens, from, to);
+        return new TextPage { PageNumber = pageNumber, Width = page.Width, Height = page.Height, Tokens = tokens };
+    }
+    DeclarationRecord MultiPage(params TextPage[] pages) =>
+        new DeclarationParser().Parse("multi.pdf", new DocumentText { Pages = pages.ToList() });
+
+    var repeated = MultiPage(RepeatedPage(1), RepeatedPage(2));
+    Check(repeated.LineTotals.Count == 1 && repeated.Totals.GetValueOrDefault("USD") == 5000 &&
+        repeated.LineTotals[0].ItemNo == "1" && repeated.LineTotals[0].PageNumber == 1 && !repeated.NeedsAttention,
+        "同一报关单的相同原项号和商品跨页重复时只计一次，不误报漏项");
+    var additional = MultiPage(RepeatedPage(1), RepeatedPage(2, "2"), RepeatedPage(3, "1"));
+    Check(additional.LineTotals.Select(line => line.ItemNo).SequenceEqual(["1", "2"]) &&
+        additional.LineTotals.Select(line => line.Sequence).SequenceEqual([1, 2]) &&
+        additional.Totals.GetValueOrDefault("USD") == 10000,
+        "主表加附加页保留真正新增的项号，金额和商品相同的不同项号分别计价");
+    var duplicateAgain = MultiPage(RepeatedPage(1), RepeatedPage(2), RepeatedPage(3));
+    Check(duplicateAgain.LineTotals.Count == 1 && duplicateAgain.Totals.GetValueOrDefault("USD") == 5000,
+        "同一商品重复出现三次仍只计一次");
+    var wrapped = MultiPage(RepeatedPage(1), RepeatedPage(2, "1", ("示例牌工具车", "示例牌 工具车")));
+    Check(wrapped.LineTotals.Count == 1, "版面换行产生的商品名称空格不导致重复计价");
+
+    var changedPrice = MultiPage(RepeatedPage(1), RepeatedPage(2, "1", ("1250.0000", "1500.0000"), ("5000.00", "6000.00")));
+    Check(changedPrice.NeedsAttention && changedPrice.LineTotals.Count == 2 &&
+        changedPrice.LineTotals.All(line => line.ItemNo == "1" && !line.IsReliable) &&
+        changedPrice.Totals.Count == 0 && changedPrice.Warning.Contains("内容不一致"),
+        "同一原项号价格和金额冲突时保留两份原文并提示，争议项不计入可信合计");
+    var changedCode = MultiPage(RepeatedPage(1), RepeatedPage(2, "1", ("8703225010", "8703225090")));
+    Check(changedCode.NeedsAttention && changedCode.Totals.Count == 0,
+        "同一原项号的商品编码不同即使金额相同也提示冲突");
+    var changedProduct = MultiPage(RepeatedPage(1), RepeatedPage(2, "1", ("示例牌工具车", "另一型号工具车")));
+    Check(changedProduct.NeedsAttention && changedProduct.Totals.Count == 0,
+        "同一原项号的商品内容不同不能自动合并");
+    var incomplete = RepeatedPage(2);
+    incomplete.Tokens.RemoveAll(token => token.Text == "8703225010");
+    var uncertain = MultiPage(RepeatedPage(1), incomplete);
+    Check(uncertain.NeedsAttention && uncertain.Warning.Contains("复核不完整") && uncertain.LineTotals.Count == 2,
+        "缺少商品编码证据时保留重复候选并提示核对");
+    var differentDeclaration = MultiPage(RepeatedPage(1), RepeatedPage(2, "1",
+        ("预录入编号：516620260000000017", "预录入编号：516620260000000018")));
+    Check(differentDeclaration.LineTotals.Count == 2 && differentDeclaration.Totals.GetValueOrDefault("USD") == 10000,
+        "不同报关单号的相同商品不会被跨单合并");
+    var noHeader = RepeatedPage(2);
+    noHeader.Tokens.RemoveAll(token => token.Text.StartsWith("预录入编号", StringComparison.Ordinal));
+    Check(MultiPage(RepeatedPage(1), noHeader).LineTotals.Count == 2,
+        "缺少第二页报关单身份时不猜测其与首页重复");
+    var noItemNumber = RepeatedPage(2, "");
+    Check(MultiPage(RepeatedPage(1), noItemNumber).LineTotals.Count == 2,
+        "缺少印刷项号时不能拿自动补排的显示序号作为去重依据");
+    var missingRow = RepeatedPage(2);
+    missingRow.Tokens.AddRange([new("2", 88, 750, 95, 768), new("8703225010", 128, 750, 230, 768)]);
+    var incompletePage = MultiPage(RepeatedPage(1), missingRow);
+    Check(incompletePage.LineTotals.Count == 1 && incompletePage.Warning.Contains("第2页检测到 2 个商品行"),
+        "去重前检查原页漏项，合并重复行仍保留真实漏项提示");
+    var serialization = System.Text.Json.JsonSerializer.Serialize(repeated);
+    Check(!serialization.Contains("PrintedItemNo") && !serialization.Contains("CommodityCode"),
+        "页内去重的临时证据不写入历史格式");
 }
 
 await StabilityRegression.RunAsync(Check, workspace.Path);

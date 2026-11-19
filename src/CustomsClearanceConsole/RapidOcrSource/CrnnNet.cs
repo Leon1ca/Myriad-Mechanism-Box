@@ -80,7 +80,7 @@ namespace RapidOCRLib
             return textLines;
         }
 
-        private TextLine GetTextLine(Mat src)
+        internal TextLine GetTextLine(Mat src)
         {
             TextLine textLine = new TextLine();
 

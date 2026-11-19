@@ -10,9 +10,9 @@
     <AssemblyName>千机匣</AssemblyName>
     <Product>千机匣 Myriad Mechanism Box</Product>
     <Description>千机匣 · 关单识别、去重合计与在线核验</Description>
-    <Version>0.2.0</Version>
-    <FileVersion>0.2.0.0</FileVersion>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <Version>0.2.1</Version>
+    <FileVersion>0.2.1.0</FileVersion>
+    <AssemblyVersion>0.2.1.0</AssemblyVersion>
     <RootNamespace>CustomsClearanceConsole</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>

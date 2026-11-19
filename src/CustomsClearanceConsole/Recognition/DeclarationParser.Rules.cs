@@ -19,7 +19,7 @@ internal sealed partial class DeclarationParser
 
         // The number is printed up to three times in the header (预录入编号, 海关编号, barcode
         // text); a misread digit in one of them shows up as a second distinct number.
-        var numbers = page18DigitNumbers(first);
+        var numbers = HeaderDeclarationNumbers(first);
         if (numbers.Count > 1)
             problems.Add($"报关单号在表头读取不一致（{string.Join(" / ", numbers)}）");
 
@@ -53,15 +53,15 @@ internal sealed partial class DeclarationParser
         if (record.ExitCustoms.Length > 0 && !IsCustomsName(record.ExitCustoms))
             problems.Add($"出境关别“{record.ExitCustoms}”不像关区名称");
         return problems;
-
-        // Only the title/number band above the first box: the boxes below hold 18-character
-        // credit codes (境内发货人, 生产销售单位) that can be all digits.
-        static List<string> page18DigitNumbers(TextPage page) => page.Tokens
-            .Where(t => t.Bottom <= (FindAnchor(page, "境内发货人")?.Top ?? page.Height * .2))
-            .SelectMany(t => DeclarationRegex().Matches(t.Text).Select(m => m.Value))
-            .Distinct(StringComparer.Ordinal)
-            .ToList();
     }
+
+    // Limit identity checks to the header band. Credit codes in the form's boxes can also
+    // contain 18 digits and must not be treated as declaration numbers.
+    private static List<string> HeaderDeclarationNumbers(TextPage page) => page.Tokens
+        .Where(t => t.Bottom <= (FindAnchor(page, "境内发货人")?.Top ?? page.Height * .2))
+        .SelectMany(t => DeclarationRegex().Matches(t.Text).Select(m => m.Value))
+        .Distinct(StringComparer.Ordinal)
+        .ToList();
 
     // Half of the printed price's last decimal place is the maximum rounding error.
     // Do not use a percentage of the total: it can hide a misread large amount.

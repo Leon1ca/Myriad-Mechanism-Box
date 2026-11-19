@@ -15,6 +15,8 @@ public sealed partial class DeclarationLineTotal
     public decimal Amount { get; set; }
     public bool IsReliable { get; set; } = true;
     public string Note { get; set; } = "";
+    internal string PrintedItemNo { get; set; } = "";
+    internal string CommodityCode { get; set; } = "";
 
     /// <summary>
     /// Every number in the row's quantity column (declared, legal and second unit quantities),

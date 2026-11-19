@@ -26,6 +26,8 @@ namespace RapidOCRLib
         private AngleNet angleNet;
         private CrnnNet crnnNet;
 
+        internal TextLine RecognizeLine(Mat image) => crnnNet.GetTextLine(image);
+
         /// <summary>
         /// The path of the Det model file.
         /// </summary>
